@@ -44,10 +44,10 @@ public class Client {
 
     HttpClient httpClient;
 
-    Client() {
+    public Client() {
     }
 
-    Client(String region, String scheme, String host, String port, Credentials credentials) {
+    public Client(String region, String scheme, String host, String port, Credentials credentials) {
         this.region = region;
         this.scheme = scheme;
         this.host = host;
@@ -55,7 +55,7 @@ public class Client {
         this.credentials = credentials;
     }
 
-    Client(Config cfg) {
+    public Client(Config cfg) {
         if (cfg.region != null)
             this.region = cfg.region;
         if (cfg.scheme != null)
@@ -81,7 +81,8 @@ public class Client {
     }
 
     static final String fetchAccessTokenFormat = "{" +
-            "\"client_id\":\"%s\"," + "\"client_secret\":\"%s\"," +
+            "\"client_id\":\"%s\"," +
+            "\"client_secret\":\"%s\"," +
             "\"audience\":\"%s\"," +
             "\"grant_type\":\"client_credentials\"}";
 
@@ -360,15 +361,12 @@ public class Client {
     }
 
     public void run() throws HttpError, InterruptedException, IOException {
-        Config cfg = Config.loadConfig("~/.rai/config");
-        Client client = new Client(cfg);
-        // ClientCredentials creds = (ClientCredentials) cfg.credentials;
-        // AccessToken accessToken = client.getAccessToken(creds);
-        // System.out.println(accessToken);
-        // System.out.println(String.format("expiresOn = %s", accessToken.expiresOn));
-        // System.out.println(String.format("isExpires = %s", accessToken.isExpired()));
-        ListDatabasesResponse rsp = client.listDatabases();
-        System.out.println(rsp);
+        var cfg = Config.loadConfig("~/.rai/config");
+        var client = new Client(cfg);
+        var rsp = client.listDatabases();
+        for (var database : rsp.Databases) {
+            System.out.printf("%s (%s)\n", database.Name, database.AccountName);
+        }
     }
 
     public static void main(String[] args) {

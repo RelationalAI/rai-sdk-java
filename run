@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -ex
+
+java -cp target -cp ~/.m2/repository $*

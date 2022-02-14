@@ -19,6 +19,7 @@ public class ListDatabasesResponse extends Model {
     }
 
     public static ListDatabasesResponse fromJson(String s) {
-        return new ListDatabasesResponse(new JSONObject(s));
+        var obj = new JSONObject(s);
+        return new ListDatabasesResponse(obj);
     }
 }

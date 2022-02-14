@@ -26,7 +26,7 @@ public class Database extends Model {
         Region = obj.getString("region");
         AccountName = obj.getString("account_name");
         CreatedBy = obj.getString("created_by");
-        DeletedOn = obj.getString("deleted_on");
+        DeletedOn = obj.optString("deleted_on", null);
         DeletedBy = obj.optString("deleted_by", null);
         DefaultEngine = obj.optString("default_compute_name", null);
         State = obj.getString("state");
