@@ -16,4 +16,9 @@
 
 package com.relationalai;
 
-public class GetEngineResponse {}
+import com.jsoniter.annotation.JsonProperty;
+
+public class GetEngineResponse {
+    @JsonProperty(value = "computes", required = true)
+    public Engine[] engines;
+}

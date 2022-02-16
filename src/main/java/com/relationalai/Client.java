@@ -16,6 +16,7 @@
 
 package com.relationalai;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.jsoniter.JsonIterator;
+import com.jsoniter.output.JsonStream;
 
 public class Client {
     public static final String DEFAULT_REGION = "us-east";
@@ -42,6 +44,15 @@ public class Client {
     public Credentials credentials;
 
     HttpClient httpClient;
+
+    static Map<String, String> _defaultHeaders = null;
+
+    static {
+        _defaultHeaders = new HashMap<String, String>();
+        _defaultHeaders.put("Accept", "application/json");
+        _defaultHeaders.put("Content-Type", "application/json");
+        _defaultHeaders.put("User-Agent", userAgent());
+    }
 
     public Client() {}
 
@@ -100,7 +111,7 @@ public class Client {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
         builder.POST(HttpRequest.BodyPublishers.ofString(body));
         builder.uri(URI.create(credentials.clientCredentialsUrl));
-        addHeaders(builder, defaultHeaders);
+        addHeaders(builder, _defaultHeaders);
         HttpRequest request = builder.build();
         HttpResponse<String> response =
                 httpClient().send(request, HttpResponse.BodyHandlers.ofString());
@@ -108,7 +119,7 @@ public class Client {
         var statusCode = response.statusCode();
         if (statusCode >= 400 && statusCode < 500)
             throw new HttpError(statusCode, data);
-        return JsonIterator.deserialize(data, AccessToken.class);
+        return deserialize(data, AccessToken.class);
     }
 
     // todo: add callback func
@@ -132,18 +143,10 @@ public class Client {
         return false;
     }
 
-    static Map<String, String> defaultHeaders = new HashMap<String, String>() {
-        {
-            put("Accept", "application/json");
-            put("Content-Type", "application/json");
-            put("User-Agent", userAgent());
-        }
-    };
-
     // Ensures that the given headers contain the required default values.
     static Map<String, String> defaultHeaders(Map<String, String> headers) {
         if (headers == null)
-            return defaultHeaders;
+            return _defaultHeaders;
         if (!containsInsensitive(headers, "Accept"))
             headers.put("Accept", "application/json");
         if (!containsInsensitive(headers, "Content-Type"))
@@ -229,7 +232,7 @@ public class Client {
 
     String sendRequest(HttpRequest.Builder builder)
             throws HttpError, InterruptedException, IOException {
-        addHeaders(builder, defaultHeaders);
+        addHeaders(builder, _defaultHeaders);
         authenticate(builder, this.credentials);
         HttpRequest request = builder.build();
         // printRequest(request);
@@ -296,22 +299,49 @@ public class Client {
     static final String PATH_TRANSACTION = "/transaction";
     static final String PATH_USERS = "/users";
 
+    static <T> T deserialize(String s, Class<T> cls) {
+        return JsonIterator.deserialize(s, cls);
+    }
+
+    static String serialize(Model model) {
+        return model.toString();
+    }
+
+    static String serialize(Model model, int indent) {
+        return model.toString(indent);
+    }
+
+    static String serialize(Object obj) {
+        return serialize(obj, 0);
+    }
+
+    static String serialize(Object obj, int indent) {
+        var output = new ByteArrayOutputStream();
+        JsonStream.setIndentionStep(indent);
+        JsonStream.serialize(obj, output);
+        return output.toString();
+    }
+
     // Databases
 
-    public CreateDatabaseResponse createDatabase(String database, String engine) {
+    public CreateDatabaseResponse createDatabase(String database, String engine)
+            throws HttpError, InterruptedException, IOException {
         return createDatabase(database, engine, null, false);
     }
 
     public CreateDatabaseResponse createDatabase(
-            String database, String engine, String source, boolean overwrite) {
+            String database, String engine, String source, boolean overwrite)
+            throws HttpError, InterruptedException, IOException {
         return null; // todo
     }
 
-    public DeleteDatabaseResponse deleteDatabase(String database) {
+    public DeleteDatabaseResponse deleteDatabase(String database)
+            throws HttpError, InterruptedException, IOException {
         return null; // todo
     }
 
-    public GetDatabaseResponse getDatabase(String database) {
+    public GetDatabaseResponse getDatabase(String database)
+            throws HttpError, InterruptedException, IOException {
         return null; // todo
     }
 
@@ -328,7 +358,7 @@ public class Client {
             params.put("state", state);
         }
         String rsp = get(PATH_DATABASE, params);
-        return JsonIterator.deserialize(rsp, ListDatabasesResponse.class);
+        return deserialize(rsp, ListDatabasesResponse.class);
     }
 
     public UpdateDatabaseResponse updateDatabase(String database, UpdateDatabaseRequest req) {
@@ -337,71 +367,104 @@ public class Client {
 
     // Engines
 
-    public CreateEngineResponse createEngine(String engine) {
+    public Engine createEngine(String engine)
+            throws HttpError, InterruptedException, IOException {
         return createEngine(engine, "XS");
     }
 
-    public CreateEngineResponse createEngine(String engine, String size) {
-        return null; // todo
+    public Engine createEngine(String engine, String size)
+            throws HttpError, InterruptedException, IOException {
+        var req = new CreateEngineRequest(this.region, engine, size);
+        var rsp = put(PATH_ENGINE, null, serialize(req));
+        return deserialize(rsp, CreateEngineResponse.class).engine;
     }
 
-    public DeleteEngineResponse deleteEngine(String engine) {
-        return null; // todo
+    public DeleteEngineResponse deleteEngine(String engine)
+            throws HttpError, InterruptedException, IOException {
+        var req = new DeleteEngineRequest(engine);
+        var rsp = delete(PATH_ENGINE, null, serialize(req));
+        return deserialize(rsp, DeleteEngineResponse.class);
     }
 
-    public GetEngineResponse getEngine(String engine) {
-        return null; // todo
+    public Engine getEngine(String engine)
+            throws HttpError, InterruptedException, IOException {
+        var params = new QueryParams();
+        params.put("name", engine);
+        params.put("deleted_on", "");
+        var rsp = get(PATH_ENGINE, params);
+        var data = deserialize(rsp, GetEngineResponse.class).engines;
+        if (data.length == 0)
+            throw new HttpError(404);
+        return data[0];
     }
 
-    public ListEnginesResponse listEngines() {
+    public Engine[] listEngines()
+            throws HttpError, InterruptedException, IOException {
         return listEngines(null);
     }
 
-    public ListEnginesResponse listEngines(String state) {
-        return null; // todo
+    public Engine[] listEngines(String state)
+            throws HttpError, InterruptedException, IOException {
+        QueryParams params = null;
+        if (state != null) {
+            params = new QueryParams();
+            params.put("state", state);
+        }
+        var rsp = get(PATH_ENGINE, params);
+        return deserialize(rsp, ListEnginesResponse.class).engines;
     }
 
     // OAuth clients
 
-    public CreateOAuthClientResponse createOAuthClient(String name, String[] permissions) {
+    public CreateOAuthClientResponse createOAuthClient(String name, String[] permissions)
+            throws HttpError, InterruptedException, IOException {
         return null; // todo
     }
 
-    public DeleteOAuthClientResponse deleteOAuthClient(String id) {
+    public DeleteOAuthClientResponse deleteOAuthClient(String id)
+            throws HttpError, InterruptedException, IOException {
         return null; // todo
     }
 
-    public GetOAuthClientResponse getOAuthClient(String id) {
+    public GetOAuthClientResponse getOAuthClient(String id)
+            throws HttpError, InterruptedException, IOException {
         return null; // todo
     }
 
-    public ListOAuthClientsResponse listOAuthClients() {
+    public ListOAuthClientsResponse listOAuthClients()
+            throws HttpError, InterruptedException, IOException {
         return null; // todo
     }
 
     // Users
 
-    public CreateUserResponse createUser(String email, String[] roles) {
+    public CreateUserResponse createUser(String email, String[] roles)
+            throws HttpError, InterruptedException, IOException {
         return null; // todo
     }
 
-    public DisableUserResponse disableUser(String id) {
+    public DisableUserResponse disableUser(String id)
+            throws HttpError, InterruptedException, IOException {
         return null; // todo
     }
 
-    public EnableUserResponse enableUser(String id) {
+    public EnableUserResponse enableUser(String id)
+            throws HttpError, InterruptedException, IOException {
         return null; // todo
     }
 
-    public GetUserResponse getUser(String id) {
+    public GetUserResponse getUser(String id)
+            throws HttpError, InterruptedException, IOException {
         return null; // todo
     }
 
-    public ListUsersResponse listUsers() {
+    public ListUsersResponse listUsers()
+            throws HttpError, InterruptedException, IOException {
         return null;
     }
 
-    public UpdateUserResponse UpdateUser(String id, UpdateUserRequest req) {
+    public UpdateUserResponse updateUser(String id, UpdateUserRequest req)
+            throws HttpError, InterruptedException, IOException {
         return null;
     }
 
@@ -479,8 +542,10 @@ public class Client {
         var cfg = Config.loadConfig("~/.rai/config");
         var client = new Client(cfg);
         // var rsp = client.listDatabases("CREATED");
-        var rsp = client.execute("bradlo-test", "bradlo-test", "1 + 2 + 3");
-        System.out.println(rsp.toString(4));
+        // var rsp = client.execute("bradlo-test", "bradlo-test", "1 + 2 + 3");
+        // var rsp = client.listEngines();
+        var rsp = client.getEngine("bradlo-test");
+        System.out.println(serialize(rsp, 4));
     }
 
     public static void main(String[] args) {

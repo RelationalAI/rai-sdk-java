@@ -18,9 +18,13 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-public class CreateEngineResponse extends Model {
-    @JsonProperty(value = "compute", required = true)
-    public Engine engine;
+public class DeleteEngineRequest extends Model {
+    @JsonProperty(value = "name", required = true)
+    public String name;
 
-    public CreateEngineResponse() {}
+    public DeleteEngineRequest() {}
+
+    public DeleteEngineRequest(String name) {
+        this.name = name;
+    }
 }

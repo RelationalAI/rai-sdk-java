@@ -21,10 +21,7 @@ import com.jsoniter.output.JsonStream;
 
 public abstract class Model {
     public String toString() {
-        var output = new ByteArrayOutputStream();
-        JsonStream.setIndentionStep(0);
-        JsonStream.serialize(this, output);
-        return output.toString();
+        return toString(0);
     }
 
     public String toString(int indent) {
