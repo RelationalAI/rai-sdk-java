@@ -16,4 +16,14 @@
 
 package com.relationalai;
 
-public class DeleteOAuthClientResponse {}
+import com.jsoniter.annotation.JsonProperty;
+
+public class DeleteOAuthClientResponse {
+    @JsonProperty(value = "client_id", required = true)
+    public String id;
+
+    @JsonProperty(value = "message", required = true)
+    public String message;
+
+    public DeleteOAuthClientResponse() {}
+}

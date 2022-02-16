@@ -16,4 +16,4 @@
 
 package com.relationalai;
 
-public class UpdateUserRequest {}
+class UpdateUserRequest {}

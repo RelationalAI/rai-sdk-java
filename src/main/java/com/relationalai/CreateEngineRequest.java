@@ -18,19 +18,17 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-public class CreateEngineRequest extends Model {
+class CreateEngineRequest extends Model {
     @JsonProperty(value = "region", required = true)
-    public String region;
+    String region;
 
     @JsonProperty(value = "name", required = true)
-    public String name;
+    String name;
 
     @JsonProperty(value = "size", required = true)
-    public String size;
+    String size;
 
-    public CreateEngineRequest() {}
-
-    public CreateEngineRequest(String region, String name, String size) {
+    CreateEngineRequest(String region, String name, String size) {
         this.region = region;
         this.name = name;
         this.size = size;

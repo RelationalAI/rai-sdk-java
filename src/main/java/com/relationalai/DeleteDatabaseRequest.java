@@ -18,12 +18,9 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-public class DeleteDatabaseRequest {
-
+class DeleteDatabaseRequest {
     @JsonProperty(value = "name", required = true)
-    public String name;
-
-    public DeleteDatabaseRequest() {}
+    String name;
 
     public DeleteDatabaseRequest(String name) {
         this.name = name;

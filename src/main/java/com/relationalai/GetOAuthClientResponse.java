@@ -16,4 +16,11 @@
 
 package com.relationalai;
 
-public class GetOAuthClientResponse {}
+import com.jsoniter.annotation.JsonProperty;
+
+public class GetOAuthClientResponse {
+    @JsonProperty(value = "client", required = true)
+    public OAuthClientExtra client;
+
+    public GetOAuthClientResponse() {}
+}

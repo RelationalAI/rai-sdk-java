@@ -23,26 +23,27 @@ public class HttpError extends Exception {
     public int statusCode;
     public String message;
 
-    static Map<Integer, String> statusText = new HashMap<Integer, String>() {
-        {
-            put(200, "OK");
-            put(201, "Created");
-            put(202, "Accepted");
-            put(204, "No Content");
-            put(400, "Bad Request");
-            put(401, "Unauthorized");
-            put(403, "Forbidden");
-            put(404, "Not Found");
-            put(405, "Method Not Allowed");
-            put(409, "Conflict");
-            put(410, "Gone");
-            put(500, "Internal Server Error");
-            put(501, "Not Implemented");
-            put(502, "Bad Gateway");
-            put(503, "Service Unavailable");
-            put(504, "Gateway Timeout");
-        }
-    };
+    static Map<Integer, String> statusText = null;
+
+    static {
+        statusText = new HashMap<Integer, String>();
+        statusText.put(200, "OK");
+        statusText.put(201, "Created");
+        statusText.put(202, "Accepted");
+        statusText.put(204, "No Content");
+        statusText.put(400, "Bad Request");
+        statusText.put(401, "Unauthorized");
+        statusText.put(403, "Forbidden");
+        statusText.put(404, "Not Found");
+        statusText.put(405, "Method Not Allowed");
+        statusText.put(409, "Conflict");
+        statusText.put(410, "Gone");
+        statusText.put(500, "Internal Server Error");
+        statusText.put(501, "Not Implemented");
+        statusText.put(502, "Bad Gateway");
+        statusText.put(503, "Service Unavailable");
+        statusText.put(504, "Gateway Timeout");
+    }
 
     public HttpError(int statusCode) {
         this.statusCode = statusCode;

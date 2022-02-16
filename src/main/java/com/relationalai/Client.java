@@ -202,7 +202,9 @@ public class Client {
             throws UnsupportedEncodingException {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
         builder.uri(URI.create(makeUrl(path, params)));
-        builder.method(method, HttpRequest.BodyPublishers.ofString(body));
+        builder.method(method, body == null
+                ? HttpRequest.BodyPublishers.noBody()
+                : HttpRequest.BodyPublishers.ofString(body));
         return builder;
     }
 
@@ -264,9 +266,19 @@ public class Client {
         return sendRequest(newRequestBuilder(method, path, params, body));
     }
 
+    public String delete(String path)
+            throws HttpError, InterruptedException, IOException {
+        return delete(path, null, null);
+    }
+
     public String delete(String path, QueryParams params, String body)
             throws HttpError, InterruptedException, IOException {
         return request("DELETE", path, params, body);
+    }
+
+    public String get(String path)
+            throws HttpError, InterruptedException, IOException {
+        return get(path, null);
     }
 
     public String get(String path, QueryParams params)
@@ -299,6 +311,11 @@ public class Client {
     static final String PATH_TRANSACTION = "/transaction";
     static final String PATH_USERS = "/users";
 
+    // Returns a URL path constructed from the given parts.
+    String makePath(String... parts) {
+        return String.join("/", parts);
+    }
+
     static <T> T deserialize(String s, Class<T> cls) {
         return JsonIterator.deserialize(s, cls);
     }
@@ -322,7 +339,9 @@ public class Client {
         return output.toString();
     }
 
+    //
     // Databases
+    //
 
     public CreateDatabaseResponse createDatabase(String database, String engine)
             throws HttpError, InterruptedException, IOException {
@@ -423,24 +442,44 @@ public class Client {
 
     // OAuth clients
 
-    public CreateOAuthClientResponse createOAuthClient(String name, String[] permissions)
+    public OAuthClientExtra createOAuthClient(String name)
             throws HttpError, InterruptedException, IOException {
-        return null; // todo
+        return createOAuthClient(name, null);
+    }
+
+    public OAuthClientExtra createOAuthClient(String name, String[] permissions)
+            throws HttpError, InterruptedException, IOException {
+        var req = new CreateOAuthClientRequest(name, permissions);
+        var rsp = post(PATH_OAUTH_CLIENTS, null, serialize(req));
+        return deserialize(rsp, CreateOAuthClientResponse.class).client;
     }
 
     public DeleteOAuthClientResponse deleteOAuthClient(String id)
             throws HttpError, InterruptedException, IOException {
-        return null; // todo
+        var rsp = delete(makePath(PATH_OAUTH_CLIENTS, id));
+        return deserialize(rsp, DeleteOAuthClientResponse.class);
     }
 
-    public GetOAuthClientResponse getOAuthClient(String id)
+    public OAuthClient findOAuthClient(String name)
             throws HttpError, InterruptedException, IOException {
-        return null; // todo
+        var clients = listOAuthClients();
+        for (var client : clients) {
+            if (client.name.equals(name))
+                return client;
+        }
+        return null;
     }
 
-    public ListOAuthClientsResponse listOAuthClients()
+    public OAuthClientExtra getOAuthClient(String id)
             throws HttpError, InterruptedException, IOException {
-        return null; // todo
+        var rsp = get(makePath(PATH_OAUTH_CLIENTS, id));
+        return deserialize(rsp, GetOAuthClientResponse.class).client;
+    }
+
+    public OAuthClient[] listOAuthClients()
+            throws HttpError, InterruptedException, IOException {
+        var rsp = get(PATH_OAUTH_CLIENTS);
+        return deserialize(rsp, ListOAuthClientsResponse.class).clients;
     }
 
     // Users
@@ -545,20 +584,27 @@ public class Client {
 
     // *** temporary ***
 
-    public void run() throws HttpError, InterruptedException, IOException {
+    // Mini integration tests
+    void test() throws HttpError, InterruptedException, IOException {
         var cfg = Config.loadConfig("~/.rai/config");
         var client = new Client(cfg);
 
         Object rsp;
 
+        // transaction
+
         rsp = client.execute("bradlo-test", "bradlo-test", "1 + 2 + 3");
         System.out.println(serialize(rsp, 4));
+
+        // engines
 
         rsp = client.listEngines();
         System.out.println(serialize(rsp, 4));
 
         rsp = client.getEngine("bradlo-test");
         System.out.println(serialize(rsp, 4));
+
+        // databases
 
         rsp = client.deleteDatabase("bradlo-test");
         System.out.println(serialize(rsp, 4));
@@ -575,6 +621,45 @@ public class Client {
         rsp = client.getDatabase("bradlo-test");
         System.out.println(serialize(rsp, 4));
     }
+
+    void testOAuthClients() throws HttpError, InterruptedException, IOException {
+        var cfg = Config.loadConfig("~/.rai/config");
+        var client = new Client(cfg);
+
+        Object rsp;
+
+        rsp = client.listOAuthClients();
+        System.out.println(serialize(rsp, 4));
+
+        var oauthClient = client.findOAuthClient("sdk-test");
+        if (oauthClient != null) {
+            client.deleteOAuthClient(oauthClient.id);
+        }
+
+        String[] permissions = null;
+        rsp = client.createOAuthClient("sdk-test", permissions);
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.listOAuthClients();
+        System.out.println(serialize(rsp, 4));
+
+        oauthClient = client.findOAuthClient("sdk-test");
+        assert oauthClient != null;
+        rsp = client.getOAuthClient(oauthClient.id);
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.deleteOAuthClient(oauthClient.id);
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.listOAuthClients();
+        System.out.println(serialize(rsp, 4));
+
+    }
+
+    public void run() throws HttpError, InterruptedException, IOException {
+        test();
+        testOAuthClients();
+    };
 
     public static void main(String[] args) {
         Client client = new Client();

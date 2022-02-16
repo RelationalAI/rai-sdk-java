@@ -18,9 +18,21 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-public class CreateOAuthClientResponse {
-    @JsonProperty(value = "client", required = true)
-    public OAuthClientExtra client;
+public class OAuthClient extends Model {
+    @JsonProperty(value = "id", required = true)
+    public String id;
 
-    public CreateOAuthClientResponse() {}
+    @JsonProperty(value = "name", required = true)
+    public String name;
+
+    @JsonProperty(value = "account_name", required = true)
+    public String accountName;
+
+    @JsonProperty(value = "created_by", required = true)
+    public String createdBy;
+
+    @JsonProperty(value = "created_on", required = true)
+    public String createdOn;
+
+    public OAuthClient() {}
 }
