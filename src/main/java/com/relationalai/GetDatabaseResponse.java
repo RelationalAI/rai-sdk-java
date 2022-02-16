@@ -16,4 +16,9 @@
 
 package com.relationalai;
 
-public class GetDatabaseResponse {}
+import com.jsoniter.annotation.JsonProperty;
+
+public class GetDatabaseResponse {
+    @JsonProperty(value = "databases", required = true)
+    public Database[] database;
+}

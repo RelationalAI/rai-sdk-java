@@ -16,4 +16,18 @@
 
 package com.relationalai;
 
-public class CreateDatabaseResponse {}
+import com.jsoniter.annotation.JsonProperty;
+
+public class CreateDatabaseResponse extends Model {
+    @JsonProperty(value = "aborted", required = true)
+    public boolean aborted;
+
+    @JsonProperty(value = "actions", required = true)
+    public Object[] actions;
+
+    @JsonProperty(value = "output", required = true)
+    public Object[] output;
+
+    @JsonProperty(value = "problems", required = true)
+    public Object[] problems;
+}

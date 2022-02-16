@@ -16,11 +16,10 @@
 
 package com.relationalai;
 
-import java.util.List;
 import com.jsoniter.annotation.JsonProperty;
 
 public class ListDatabasesResponse extends Model {
     @JsonProperty(value = "databases", required = true)
-    public List<Database> Databases;
+    public Database[] databases;
 }
 

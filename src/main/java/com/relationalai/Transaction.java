@@ -39,14 +39,28 @@ class Transaction {
         this.database = database;
         this.engine = engine;
         this.mode = mode;
+        this.readonly = false;
     }
 
-    Transaction(String region, String database, String engine, String mode, boolean readonly) {
+    Transaction(
+            String region, String database, String engine,
+            String mode, boolean readonly) {
         this.region = region;
         this.database = database;
         this.engine = engine;
         this.mode = mode;
         this.readonly = readonly;
+    }
+
+    Transaction(
+            String region, String database, String engine,
+            String mode, boolean readonly, String source) {
+        this.region = region;
+        this.database = database;
+        this.engine = engine;
+        this.mode = mode;
+        this.readonly = readonly;
+        this.source = source;
     }
 
     // Construct the transaction payload and return serialized JSON string.
@@ -72,14 +86,11 @@ class Transaction {
 
     // Returns the query params corresponding to the transaction state.
     QueryParams queryParams() {
-        var result = new QueryParams() {
-            {
-                put("region", region);
-                put("dbname", database);
-                put("compute_name", engine);
-                put("open_mode", mode != null ? mode : "OPEN");
-            }
-        };
+        var result = new QueryParams();
+        result.put("region", region);
+        result.put("dbname", database);
+        result.put("compute_name", engine);
+        result.put("open_mode", mode != null ? mode : "OPEN");
         if (source != null)
             result.put("source_dbname", source);
         return result;

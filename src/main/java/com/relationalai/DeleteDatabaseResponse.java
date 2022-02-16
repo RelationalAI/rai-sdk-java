@@ -16,4 +16,12 @@
 
 package com.relationalai;
 
-public class DeleteDatabaseResponse {}
+import com.jsoniter.annotation.JsonProperty;
+
+public class DeleteDatabaseResponse {
+    @JsonProperty(value = "name", required = true)
+    public String name;
+
+    @JsonProperty(value = "message", required = true)
+    public String message;
+}

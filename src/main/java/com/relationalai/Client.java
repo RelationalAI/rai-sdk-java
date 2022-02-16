@@ -171,7 +171,7 @@ public class Client {
     }
 
     // Ensure the given path is a URL, prefixing with scheme://host:port if
-    // needed, encode at append the given query params.
+    // needed then encode and append the given query params.
     String makeUrl(String path, QueryParams params) throws UnsupportedEncodingException {
         path = makeUrl(path);
         if (params == null)
@@ -332,25 +332,36 @@ public class Client {
     public CreateDatabaseResponse createDatabase(
             String database, String engine, String source, boolean overwrite)
             throws HttpError, InterruptedException, IOException {
-        return null; // todo
+        var mode = createMode(source, overwrite);
+        var tx = new Transaction(this.region, database, engine, mode, false, source);
+        var rsp = post(PATH_TRANSACTION, tx.queryParams(), tx.payload());
+        return deserialize(rsp, CreateDatabaseResponse.class);
     }
 
     public DeleteDatabaseResponse deleteDatabase(String database)
             throws HttpError, InterruptedException, IOException {
-        return null; // todo
+        var req = new DeleteDatabaseRequest(database);
+        var rsp = delete(PATH_DATABASE, null, serialize(req));
+        return deserialize(rsp, DeleteDatabaseResponse.class);
     }
 
-    public GetDatabaseResponse getDatabase(String database)
+    public Database getDatabase(String database)
             throws HttpError, InterruptedException, IOException {
-        return null; // todo
+        var params = new QueryParams();
+        params.put("name", database);
+        var rsp = get(PATH_DATABASE, params);
+        var data = deserialize(rsp, GetDatabaseResponse.class).database;
+        if (data.length == 0)
+            throw new HttpError(404);
+        return data[0];
     }
 
-    public ListDatabasesResponse listDatabases()
+    public Database[] listDatabases()
             throws HttpError, InterruptedException, IOException {
         return listDatabases(null);
     }
 
-    public ListDatabasesResponse listDatabases(String state)
+    public Database[] listDatabases(String state)
             throws HttpError, InterruptedException, IOException {
         QueryParams params = null;
         if (state != null) {
@@ -358,11 +369,7 @@ public class Client {
             params.put("state", state);
         }
         String rsp = get(PATH_DATABASE, params);
-        return deserialize(rsp, ListDatabasesResponse.class);
-    }
-
-    public UpdateDatabaseResponse updateDatabase(String database, UpdateDatabaseRequest req) {
-        return null; // todo
+        return deserialize(rsp, ListDatabasesResponse.class).databases;
     }
 
     // Engines
@@ -541,10 +548,31 @@ public class Client {
     public void run() throws HttpError, InterruptedException, IOException {
         var cfg = Config.loadConfig("~/.rai/config");
         var client = new Client(cfg);
-        // var rsp = client.listDatabases("CREATED");
-        // var rsp = client.execute("bradlo-test", "bradlo-test", "1 + 2 + 3");
-        // var rsp = client.listEngines();
-        var rsp = client.getEngine("bradlo-test");
+
+        Object rsp;
+
+        rsp = client.execute("bradlo-test", "bradlo-test", "1 + 2 + 3");
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.listEngines();
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.getEngine("bradlo-test");
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.deleteDatabase("bradlo-test");
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.createDatabase("bradlo-test", "bradlo-test");
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.listDatabases();
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.listDatabases("CREATED");
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.getDatabase("bradlo-test");
         System.out.println(serialize(rsp, 4));
     }
 
