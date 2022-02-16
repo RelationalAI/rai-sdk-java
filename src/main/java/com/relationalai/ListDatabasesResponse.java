@@ -1,25 +1,26 @@
+/*
+ * Copyright 2022 RelationalAI, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.relationalai;
 
 import java.util.List;
-
-import org.json.JSONObject;
+import com.jsoniter.annotation.JsonProperty;
 
 public class ListDatabasesResponse extends Model {
+    @JsonProperty(value = "databases", required = true)
     public List<Database> Databases;
-
-    public ListDatabasesResponse() {
-    }
-
-    public ListDatabasesResponse(JSONObject obj) {
-        init(obj);
-    }
-
-    public void init(JSONObject obj) {
-        Databases = asModelList(obj, "databases", Database.class);
-    }
-
-    public static ListDatabasesResponse fromJson(String s) {
-        var obj = new JSONObject(s);
-        return new ListDatabasesResponse(obj);
-    }
 }
+

@@ -1,5 +1,7 @@
 {
     "java.configuration.updateBuildConfiguration": "automatic",
+    "java.format.settings.profile": "RelationalAIStyle",
+    "java.format.settings.url": ".vscode/eclipse-java-rai-style.xml",
     "java.jdt.ls.java.home": "/Library/Java/JavaVirtualMachines/jdk-11.0.12.jdk/Contents/Home",
     "java.saveActions.organizeImports": true,
 }

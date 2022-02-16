@@ -1,57 +1,36 @@
+/*
+ * Copyright 2022 RelationalAI, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.relationalai;
 
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
+import java.io.ByteArrayOutputStream;
+import com.jsoniter.output.JsonStream;
 
 public abstract class Model {
-    public abstract void init(JSONObject data);
-
-    public static List<String> asStringList(JSONArray array) {
-        List<String> result = new ArrayList<String>();
-        for (Object obj : array)
-            result.add((String) obj);
-        return result;
+    public String toString() {
+        var output = new ByteArrayOutputStream();
+        JsonStream.setIndentionStep(0);
+        JsonStream.serialize(this, output);
+        return output.toString();
     }
 
-    public static List<String> asStringList(JSONObject obj, String key) {
-        return asStringList(obj.getJSONArray(key));
-    }
-
-    public static List<Integer> asIntList(JSONArray array) {
-        List<Integer> result = new ArrayList<Integer>();
-        for (Object obj : array)
-            result.add((Integer) obj);
-        return result;
-    }
-
-    public static List<Integer> asIntList(JSONObject obj, String key) {
-        return asIntList(obj.getJSONArray(key));
-    }
-
-    public static <T extends Model> List<T> asModelList(JSONArray array, Class<T> cls) {
-        Constructor<T> ctor = null;
-        try {
-            ctor = cls.getDeclaredConstructor(JSONObject.class);
-        } catch (Exception e) {
-            assert false;
-        }
-        List<T> result = new ArrayList<T>();
-        try {
-            for (Object obj : array) {
-                T item = ctor.newInstance((JSONObject) obj);
-                result.add(item);
-            }
-        } catch (Exception e) {
-            assert false;
-        }
-        return result;
-    }
-
-    public static <T extends Model> List<T> asModelList(JSONObject obj, String key, Class<T> cls) {
-        return asModelList(obj.getJSONArray(key), cls);
+    public String toString(int indent) {
+        var output = new ByteArrayOutputStream();
+        JsonStream.setIndentionStep(indent);
+        JsonStream.serialize(this, output);
+        return output.toString();
     }
 }

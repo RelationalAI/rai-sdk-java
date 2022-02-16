@@ -1,15 +1,17 @@
 /*
  * Copyright 2022 RelationalAI, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.relationalai;
@@ -25,10 +27,7 @@ import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.jsoniter.JsonIterator;
 
 public class Client {
     public static final String DEFAULT_REGION = "us-east";
@@ -44,8 +43,7 @@ public class Client {
 
     HttpClient httpClient;
 
-    public Client() {
-    }
+    public Client() {}
 
     public Client(String region, String scheme, String host, String port, Credentials credentials) {
         this.region = region;
@@ -104,11 +102,13 @@ public class Client {
         builder.uri(URI.create(credentials.clientCredentialsUrl));
         addHeaders(builder, defaultHeaders);
         HttpRequest request = builder.build();
-        HttpResponse<String> response = httpClient().send(request, HttpResponse.BodyHandlers.ofString());
-        int statusCode = response.statusCode();
+        HttpResponse<String> response =
+                httpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        var data = response.body();
+        var statusCode = response.statusCode();
         if (statusCode >= 400 && statusCode < 500)
-            throw new HttpError(statusCode, response.body());
-        return AccessToken.fromJson(response.body());
+            throw new HttpError(statusCode, data);
+        return JsonIterator.deserialize(data, AccessToken.class);
     }
 
     // todo: add callback func
@@ -169,19 +169,14 @@ public class Client {
 
     // Ensure the given path is a URL, prefixing with scheme://host:port if
     // needed, encode at append the given query params.
-    String makeUrl(String path, Map<String, String> params) throws UnsupportedEncodingException {
+    String makeUrl(String path, QueryParams params) throws UnsupportedEncodingException {
         path = makeUrl(path);
         if (params == null)
             return path;
-        StringBuilder query = new StringBuilder();
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            if (query.length() > 0)
-                query.append('&');
-            query.append(encodeParam(entry.getKey()));
-            query.append('=');
-            query.append(encodeParam(entry.getValue()));
-        }
-        return path + "?" + query.toString();
+        var query = params.encode();
+        if (query.length() == 0)
+            return path;
+        return path + "?" + query;
     }
 
     // Returns the default User-Agent string.
@@ -190,7 +185,7 @@ public class Client {
     }
 
     // Returns an HttpRequest.Builder constructed from the given args.
-    HttpRequest.Builder newRequestBuilder(String method, String path, Map<String, String> params)
+    HttpRequest.Builder newRequestBuilder(String method, String path, QueryParams params)
             throws UnsupportedEncodingException {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
         builder.uri(URI.create(makeUrl(path, params)));
@@ -199,7 +194,8 @@ public class Client {
     }
 
     // Returns an HttpRequest.Builder constructed from the given args.
-    HttpRequest.Builder newRequestBuilder(String method, String path, Map<String, String> params, String body)
+    HttpRequest.Builder newRequestBuilder(
+            String method, String path, QueryParams params, String body)
             throws UnsupportedEncodingException {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
         builder.uri(URI.create(makeUrl(path, params)));
@@ -237,7 +233,8 @@ public class Client {
         authenticate(builder, this.credentials);
         HttpRequest request = builder.build();
         // printRequest(request);
-        HttpResponse<String> response = httpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response =
+                httpClient().send(request, HttpResponse.BodyHandlers.ofString());
         int statusCode = response.statusCode();
         if (statusCode >= 400 && statusCode < 500)
             throw new HttpError(statusCode, response.body());
@@ -254,37 +251,37 @@ public class Client {
         // todo: figure out how to get the body from a request (non-trivial)
     }
 
-    public String request(String method, String path, Map<String, String> params)
+    public String request(String method, String path, QueryParams params)
             throws HttpError, InterruptedException, IOException {
         return sendRequest(newRequestBuilder(method, path, params));
     }
 
-    public String request(String method, String path, Map<String, String> params, String body)
+    public String request(String method, String path, QueryParams params, String body)
             throws HttpError, InterruptedException, IOException {
         return sendRequest(newRequestBuilder(method, path, params, body));
     }
 
-    public String delete(String path, Map<String, String> params, String body)
+    public String delete(String path, QueryParams params, String body)
             throws HttpError, InterruptedException, IOException {
         return request("DELETE", path, params, body);
     }
 
-    public String get(String path, Map<String, String> params)
+    public String get(String path, QueryParams params)
             throws HttpError, InterruptedException, IOException {
         return request("GET", path, params);
     }
 
-    public String patch(String path, Map<String, String> params, String body)
+    public String patch(String path, QueryParams params, String body)
             throws HttpError, InterruptedException, IOException {
         return request("PATCH", path, params, body);
     }
 
-    public String post(String path, Map<String, String> params, String body)
+    public String post(String path, QueryParams params, String body)
             throws HttpError, InterruptedException, IOException {
         return request("POST", path, params, body);
     }
 
-    public String put(String path, Map<String, String> params, String body)
+    public String put(String path, QueryParams params, String body)
             throws HttpError, InterruptedException, IOException {
         return request("PUT", path, params, body);
     }
@@ -301,72 +298,188 @@ public class Client {
 
     // Databases
 
-    // todo: filters
+    public CreateDatabaseResponse createDatabase(String database, String engine) {
+        return createDatabase(database, engine, null, false);
+    }
+
+    public CreateDatabaseResponse createDatabase(
+            String database, String engine, String source, Boolean overwrite) {
+        return null; // todo
+    }
+
+    public DeleteDatabaseResponse deleteDatabase(String database) {
+        return null; // todo
+    }
+
+    public GetDatabaseResponse getDatabase(String database) {
+        return null; // todo
+    }
+
     public ListDatabasesResponse listDatabases()
             throws HttpError, InterruptedException, IOException {
-        String rsp = get(PATH_DATABASE, null);
-        return ListDatabasesResponse.fromJson(rsp);
+        return listDatabases(null);
+    }
+
+    public ListDatabasesResponse listDatabases(String state)
+            throws HttpError, InterruptedException, IOException {
+        QueryParams params = null;
+        if (state != null) {
+            params = new QueryParams();
+            params.put("state", state);
+        }
+        String rsp = get(PATH_DATABASE, params);
+        return JsonIterator.deserialize(rsp, ListDatabasesResponse.class);
+    }
+
+    public UpdateDatabaseResponse updateDatabase(String database, UpdateDatabaseRequest req) {
+        return null; // todo
     }
 
     // Engines
 
-    // Models
+    public CreateEngineResponse createEngine(String engine) {
+        return createEngine(engine, "XS");
+    }
+
+    public CreateEngineResponse createEngine(String engine, String size) {
+        return null; // todo
+    }
+
+    public DeleteEngineResponse deleteEngine(String engine) {
+        return null; // todo
+    }
+
+    public GetEngineResponse getEngine(String engine) {
+        return null; // todo
+    }
+
+    public ListEnginesResponse listEngines() {
+        return listEngines(null);
+    }
+
+    public ListEnginesResponse listEngines(String state) {
+        return null; // todo
+    }
 
     // OAuth clients
 
-    // Transactions
+    public CreateOAuthClientResponse createOAuthClient(String name, String[] permissions) {
+        return null; // todo
+    }
 
-    public List<Edb> listEdbs(String database, String engine) {
+    public DeleteOAuthClientResponse deleteOAuthClient(String id) {
+        return null; // todo
+    }
+
+    public GetOAuthClientResponse getOAuthClient(String id) {
+        return null; // todo
+    }
+
+    public ListOAuthClientsResponse listOAuthClients() {
+        return null; // todo
+    }
+
+    // Users
+
+    public CreateUserResponse createUser(String email, String[] roles) {
+        return null; // todo
+    }
+
+    public DisableUserResponse disableUser(String id) {
+        return null; // todo
+    }
+
+    public EnableUserResponse enableUser(String id) {
+        return null; // todo
+    }
+
+    public GetUserResponse getUser(String id) {
+        return null; // todo
+    }
+
+    public ListUsersResponse listUsers() {
         return null;
     }
 
-    public JSONObject exec(String database, String engine, String source) {
+    public UpdateUserResponse UpdateUser(String id, UpdateUserRequest req) {
+        return null;
+    }
+
+    // Transactions
+
+    String createMode(String source, Boolean overwrite) {
+        if (source != null)
+            return overwrite ? "CLONE_OVERWRITE" : "CLONE";
+        else
+            return overwrite ? "CREATE_OVERWRITE" : "CREATE";
+    }
+
+    public TransactionResult exec(String database, String engine, String source)
+            throws HttpError, InterruptedException, IOException {
         return exec(database, engine, source, false, null);
     }
 
-    public JSONObject exec(String database, String engine, String source, Boolean readonly) {
+    public TransactionResult exec(String database, String engine, String source, Boolean readonly)
+            throws HttpError, InterruptedException, IOException {
         return exec(database, engine, source, readonly, null);
     }
 
-    public JSONObject exec(String datbabase, String engine, String source, Boolean readonly,
-            Map<String, String> inputs) {
-        return null;
+    public TransactionResult exec(
+            String database, String engine,
+            String source, Boolean readonly,
+            Map<String, String> inputs)
+            throws HttpError, InterruptedException, IOException {
+        var tx = new Transaction(region, database, engine, "OPEN", readonly);
+        var queryAction = DbAction.makeQueryAction(source, inputs);
+        var data = tx.payload(queryAction);
+        var rsp = post(PATH_TRANSACTION, tx.queryParams(), data);
+        return JsonIterator.deserialize(rsp, TransactionResult.class);
     }
 
-    void execTest() {
-        JSONObject rsp = exec("bradlo-test", "bradlo-test", "def output = 1, 2, 3; 4, 5, 6");
-        try {
-            System.out.println(rsp.toString(4));
-        } catch (JSONException e) {
-            System.out.println(e.toString());
-        }
+    // EDBs
+
+    public List<Edb> listEdbs(String database, String engine) {
+        return null; // todo
+    }
+
+    // Models
+
+    public DeleteModelsResponse deleteModel(String database, String engine, String[] models) {
+        return null; // todo
+    }
+
+    public GetModelResponse getModel(String database, String engine, String model) {
+        return null; // todo
+    }
+
+    public InstallModelsResponse installModels(
+            String database, String engine, Map<String, String> models) {
+        return null; // todo
+    }
+
+    public ListModelsResponse listModels(String database, String engine) {
+        return null; // todo
+    }
+
+    // Data loading
+
+    public TransactionResult loadCSV(
+            String database, String engine, String relation, String data, Object options) {
+        return null; // todo
+    }
+
+    public TransactionResult loadJSON(String database, String relation, String data) {
+        return null; // todo
     }
 
     // *** temporary ***
 
-    void testModels() {
-        JSONArray array;
-
-        array = new JSONArray("[\"foo\",\"bar\",\"biz\",\"baz\"]");
-        List<String> resultString = Model.asStringList(array);
-        System.out.println(resultString);
-
-        array = new JSONArray("[1, 2, 3, 4]");
-        List<Integer> resultInt = Model.asIntList(array);
-        System.out.println(resultInt);
-
-        array = new JSONArray("[{\"name\":\"foo\"},{\"name\":\"bar\"}]");
-        List<Edb> resultEdb = Model.asModelList(array, Edb.class);
-        System.out.println(resultEdb);
-    }
-
     public void run() throws HttpError, InterruptedException, IOException {
         var cfg = Config.loadConfig("~/.rai/config");
         var client = new Client(cfg);
-        var rsp = client.listDatabases();
-        for (var database : rsp.Databases) {
-            System.out.printf("%s (%s)\n", database.Name, database.AccountName);
-        }
+        // var rsp = client.listDatabases("CREATED");
+        var rsp = client.exec("bradlo-test", "bradlo-test", "1 + 2 + 3");
+        System.out.println(rsp.toString(4));
     }
 
     public static void main(String[] args) {

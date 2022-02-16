@@ -16,5 +16,4 @@
 
 package com.relationalai;
 
-public interface Credentials {};
-
+public class UpdateDatabaseResponse {}
