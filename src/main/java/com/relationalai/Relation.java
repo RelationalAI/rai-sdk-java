@@ -16,22 +16,14 @@
 
 package com.relationalai;
 
-import java.time.Instant;
 import com.jsoniter.annotation.JsonProperty;
 
-public class AccessToken extends Model {
-    @JsonProperty(value = "access_token", required = true)
-    public String token;
+public class Relation {
+    @JsonProperty(value = "rel_key", required = true)
+    public RelKey relKey;
 
-    @JsonProperty(value = "scope", required = true)
-    public String scope;
+    @JsonProperty(value = "columns", required = true)
+    public Object[][] columns;
 
-    @JsonProperty(value = "expires_in", required = true)
-    public int expiresIn; // total lifetime in seconds
-
-    public long expiresOn; // expiration instant in epoch millis
-
-    public boolean isExpired() {
-        return Instant.now().toEpochMilli() > expiresOn;
-    }
+    public Relation() {}
 }

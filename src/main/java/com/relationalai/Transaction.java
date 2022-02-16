@@ -29,9 +29,9 @@ class Transaction {
     String engine;
     String mode;
     String source;
-    Boolean abort;
-    Boolean readonly;
-    Boolean noWaitDurable;
+    boolean abort;
+    boolean readonly;
+    boolean noWaitDurable;
     int version;
 
     Transaction(String region, String database, String engine, String mode) {
@@ -41,7 +41,7 @@ class Transaction {
         this.mode = mode;
     }
 
-    Transaction(String region, String database, String engine, String mode, Boolean readonly) {
+    Transaction(String region, String database, String engine, String mode, boolean readonly) {
         this.region = region;
         this.database = database;
         this.engine = engine;
@@ -51,25 +51,22 @@ class Transaction {
 
     // Construct the transaction payload and return serialized JSON string.
     String payload(DbAction... actions) {
-        var data = new HashMap<String, Object>() {
-            {
-                put("type", "Transaction");
-                put("mode", mode != null ? mode : "OPEN");
-                put("dbname", database);
-                put("abort", abort);
-                put("nowait_durable", noWaitDurable);
-                put("readonly", readonly);
-                put("version", version);
-                put("actions", DbAction.makeActions(actions));
-            }
-        };
+        var data = new HashMap<String, Object>();
+        data.put("type", "Transaction");
+        data.put("mode", mode != null ? mode : "OPEN");
+        data.put("dbname", database);
+        data.put("abort", abort);
+        data.put("nowait_durable", noWaitDurable);
+        data.put("readonly", readonly);
+        data.put("version", version);
+        data.put("actions", DbAction.makeActions(actions));
         if (engine != null)
             data.put("computeName", engine);
         if (source != null)
             data.put("source_dbname", source);
         var output = new ByteArrayOutputStream();
         JsonStream.setIndentionStep(0);
-        JsonStream.serialize(this, output);
+        JsonStream.serialize(data, output);
         return output.toString();
     }
 

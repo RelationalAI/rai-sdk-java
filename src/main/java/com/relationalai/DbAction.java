@@ -82,11 +82,12 @@ class DbAction extends HashMap<String, Object> {
                 actionInputs.add(actionInput);
             }
         }
-        String[] outputs = {};
+        String[] empty = {};
         var result = new DbAction("QueryAction");
         result.put("source", makeQuerySource("query", source));
-        result.put("inputs", inputs);
-        result.put("outputs", outputs); // todo: try omitting or passing null
+        result.put("inputs", actionInputs);
+        result.put("outputs", empty);
+        result.put("persist", empty);
         return result;
     }
 

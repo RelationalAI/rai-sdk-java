@@ -123,7 +123,7 @@ public class Client {
         return accessToken;
     }
 
-    static Boolean containsInsensitive(Map<String, String> headers, String key) {
+    static boolean containsInsensitive(Map<String, String> headers, String key) {
         key = key.toLowerCase();
         for (String k : headers.keySet()) {
             if (k.toLowerCase() == key)
@@ -303,7 +303,7 @@ public class Client {
     }
 
     public CreateDatabaseResponse createDatabase(
-            String database, String engine, String source, Boolean overwrite) {
+            String database, String engine, String source, boolean overwrite) {
         return null; // todo
     }
 
@@ -407,26 +407,27 @@ public class Client {
 
     // Transactions
 
-    String createMode(String source, Boolean overwrite) {
+    String createMode(String source, boolean overwrite) {
         if (source != null)
             return overwrite ? "CLONE_OVERWRITE" : "CLONE";
         else
             return overwrite ? "CREATE_OVERWRITE" : "CREATE";
     }
 
-    public TransactionResult exec(String database, String engine, String source)
+    public TransactionResult execute(String database, String engine, String source)
             throws HttpError, InterruptedException, IOException {
-        return exec(database, engine, source, false, null);
+        return execute(database, engine, source, false, null);
     }
 
-    public TransactionResult exec(String database, String engine, String source, Boolean readonly)
+    public TransactionResult execute(
+            String database, String engine, String source, boolean readonly)
             throws HttpError, InterruptedException, IOException {
-        return exec(database, engine, source, readonly, null);
+        return execute(database, engine, source, readonly, null);
     }
 
-    public TransactionResult exec(
+    public TransactionResult execute(
             String database, String engine,
-            String source, Boolean readonly,
+            String source, boolean readonly,
             Map<String, String> inputs)
             throws HttpError, InterruptedException, IOException {
         var tx = new Transaction(region, database, engine, "OPEN", readonly);
@@ -478,7 +479,7 @@ public class Client {
         var cfg = Config.loadConfig("~/.rai/config");
         var client = new Client(cfg);
         // var rsp = client.listDatabases("CREATED");
-        var rsp = client.exec("bradlo-test", "bradlo-test", "1 + 2 + 3");
+        var rsp = client.execute("bradlo-test", "bradlo-test", "1 + 2 + 3");
         System.out.println(rsp.toString(4));
     }
 
