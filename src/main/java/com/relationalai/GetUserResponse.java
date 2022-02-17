@@ -16,4 +16,11 @@
 
 package com.relationalai;
 
-public class GetUserResponse {}
+import com.jsoniter.annotation.JsonProperty;
+
+public class GetUserResponse {
+    @JsonProperty(value = "user", required = true)
+    public User user;
+
+    public GetUserResponse() {}
+}

@@ -31,8 +31,7 @@ public class Config {
     public String port;
     public Credentials credentials = null;
 
-    Config() {
-    }
+    Config() {}
 
     private static Credentials getCredentials(Properties data) {
         String clientId = data.getProperty("client_id", null);

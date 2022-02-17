@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -35,12 +36,12 @@ public class Client {
     public static final String DEFAULT_REGION = "us-east";
     public static final String DEFAULT_SCHEME = "https";
     public static final String DEFAULT_HOST = "azure.relationalai.com";
-    public static final String DEFAULT_PORT = "443";
+    public static final int DEFAULT_PORT = 443;
 
     public String region = DEFAULT_REGION;
     public String scheme = DEFAULT_SCHEME;
     public String host = DEFAULT_HOST;
-    public String port = DEFAULT_PORT;
+    public int port = DEFAULT_PORT;
     public Credentials credentials;
 
     HttpClient httpClient;
@@ -56,7 +57,7 @@ public class Client {
 
     public Client() {}
 
-    public Client(String region, String scheme, String host, String port, Credentials credentials) {
+    public Client(String region, String scheme, String host, int port, Credentials credentials) {
         this.region = region;
         this.scheme = scheme;
         this.host = host;
@@ -72,7 +73,7 @@ public class Client {
         if (cfg.host != null)
             this.host = cfg.host;
         if (cfg.port != null)
-            this.port = cfg.port;
+            this.port = Integer.parseInt(cfg.port);
         this.credentials = cfg.credentials;
     }
 
@@ -157,29 +158,29 @@ public class Client {
     }
 
     // Encode an element of a query parameter.
-    static String encodeParam(String value) throws UnsupportedEncodingException {
-        return URLEncoder.encode(value, "UTF-8");
+    static String encodeValue(String value) {
+        try {
+            return URLEncoder.encode(value, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e.toString());
+        }
     }
 
     // Ensure the given path is a URL, prefixing with scheme://host:port if
     // needed.
-    String makeUrl(String path) {
-        if (path.startsWith("/")) {
-            path = String.format("%s://%s:%s%s", scheme, host, port, path);
-        }
-        return path;
+    URI makeUri(String path) {
+        return makeUri(path, null);
     }
 
     // Ensure the given path is a URL, prefixing with scheme://host:port if
     // needed then encode and append the given query params.
-    String makeUrl(String path, QueryParams params) throws UnsupportedEncodingException {
-        path = makeUrl(path);
-        if (params == null)
-            return path;
-        var query = params.encode();
-        if (query.length() == 0)
-            return path;
-        return path + "?" + query;
+    URI makeUri(String path, QueryParams params) {
+        var query = params != null ? params.encode() : null;
+        try {
+            return new URI(this.scheme, null, this.host, this.port, path, query, null);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e.toString());
+        }
     }
 
     // Returns the default User-Agent string.
@@ -188,20 +189,18 @@ public class Client {
     }
 
     // Returns an HttpRequest.Builder constructed from the given args.
-    HttpRequest.Builder newRequestBuilder(String method, String path, QueryParams params)
-            throws UnsupportedEncodingException {
+    HttpRequest.Builder newRequestBuilder(String method, String path, QueryParams params) {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
-        builder.uri(URI.create(makeUrl(path, params)));
+        builder.uri(makeUri(path, params));
         builder.method(method, BodyPublishers.noBody());
         return builder;
     }
 
     // Returns an HttpRequest.Builder constructed from the given args.
     HttpRequest.Builder newRequestBuilder(
-            String method, String path, QueryParams params, String body)
-            throws UnsupportedEncodingException {
+            String method, String path, QueryParams params, String body) {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
-        builder.uri(URI.create(makeUrl(path, params)));
+        builder.uri(makeUri(path, params));
         builder.method(method, body == null
                 ? HttpRequest.BodyPublishers.noBody()
                 : HttpRequest.BodyPublishers.ofString(body));
@@ -484,34 +483,76 @@ public class Client {
 
     // Users
 
-    public CreateUserResponse createUser(String email, String[] roles)
+    public User createUser(String email)
             throws HttpError, InterruptedException, IOException {
-        return null; // todo
+        return createUser(email, null);
     }
 
-    public DisableUserResponse disableUser(String id)
+    public User createUser(String email, String[] roles)
             throws HttpError, InterruptedException, IOException {
-        return null; // todo
+        var req = new CreateUserRequest(email, roles);
+        var rsp = post(PATH_USERS, null, serialize(req));
+        return deserialize(rsp, CreateUserResponse.class).user;
     }
 
-    public EnableUserResponse enableUser(String id)
+    public Object deleteUser(String id)
             throws HttpError, InterruptedException, IOException {
-        return null; // todo
+        var rsp = delete(makePath(PATH_USERS, id));
+        return deserialize(rsp, DeleteUserResponse.class);
     }
 
-    public GetUserResponse getUser(String id)
+    public User disableUser(String id)
             throws HttpError, InterruptedException, IOException {
-        return null; // todo
+        return updateUser(id, "INACTIVE");
     }
 
-    public ListUsersResponse listUsers()
+    public User enableUser(String id)
             throws HttpError, InterruptedException, IOException {
+        return updateUser(id, "ACTIVE");
+    }
+
+    // Returns the User with the given email.
+    public User findUser(String email)
+            throws HttpError, InterruptedException, IOException {
+        var users = listUsers();
+        for (var user : users) {
+            if (user.email.equals(email))
+                return user;
+        }
         return null;
     }
 
-    public UpdateUserResponse updateUser(String id, UpdateUserRequest req)
+    public User getUser(String id)
             throws HttpError, InterruptedException, IOException {
-        return null;
+        var rsp = get(makePath(PATH_USERS, id));
+        return deserialize(rsp, GetUserResponse.class).user;
+    }
+
+    public User[] listUsers()
+            throws HttpError, InterruptedException, IOException {
+        var rsp = get(PATH_USERS);
+        return deserialize(rsp, ListUsersResponse.class).users;
+    }
+
+    public User updateUser(String id, String status)
+            throws HttpError, InterruptedException, IOException {
+        return updateUser(id, new UpdateUserRequest(status));
+    }
+
+    public User updateUser(String id, String[] roles)
+            throws HttpError, InterruptedException, IOException {
+        return updateUser(id, new UpdateUserRequest(roles));
+    }
+
+    public User updateUser(String id, String status, String[] roles)
+            throws HttpError, InterruptedException, IOException {
+        return updateUser(id, new UpdateUserRequest(status, roles));
+    }
+
+    public User updateUser(String id, UpdateUserRequest req)
+            throws HttpError, InterruptedException, IOException {
+        var rsp = patch(makePath(PATH_USERS, id), null, serialize(req));
+        return deserialize(rsp, UpdateUserResponse.class).user;
     }
 
     // Transactions
@@ -584,7 +625,6 @@ public class Client {
 
     // *** temporary ***
 
-    // Mini integration tests
     void test() throws HttpError, InterruptedException, IOException {
         var cfg = Config.loadConfig("~/.rai/config");
         var client = new Client(cfg);
@@ -632,9 +672,8 @@ public class Client {
         System.out.println(serialize(rsp, 4));
 
         var oauthClient = client.findOAuthClient("sdk-test");
-        if (oauthClient != null) {
+        if (oauthClient != null)
             client.deleteOAuthClient(oauthClient.id);
-        }
 
         String[] permissions = null;
         rsp = client.createOAuthClient("sdk-test", permissions);
@@ -656,9 +695,57 @@ public class Client {
 
     }
 
+    void testUsers() throws HttpError, InterruptedException, IOException {
+        var cfg = Config.loadConfig("~/.rai/config");
+        var client = new Client(cfg);
+
+        Object rsp;
+
+        rsp = client.listUsers();
+        System.out.println(serialize(rsp, 4));
+
+        // cleanup if necessarry
+        var user = client.findUser("sdk-test@relational.ai");
+        if (user != null)
+            client.deleteUser(user.id);
+
+        rsp = client.createUser("sdk-test@relational.ai");
+        System.out.println(serialize(rsp, 4));
+
+        user = client.findUser("sdk-test@relational.ai");
+        assert user != null;
+
+        rsp = client.getUser(user.id);
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.disableUser(user.id);
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.enableUser(user.id);
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.updateUser(user.id, "INACTIVE");
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.updateUser(user.id, "ACTIVE");
+        System.out.println(serialize(rsp, 4));
+
+        String[] rolesAdmin = {"admin", "user"};
+        rsp = client.updateUser(user.id, rolesAdmin);
+        System.out.println(serialize(rsp, 4));
+
+        String[] rolesUser = {"user"};
+        rsp = client.updateUser(user.id, "INACTIVE", rolesUser);
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.deleteUser(user.id);
+        System.out.println(serialize(rsp, 4));
+    }
+
     public void run() throws HttpError, InterruptedException, IOException {
-        test();
-        testOAuthClients();
+        // test();
+        // testOAuthClients();
+        testUsers();
     };
 
     public static void main(String[] args) {

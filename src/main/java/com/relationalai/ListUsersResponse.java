@@ -16,4 +16,11 @@
 
 package com.relationalai;
 
-public class ListUsersResponse {}
+import com.jsoniter.annotation.JsonProperty;
+
+public class ListUsersResponse {
+    @JsonProperty(value = "users", required = true)
+    public User[] users;
+
+    public ListUsersResponse() {}
+}

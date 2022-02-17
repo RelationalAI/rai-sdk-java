@@ -24,7 +24,7 @@ import java.util.HashMap;
 // String[], int, Boolean or null.
 public class QueryParams extends HashMap<String, Object> {
     // Returns a query string encoded in the format the RAI REST API expects.
-    public String encode() throws UnsupportedEncodingException {
+    public String encode() {
         StringBuilder result = new StringBuilder();
         for (var entry : this.entrySet()) {
             var k = entry.getKey();
@@ -35,8 +35,7 @@ public class QueryParams extends HashMap<String, Object> {
     }
 
     // Encode the given k, v pair, and append to the given builder.
-    private static void append(StringBuilder builder, String k, Object v)
-            throws UnsupportedEncodingException {
+    private static void append(StringBuilder builder, String k, Object v) {
         if (v instanceof String[]) {
             for (var vv : (String[]) v)
                 append(builder, k, vv);
@@ -54,14 +53,17 @@ public class QueryParams extends HashMap<String, Object> {
         }
         if (builder.length() > 0)
             builder.append('&');
-        builder.append(encodeParam(k));
+        builder.append(encodeValue(k));
         builder.append('=');
-        builder.append(encodeParam(value));
+        builder.append(encodeValue(value));
     }
 
     // Encode an element of a query parameter.
-    private static String encodeParam(String value)
-            throws UnsupportedEncodingException {
-        return URLEncoder.encode(value, "UTF-8");
+    private static String encodeValue(String value) {
+        try {
+            return URLEncoder.encode(value, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e.toString());
+        }
     }
 }

@@ -18,9 +18,24 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-class UpdateUserResponse {
-    @JsonProperty(value = "user", required = true)
-    User user;
+public class User {
+    @JsonProperty(value = "id", required = true)
+    public String id;
 
-    UpdateUserResponse() {}
+    @JsonProperty(value = "account_name", required = true)
+    public String accountName;
+
+    @JsonProperty(value = "email", required = true)
+    public String email;
+
+    @JsonProperty(value = "roles", required = true)
+    public String[] roles;
+
+    @JsonProperty(value = "status", required = true)
+    public String status;
+
+    @JsonProperty(value = "id_providers", required = true)
+    public String[] idProviers;
+
+    public User() {}
 }

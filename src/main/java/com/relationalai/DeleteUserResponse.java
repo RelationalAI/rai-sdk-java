@@ -18,9 +18,12 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-class UpdateUserResponse {
-    @JsonProperty(value = "user", required = true)
-    User user;
+public class DeleteUserResponse {
+    @JsonProperty(value = "user_id", required = true)
+    public String id;
 
-    UpdateUserResponse() {}
+    @JsonProperty(value = "message", required = true)
+    public String message;
+
+    public DeleteUserResponse() {}
 }

@@ -16,4 +16,27 @@
 
 package com.relationalai;
 
-class UpdateUserRequest {}
+import com.jsoniter.annotation.JsonProperty;
+
+public class UpdateUserRequest extends Model {
+    @JsonProperty(value = "status", required = false, defaultValueToOmit = "null")
+    public String status;
+
+    @JsonProperty(value = "roles", required = false, defaultValueToOmit = "null")
+    public String[] roles;
+
+    public UpdateUserRequest() {}
+
+    public UpdateUserRequest(String status) {
+        this.status = status;
+    }
+
+    public UpdateUserRequest(String[] roles) {
+        this.roles = roles;
+    }
+
+    public UpdateUserRequest(String status, String[] roles) {
+        this.status = status;
+        this.roles = roles;
+    }
+}
