@@ -344,10 +344,25 @@ public class Client {
 
     public CreateDatabaseResponse createDatabase(String database, String engine)
             throws HttpError, InterruptedException, IOException {
-        return createDatabase(database, engine, null, false);
+        return createDatabase(database, engine, false);
     }
 
     public CreateDatabaseResponse createDatabase(
+            String database, String engine, boolean overwrite)
+            throws HttpError, InterruptedException, IOException {
+        var mode = createMode(null, overwrite);
+        var tx = new Transaction(this.region, database, engine, mode, false);
+        var rsp = post(PATH_TRANSACTION, tx.queryParams(), tx.payload());
+        return deserialize(rsp, CreateDatabaseResponse.class);
+    }
+
+    public CreateDatabaseResponse cloneDatabase(
+            String database, String engine, String source)
+            throws HttpError, InterruptedException, IOException {
+        return cloneDatabase(database, engine, source, false);
+    }
+
+    public CreateDatabaseResponse cloneDatabase(
             String database, String engine, String source, boolean overwrite)
             throws HttpError, InterruptedException, IOException {
         var mode = createMode(source, overwrite);
@@ -581,17 +596,24 @@ public class Client {
             Map<String, String> inputs)
             throws HttpError, InterruptedException, IOException {
         var tx = new Transaction(region, database, engine, "OPEN", readonly);
-        var queryAction = DbAction.makeQueryAction(source, inputs);
-        var data = tx.payload(queryAction);
+        var action = DbAction.makeQueryAction(source, inputs);
+        var data = tx.payload(action);
         var rsp = post(PATH_TRANSACTION, tx.queryParams(), data);
-        return JsonIterator.deserialize(rsp, TransactionResult.class);
+        return deserialize(rsp, TransactionResult.class);
     }
 
     // EDBs
 
-    public List<Edb> listEdbs(String database, String engine)
+    public Edb[] listEdbs(String database, String engine)
             throws HttpError, InterruptedException, IOException {
-        return null; // todo
+        var tx = new Transaction(this.region, database, engine, "OPEN", true);
+        var action = DbAction.makeListEdbAction();
+        var data = tx.payload(action);
+        var rsp = post(PATH_TRANSACTION, tx.queryParams(), data);
+        var actions = deserialize(rsp, ListEdbsResponse.class).actions;
+        if (actions.length == 0)
+            return new Edb[] {};
+        return actions[0].result.rels;
     }
 
     // Models
@@ -616,16 +638,18 @@ public class Client {
         return deserialize(rsp, TransactionResult.class);
     }
 
-    public Model getModel(String database, String engine, String model)
+    // Return the named model.
+    public Model getModel(String database, String engine, String name)
             throws HttpError, InterruptedException, IOException {
         var models = listModels(database, engine);
         for (var item : models) {
-            if (item.name.equals(model))
+            if (item.name.equals(name))
                 return item;
         }
         throw new HttpError(404);
     }
 
+    // Install a model in the given database.
     public TransactionResult installModel(
             String database, String engine, String name, String model)
             throws HttpError, InterruptedException, IOException {
@@ -636,6 +660,7 @@ public class Client {
         return deserialize(rsp, TransactionResult.class);
     }
 
+    // Install multiple models in the given database.
     public TransactionResult installModels(
             String database, String engine, Map<String, String> models)
             throws HttpError, InterruptedException, IOException {
@@ -646,6 +671,7 @@ public class Client {
         return deserialize(rsp, TransactionResult.class);
     }
 
+    // Returns the list of names of models installed in the given database.
     public String[] listModelNames(String database, String engine)
             throws HttpError, InterruptedException, IOException {
         var models = listModels(database, engine);
@@ -655,6 +681,8 @@ public class Client {
         return result;
     }
 
+    // Returns the list of models (including source) installed in the given 
+    // database. 
     public Model[] listModels(String database, String engine)
             throws HttpError, InterruptedException, IOException {
         var tx = new Transaction(this.region, database, engine, "OPEN", true);
@@ -680,10 +708,10 @@ public class Client {
     // *** temporary ***
 
     static void test() throws HttpError, InterruptedException, IOException {
+        Object rsp;
+
         var cfg = Config.loadConfig("~/.rai/config");
         var client = new Client(cfg);
-
-        Object rsp;
 
         // transaction
 
@@ -716,11 +744,39 @@ public class Client {
         System.out.println(serialize(rsp, 4));
     }
 
-    static void testOAuthClients() throws HttpError, InterruptedException, IOException {
+    static void testDatabase() throws HttpError, InterruptedException, IOException {
+        Object rsp;
+
         var cfg = Config.loadConfig("~/.rai/config");
         var client = new Client(cfg);
 
+        rsp = client.createDatabase("bradlo-test", "bradlo-test", true);
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.listDatabases();
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.listDatabases("CREATED");
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.getDatabase("bradlo-test");
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.listModelNames("bradlo-test", "bradlo-test");
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.listModels("bradlo-test", "bradlo-test");
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.listEdbs("bradlo-test", "bradlo-test");
+        System.out.println(serialize(rsp, 4));
+    }
+
+    static void testOAuthClients() throws HttpError, InterruptedException, IOException {
         Object rsp;
+
+        var cfg = Config.loadConfig("~/.rai/config");
+        var client = new Client(cfg);
 
         rsp = client.listOAuthClients();
         System.out.println(serialize(rsp, 4));
@@ -750,10 +806,10 @@ public class Client {
     }
 
     static void testUsers() throws HttpError, InterruptedException, IOException {
+        Object rsp;
+
         var cfg = Config.loadConfig("~/.rai/config");
         var client = new Client(cfg);
-
-        Object rsp;
 
         rsp = client.listUsers();
         System.out.println(serialize(rsp, 4));
@@ -797,10 +853,10 @@ public class Client {
     }
 
     static void testModels() throws HttpError, InterruptedException, IOException {
+        Object rsp;
+
         var cfg = Config.loadConfig("~/.rai/config");
         var client = new Client(cfg);
-
-        Object rsp;
 
         // todo: test installModels
         // todo: test deleteModels
@@ -827,10 +883,19 @@ public class Client {
     }
 
     static void run() throws HttpError, InterruptedException, IOException {
-        test();
-        testOAuthClients();
-        testUsers();
-        testModels();
+        Object rsp;
+
+        var cfg = Config.loadConfig("~/.rai/config");
+        var client = new Client(cfg);
+
+        // test();
+        // testOAuthClients();
+        // testUsers();
+        // testModels();
+        testDatabase();
+
+        rsp = client.listEdbs("bradlo-test", "bradlo-test");
+        System.out.println(serialize(rsp, 4));
     };
 
     public static void main(String[] args) {

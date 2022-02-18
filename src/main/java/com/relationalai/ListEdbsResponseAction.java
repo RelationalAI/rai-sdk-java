@@ -18,9 +18,9 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-class ListEdbsResponse extends Entity {
-    @JsonProperty(value = "actions", required = true)
-    ListEdbsResponseAction[] actions;
+class ListEdbsResponseAction extends Entity {
+    @JsonProperty(value = "result", required = true)
+    ListEdbsResponseResult result;
 
-    public ListEdbsResponse() {}
+    ListEdbsResponseAction() {}
 }
