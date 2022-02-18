@@ -319,12 +319,12 @@ public class Client {
         return JsonIterator.deserialize(s, cls);
     }
 
-    static String serialize(Model model) {
-        return model.toString();
+    static String serialize(Entity entity) {
+        return entity.toString();
     }
 
-    static String serialize(Model model, int indent) {
-        return model.toString(indent);
+    static String serialize(Entity entity, int indent) {
+        return entity.toString(indent);
     }
 
     static String serialize(Object obj) {
@@ -589,27 +589,81 @@ public class Client {
 
     // EDBs
 
-    public List<Edb> listEdbs(String database, String engine) {
+    public List<Edb> listEdbs(String database, String engine)
+            throws HttpError, InterruptedException, IOException {
         return null; // todo
     }
 
     // Models
 
-    public DeleteModelsResponse deleteModel(String database, String engine, String[] models) {
-        return null; // todo
+    // Delete the named model.
+    public TransactionResult deleteModel(String database, String engine, String name)
+            throws HttpError, InterruptedException, IOException {
+        var tx = new Transaction(this.region, database, engine, "OPEN");
+        var action = DbAction.makeDeleteModelAction(name);
+        var data = tx.payload(action);
+        var rsp = post(PATH_TRANSACTION, tx.queryParams(), data);
+        return deserialize(rsp, TransactionResult.class);
     }
 
-    public GetModelResponse getModel(String database, String engine, String model) {
-        return null; // todo
+    // Delete the list of named models.
+    public TransactionResult deleteModel(String database, String engine, String[] names)
+            throws HttpError, InterruptedException, IOException {
+        var tx = new Transaction(this.region, database, engine, "OPEN");
+        var actions = DbAction.makeDeleteModelsAction(names);
+        var data = tx.payload(actions);
+        var rsp = post(PATH_TRANSACTION, tx.queryParams(), data);
+        return deserialize(rsp, TransactionResult.class);
     }
 
-    public InstallModelsResponse installModels(
-            String database, String engine, Map<String, String> models) {
-        return null; // todo
+    public Model getModel(String database, String engine, String model)
+            throws HttpError, InterruptedException, IOException {
+        var models = listModels(database, engine);
+        for (var item : models) {
+            if (item.name.equals(model))
+                return item;
+        }
+        throw new HttpError(404);
     }
 
-    public ListModelsResponse listModels(String database, String engine) {
-        return null; // todo
+    public TransactionResult installModel(
+            String database, String engine, String name, String model)
+            throws HttpError, InterruptedException, IOException {
+        var tx = new Transaction(this.region, database, engine, "OPEN", false);
+        var action = DbAction.makeInstallAction(name, model);
+        var data = tx.payload(action);
+        var rsp = post(PATH_TRANSACTION, tx.queryParams(), data);
+        return deserialize(rsp, TransactionResult.class);
+    }
+
+    public TransactionResult installModels(
+            String database, String engine, Map<String, String> models)
+            throws HttpError, InterruptedException, IOException {
+        var tx = new Transaction(this.region, database, engine, "OPEN", false);
+        var actions = DbAction.makeInstallAction(models);
+        var data = tx.payload(actions);
+        var rsp = post(PATH_TRANSACTION, tx.queryParams(), data);
+        return deserialize(rsp, TransactionResult.class);
+    }
+
+    public String[] listModelNames(String database, String engine)
+            throws HttpError, InterruptedException, IOException {
+        var models = listModels(database, engine);
+        String[] result = new String[models.length];
+        for (var i = 0; i < models.length; ++i)
+            result[i] = models[i].name;
+        return result;
+    }
+
+    public Model[] listModels(String database, String engine)
+            throws HttpError, InterruptedException, IOException {
+        var tx = new Transaction(this.region, database, engine, "OPEN", true);
+        var data = tx.payload(DbAction.makeListModelsAction());
+        var rsp = post(PATH_TRANSACTION, tx.queryParams(), data);
+        var actions = deserialize(rsp, ListModelsResponse.class).actions;
+        if (actions.length == 0)
+            return new Model[] {};
+        return actions[0].result.models;
     }
 
     // Data loading
@@ -625,7 +679,7 @@ public class Client {
 
     // *** temporary ***
 
-    void test() throws HttpError, InterruptedException, IOException {
+    static void test() throws HttpError, InterruptedException, IOException {
         var cfg = Config.loadConfig("~/.rai/config");
         var client = new Client(cfg);
 
@@ -662,7 +716,7 @@ public class Client {
         System.out.println(serialize(rsp, 4));
     }
 
-    void testOAuthClients() throws HttpError, InterruptedException, IOException {
+    static void testOAuthClients() throws HttpError, InterruptedException, IOException {
         var cfg = Config.loadConfig("~/.rai/config");
         var client = new Client(cfg);
 
@@ -695,7 +749,7 @@ public class Client {
 
     }
 
-    void testUsers() throws HttpError, InterruptedException, IOException {
+    static void testUsers() throws HttpError, InterruptedException, IOException {
         var cfg = Config.loadConfig("~/.rai/config");
         var client = new Client(cfg);
 
@@ -742,16 +796,46 @@ public class Client {
         System.out.println(serialize(rsp, 4));
     }
 
-    public void run() throws HttpError, InterruptedException, IOException {
-        // test();
-        // testOAuthClients();
+    static void testModels() throws HttpError, InterruptedException, IOException {
+        var cfg = Config.loadConfig("~/.rai/config");
+        var client = new Client(cfg);
+
+        Object rsp;
+
+        // todo: test installModels
+        // todo: test deleteModels
+
+        rsp = client.listModels("bradlo-test", "bradlo-test");
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.listModelNames("bradlo-test", "bradlo-test");
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.installModel(
+                "bradlo-test", "bradlo-test",
+                "hello", "def R = \"hello\",\"world!\"");
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.getModel("bradlo-test", "bradlo-test", "hello");
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.deleteModel("bradlo-test", "bradlo-test", "hello");
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.listModelNames("bradlo-test", "bradlo-test");
+        System.out.println(serialize(rsp, 4));
+    }
+
+    static void run() throws HttpError, InterruptedException, IOException {
+        test();
+        testOAuthClients();
         testUsers();
+        testModels();
     };
 
     public static void main(String[] args) {
-        Client client = new Client();
         try {
-            client.run();
+            run();
         } catch (Exception e) {
             System.out.println(e);
         }

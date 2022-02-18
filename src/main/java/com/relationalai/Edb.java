@@ -19,7 +19,7 @@ package com.relationalai;
 import java.util.List;
 import com.jsoniter.annotation.JsonProperty;
 
-public class Edb extends Model {
+public class Edb extends Entity {
     @JsonProperty(value = "name", required = true)
     public String name;
 

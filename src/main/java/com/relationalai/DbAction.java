@@ -42,15 +42,35 @@ class DbAction extends HashMap<String, Object> {
         return result;
     }
 
-    static DbAction makeDeleteModelsAction(String[] models) {
+    static DbAction makeDeleteModelAction(String name) {
+        return makeDeleteModelsAction(new String[] {name});
+    }
+
+    static DbAction makeDeleteModelsAction(String[] names) {
         var result = new DbAction("ModifyWorkspaceAction");
-        result.put("delete_source", models);
+        result.put("delete_source", names);
         return result;
     }
 
-    static DbAction makeInstallModelAction(String name, String model) {
+    // Return a DbAction for installing the single named model. 
+    static DbAction makeInstallAction(String name, String model) {
         var result = new DbAction("InstallAction");
-        result.put("sources", makeQuerySource(name, model));
+        result.put("sources", new DbAction[] {makeQuerySource(name, model)});
+        return result;
+    }
+
+    // Return a DbAction for isntalling the set of name => model pairs.
+    static DbAction makeInstallAction(Map<String, String> models) {
+        int i = 0;
+        var size = models.size();
+        var sources = new DbAction[size];
+        for (var entry : models.entrySet()) {
+            var name = entry.getKey();
+            var model = entry.getValue();
+            sources[i++] = makeQuerySource(name, model);
+        }
+        var result = new DbAction("InstallAction");
+        result.put("sources", sources);
         return result;
     }
 

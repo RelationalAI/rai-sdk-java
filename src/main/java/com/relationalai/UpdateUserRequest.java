@@ -18,7 +18,7 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-public class UpdateUserRequest extends Model {
+public class UpdateUserRequest extends Entity {
     @JsonProperty(value = "status", required = false, defaultValueToOmit = "null")
     public String status;
 

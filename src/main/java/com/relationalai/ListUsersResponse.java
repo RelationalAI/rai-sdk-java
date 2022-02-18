@@ -18,7 +18,7 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-public class ListUsersResponse {
+public class ListUsersResponse extends Entity {
     @JsonProperty(value = "users", required = true)
     public User[] users;
 

@@ -19,7 +19,7 @@ package com.relationalai;
 import java.time.Instant;
 import com.jsoniter.annotation.JsonProperty;
 
-public class AccessToken extends Model {
+public class AccessToken extends Entity {
     @JsonProperty(value = "access_token", required = true)
     public String token;
 

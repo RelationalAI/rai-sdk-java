@@ -18,7 +18,7 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-class CreateUserRequest {
+class CreateUserRequest extends Entity {
     @JsonProperty(value = "email", required = true)
     String email;
 

@@ -16,4 +16,20 @@
 
 package com.relationalai;
 
-public class DisableUserResponse {}
+import java.io.ByteArrayOutputStream;
+import com.jsoniter.output.JsonStream;
+
+// The base class for RelationalAI system entities, all of which can be
+// serialized as JSON objects.
+public abstract class Entity {
+    public String toString() {
+        return toString(0);
+    }
+
+    public String toString(int indent) {
+        var output = new ByteArrayOutputStream();
+        JsonStream.setIndentionStep(indent);
+        JsonStream.serialize(this, output);
+        return output.toString();
+    }
+}

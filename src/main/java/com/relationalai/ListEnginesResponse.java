@@ -18,7 +18,7 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-public class ListEnginesResponse {
+public class ListEnginesResponse extends Entity {
     @JsonProperty(value = "computes", required = true)
     public Engine[] engines;
 }

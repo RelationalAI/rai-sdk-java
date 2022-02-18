@@ -18,7 +18,7 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-public class Relation {
+public class Relation extends Entity {
     @JsonProperty(value = "rel_key", required = true)
     public RelKey relKey;
 

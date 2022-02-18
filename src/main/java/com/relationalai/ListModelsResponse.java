@@ -16,4 +16,11 @@
 
 package com.relationalai;
 
-public class ListModelsResponse {}
+import com.jsoniter.annotation.JsonProperty;
+
+class ListModelsResponse extends Entity {
+    @JsonProperty(value = "actions", required = true)
+    ListModelsResponseAction[] actions;
+
+    ListModelsResponse() {}
+}

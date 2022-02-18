@@ -16,4 +16,11 @@
 
 package com.relationalai;
 
-public class InstallModelsResponse {}
+import com.jsoniter.annotation.JsonProperty;
+
+class ListModelsResponseResult {
+    @JsonProperty(value = "sources", required = true)
+    Model[] models;
+
+    ListModelsResponseResult() {}
+}

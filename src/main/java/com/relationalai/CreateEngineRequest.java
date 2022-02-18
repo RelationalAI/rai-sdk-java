@@ -18,7 +18,7 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-class CreateEngineRequest extends Model {
+class CreateEngineRequest extends Entity {
     @JsonProperty(value = "region", required = true)
     String region;
 

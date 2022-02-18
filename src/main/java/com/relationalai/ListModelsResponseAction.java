@@ -16,4 +16,12 @@
 
 package com.relationalai;
 
-public class EnableUserResponse {}
+import com.jsoniter.annotation.JsonProperty;
+
+class ListModelsResponseAction {
+    @JsonProperty(value = "result", required = true)
+    ListModelsResponseResult result;
+
+    ListModelsResponseAction() {}
+}
+

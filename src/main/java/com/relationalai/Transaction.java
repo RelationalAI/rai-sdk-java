@@ -23,7 +23,7 @@ import com.jsoniter.output.JsonStream;
 // Represents the state required to dispatch a transacation. This is an 
 // internal helper object used to for the construction of transaction payloads
 // and query params.
-class Transaction {
+class Transaction extends Entity {
     String region;
     String database;
     String engine;

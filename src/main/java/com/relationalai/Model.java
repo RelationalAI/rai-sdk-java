@@ -16,18 +16,19 @@
 
 package com.relationalai;
 
-import java.io.ByteArrayOutputStream;
-import com.jsoniter.output.JsonStream;
+import com.jsoniter.annotation.JsonProperty;
 
-public abstract class Model {
-    public String toString() {
-        return toString(0);
-    }
+class Model {
+    @JsonProperty(value = "name", required = true)
+    String name;
 
-    public String toString(int indent) {
-        var output = new ByteArrayOutputStream();
-        JsonStream.setIndentionStep(indent);
-        JsonStream.serialize(this, output);
-        return output.toString();
+    @JsonProperty(value = "value", required = true)
+    String value;
+
+    public Model() {}
+
+    public Model(String name, String value) {
+        this.name = name;
+        this.value = value;
     }
 }

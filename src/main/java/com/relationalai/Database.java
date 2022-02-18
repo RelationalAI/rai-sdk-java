@@ -18,7 +18,7 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-public class Database extends Model {
+public class Database extends Entity {
     @JsonProperty(value = "id", required = true)
     public String Id;
 

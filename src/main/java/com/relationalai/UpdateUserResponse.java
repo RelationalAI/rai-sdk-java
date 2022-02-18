@@ -18,7 +18,7 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-class UpdateUserResponse {
+class UpdateUserResponse extends Entity {
     @JsonProperty(value = "user", required = true)
     User user;
 

@@ -18,7 +18,7 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-public class DeleteOAuthClientResponse {
+public class DeleteOAuthClientResponse extends Entity {
     @JsonProperty(value = "client_id", required = true)
     public String id;
 

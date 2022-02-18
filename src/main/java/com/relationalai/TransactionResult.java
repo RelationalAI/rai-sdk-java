@@ -18,7 +18,7 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-public class TransactionResult extends Model {
+public class TransactionResult extends Entity {
     @JsonProperty(value = "aborted", required = true)
     public boolean aborted;
 

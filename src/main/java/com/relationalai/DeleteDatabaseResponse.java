@@ -18,7 +18,7 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-public class DeleteDatabaseResponse {
+public class DeleteDatabaseResponse extends Entity {
     @JsonProperty(value = "name", required = true)
     public String name;
 
