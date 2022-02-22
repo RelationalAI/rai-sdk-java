@@ -53,6 +53,10 @@ public class Config {
         this.credentials = getCredentials(data);
     }
 
+    public static Config loadConfig() throws IOException {
+        return loadConfig("~/.rai/config");
+    }
+
     public static Config loadConfig(InputStream input) throws IOException {
         return loadConfig(input, "default");
     }

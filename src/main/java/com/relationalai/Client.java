@@ -17,7 +17,9 @@
 package com.relationalai;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -383,10 +385,10 @@ public class Client {
         var params = new QueryParams();
         params.put("name", database);
         var rsp = get(PATH_DATABASE, params);
-        var data = deserialize(rsp, GetDatabaseResponse.class).database;
-        if (data.length == 0)
+        var databases = deserialize(rsp, GetDatabaseResponse.class).databases;
+        if (databases.length == 0)
             throw new HttpError(404);
-        return data[0];
+        return databases[0];
     }
 
     public Database[] listDatabases()
@@ -432,10 +434,10 @@ public class Client {
         params.put("name", engine);
         params.put("deleted_on", "");
         var rsp = get(PATH_ENGINE, params);
-        var data = deserialize(rsp, GetEngineResponse.class).engines;
-        if (data.length == 0)
+        var engines = deserialize(rsp, GetEngineResponse.class).engines;
+        if (engines.length == 0)
             throw new HttpError(404);
-        return data[0];
+        return engines[0];
     }
 
     public Engine[] listEngines()
@@ -597,8 +599,8 @@ public class Client {
             throws HttpError, InterruptedException, IOException {
         var tx = new Transaction(region, database, engine, "OPEN", readonly);
         var action = DbAction.makeQueryAction(source, inputs);
-        var data = tx.payload(action);
-        var rsp = post(PATH_TRANSACTION, tx.queryParams(), data);
+        var body = tx.payload(action);
+        var rsp = post(PATH_TRANSACTION, tx.queryParams(), body);
         return deserialize(rsp, TransactionResult.class);
     }
 
@@ -608,8 +610,8 @@ public class Client {
             throws HttpError, InterruptedException, IOException {
         var tx = new Transaction(this.region, database, engine, "OPEN", true);
         var action = DbAction.makeListEdbAction();
-        var data = tx.payload(action);
-        var rsp = post(PATH_TRANSACTION, tx.queryParams(), data);
+        var body = tx.payload(action);
+        var rsp = post(PATH_TRANSACTION, tx.queryParams(), body);
         var actions = deserialize(rsp, ListEdbsResponse.class).actions;
         if (actions.length == 0)
             return new Edb[] {};
@@ -623,8 +625,8 @@ public class Client {
             throws HttpError, InterruptedException, IOException {
         var tx = new Transaction(this.region, database, engine, "OPEN");
         var action = DbAction.makeDeleteModelAction(name);
-        var data = tx.payload(action);
-        var rsp = post(PATH_TRANSACTION, tx.queryParams(), data);
+        var body = tx.payload(action);
+        var rsp = post(PATH_TRANSACTION, tx.queryParams(), body);
         return deserialize(rsp, TransactionResult.class);
     }
 
@@ -633,8 +635,8 @@ public class Client {
             throws HttpError, InterruptedException, IOException {
         var tx = new Transaction(this.region, database, engine, "OPEN");
         var actions = DbAction.makeDeleteModelsAction(names);
-        var data = tx.payload(actions);
-        var rsp = post(PATH_TRANSACTION, tx.queryParams(), data);
+        var body = tx.payload(actions);
+        var rsp = post(PATH_TRANSACTION, tx.queryParams(), body);
         return deserialize(rsp, TransactionResult.class);
     }
 
@@ -686,8 +688,8 @@ public class Client {
     public Model[] listModels(String database, String engine)
             throws HttpError, InterruptedException, IOException {
         var tx = new Transaction(this.region, database, engine, "OPEN", true);
-        var data = tx.payload(DbAction.makeListModelsAction());
-        var rsp = post(PATH_TRANSACTION, tx.queryParams(), data);
+        var body = tx.payload(DbAction.makeListModelsAction());
+        var rsp = post(PATH_TRANSACTION, tx.queryParams(), body);
         var actions = deserialize(rsp, ListModelsResponse.class).actions;
         if (actions.length == 0)
             return new Model[] {};
@@ -696,16 +698,136 @@ public class Client {
 
     // Data loading
 
-    public TransactionResult loadCSV(
-            String database, String engine, String relation, String data, Object options) {
-        return null; // todo
+    static void genSchemaConfig(StringBuilder builder, CsvOptions options) {
+        if (options == null)
+            return;
+        var schema = options.schema;
+        if (schema == null || schema.isEmpty())
+            return;
+        var count = 0;
+        builder.append("def config:schema =");
+        for (var entry : schema.entrySet()) {
+            if (count > 0)
+                builder.append(';');
+            var k = entry.getKey();
+            var v = entry.getValue();
+            builder.append(String.format("\n    :%s, \"%s\"", k, v));
+            count++;
+        }
+        builder.append('\n');
     }
 
-    public TransactionResult loadJSON(String database, String relation, String data) {
-        return null; // todo
+    // Returns a Rel literal for the given value.
+    static String genLiteral(int value) {
+        return Integer.toString(value);
     }
 
-    // *** temporary ***
+    // Returns a Rel literal for the given value.
+    static String genLiteral(char value) {
+        if (value == '\'')
+            return "'\\''";
+        return String.format("'%c'", value);
+    }
+
+    // Returns a Rel literal for the given value.
+    static String genLiteral(Object value) {
+        assert value != null;
+        if (value instanceof Integer)
+            return genLiteral((int) value);
+        if (value instanceof Character)
+            return genLiteral((char) value);
+        assert false;
+        return null;
+    }
+
+    // Returns a Rel syntax config def for the given option name and value.
+    static void genSyntaxOption(StringBuilder builder, String name, Object value) {
+        if (value == null)
+            return;
+        var lit = genLiteral(value);
+        var def = String.format("def config:syntax:%s = %s\n", name, lit);
+        builder.append(def);
+    }
+
+    // Generate Rel config defs for the given CSV options.
+    static void genSyntaxConfig(StringBuilder builder, CsvOptions options) {
+        if (options == null)
+            return;
+        genSyntaxOption(builder, "header_row", options.headerRow);
+        genSyntaxOption(builder, "delim", options.delim);
+        genSyntaxOption(builder, "escapechar", options.escapeChar);
+        genSyntaxOption(builder, "quotechar", options.quoteChar);
+    }
+
+    // Generate Rel to load CSV data into a relation with the given options.
+    static String genLoadCsv(String relation, CsvOptions options) {
+        var builder = new StringBuilder();
+        genSchemaConfig(builder, options);
+        genSyntaxConfig(builder, options);
+        builder.append("def config:data = data\n");
+        builder.append(String.format("def insert:%s = load_csv[config]", relation));
+        return builder.toString();
+    }
+
+    public TransactionResult loadCsv(
+            String database, String engine, String relation, InputStream data)
+            throws HttpError, InterruptedException, IOException {
+        var s = new String(data.readAllBytes());
+        return loadCsv(database, engine, relation, s, null);
+    }
+
+    public TransactionResult loadCsv(
+            String database, String engine, String relation, String data)
+            throws HttpError, InterruptedException, IOException {
+        return loadCsv(database, engine, relation, data, null);
+    }
+
+    public TransactionResult loadCsv(
+            String database, String engine, String relation,
+            InputStream data, CsvOptions options)
+            throws HttpError, InterruptedException, IOException {
+        var s = new String(data.readAllBytes());
+        return loadCsv(database, engine, relation, s, options);
+    }
+
+    public TransactionResult loadCsv(
+            String database, String engine, String relation,
+            String data, CsvOptions options)
+            throws HttpError, InterruptedException, IOException {
+        var source = genLoadCsv(relation, options);
+        var inputs = new HashMap<String, String>();
+        inputs.put("data", data);
+        return execute(database, engine, source, false, inputs);
+    }
+
+    // Generate the Rel to load JSON data into a relation.
+    static String genLoadJson(String relation) {
+        var builder = new StringBuilder();
+        builder.append("def config:data = data\n");
+        builder.append(String.format("def insert:%s = load_json[config]", relation));
+        return builder.toString();
+    }
+
+    public TransactionResult loadJson(
+            String database, String engine, String relation, InputStream data)
+            throws HttpError, InterruptedException, IOException {
+        var s = new String(data.readAllBytes());
+        return loadJson(database, engine, relation, s);
+    }
+
+    public TransactionResult loadJson(
+            String database, String engine, String relation, String data)
+            throws HttpError, InterruptedException, IOException {
+        var inputs = new HashMap<String, String>();
+        inputs.put("data", data);
+        var source = genLoadJson(relation);
+        return execute(database, engine, source, false, inputs);
+    }
+
+    // *** integration tests ***
+
+    static String db = "sdk-test";
+    static String eng = "sdk-test-xs";
 
     static void test() throws HttpError, InterruptedException, IOException {
         Object rsp;
@@ -715,7 +837,7 @@ public class Client {
 
         // transaction
 
-        rsp = client.execute("bradlo-test", "bradlo-test", "1 + 2 + 3");
+        rsp = client.execute(db, eng, "1 + 2 + 3");
         System.out.println(serialize(rsp, 4));
 
         // engines
@@ -723,15 +845,15 @@ public class Client {
         rsp = client.listEngines();
         System.out.println(serialize(rsp, 4));
 
-        rsp = client.getEngine("bradlo-test");
+        rsp = client.getEngine(eng);
         System.out.println(serialize(rsp, 4));
 
         // databases
 
-        rsp = client.deleteDatabase("bradlo-test");
+        rsp = client.deleteDatabase(eng);
         System.out.println(serialize(rsp, 4));
 
-        rsp = client.createDatabase("bradlo-test", "bradlo-test");
+        rsp = client.createDatabase(db, eng);
         System.out.println(serialize(rsp, 4));
 
         rsp = client.listDatabases();
@@ -740,7 +862,7 @@ public class Client {
         rsp = client.listDatabases("CREATED");
         System.out.println(serialize(rsp, 4));
 
-        rsp = client.getDatabase("bradlo-test");
+        rsp = client.getDatabase(db);
         System.out.println(serialize(rsp, 4));
     }
 
@@ -750,7 +872,7 @@ public class Client {
         var cfg = Config.loadConfig("~/.rai/config");
         var client = new Client(cfg);
 
-        rsp = client.createDatabase("bradlo-test", "bradlo-test", true);
+        rsp = client.createDatabase(db, eng, true);
         System.out.println(serialize(rsp, 4));
 
         rsp = client.listDatabases();
@@ -759,16 +881,106 @@ public class Client {
         rsp = client.listDatabases("CREATED");
         System.out.println(serialize(rsp, 4));
 
-        rsp = client.getDatabase("bradlo-test");
+        rsp = client.getDatabase(db);
         System.out.println(serialize(rsp, 4));
 
-        rsp = client.listModelNames("bradlo-test", "bradlo-test");
+        rsp = client.listModelNames(db, eng);
         System.out.println(serialize(rsp, 4));
 
-        rsp = client.listModels("bradlo-test", "bradlo-test");
+        rsp = client.listModels(db, eng);
         System.out.println(serialize(rsp, 4));
 
-        rsp = client.listEdbs("bradlo-test", "bradlo-test");
+        rsp = client.listEdbs(db, eng);
+        System.out.println(serialize(rsp, 4));
+    }
+
+    static void testLoadCsv() throws HttpError, InterruptedException, IOException {
+        Object rsp;
+        InputStream input;
+        CsvOptions options;
+
+        var cfg = Config.loadConfig("~/.rai/config");
+        var client = new Client(cfg);
+
+        input = new FileInputStream("sample.csv");
+        rsp = client.loadCsv(db, eng, "sample_csv", input);
+        System.out.println(serialize(rsp, 4));
+        rsp = client.execute(db, eng, "sample_csv", true);
+        System.out.println(serialize(rsp, 4));
+
+        var schema = new HashMap<String, String>();
+        schema.put("cocktail", "string");
+        schema.put("quantity", "int");
+        schema.put("price", "decimal(64, 2)");
+        schema.put("date", "date");
+
+        options = (new CsvOptions()).withSchema(schema);
+        input = new FileInputStream("sample.csv");
+        rsp = client.loadCsv(db, eng, "sample_with_schema_csv", input, options);
+        System.out.println(serialize(rsp, 4));
+        rsp = client.execute(db, eng, "sample_with_schema_csv", true);
+        System.out.println(serialize(rsp, 4));
+
+        options = (new CsvOptions()).withHeaderRow(0);
+        input = new FileInputStream("sample_no_header.csv");
+        rsp = client.loadCsv(db, eng, "sample_no_header_csv", input, options);
+        System.out.println(serialize(rsp, 4));
+        rsp = client.execute(db, eng, "sample_no_header_csv", true);
+        System.out.println(serialize(rsp, 4));
+
+        options = (new CsvOptions()).withDelim('|').withQuoteChar('\'');
+        input = new FileInputStream("sample_alt_syntax.csv");
+        rsp = client.loadCsv(db, eng, "sample_alt_syntax_csv", input, options);
+        System.out.println(serialize(rsp, 4));
+        rsp = client.execute(db, eng, "sample_alt_syntax_csv", true);
+        System.out.println(serialize(rsp, 4));
+
+        options = (new CsvOptions()).withDelim('|').withQuoteChar('\'').withSchema(schema);
+        input = new FileInputStream("sample_alt_syntax.csv");
+        rsp = client.loadCsv(db, eng, "sample_alt_syntax_with_schema_csv", input, options);
+        System.out.println(serialize(rsp, 4));
+        rsp = client.execute(db, eng, "sample_alt_syntax_with_schema_csv", true);
+        System.out.println(serialize(rsp, 4));
+    }
+
+    static void testLoadJson() throws HttpError, InterruptedException, IOException {
+        Object rsp;
+        InputStream input;
+
+        var cfg = Config.loadConfig("~/.rai/config");
+        var client = new Client(cfg);
+
+        input = new FileInputStream("sample.json");
+        rsp = client.loadJson(db, eng, "sample_json", input);
+        System.out.println(serialize(rsp, 4));
+        rsp = client.execute(db, eng, "sample_json", true);
+        System.out.println(serialize(rsp, 4));
+    }
+
+    static void testModels() throws HttpError, InterruptedException, IOException {
+        Object rsp;
+
+        var cfg = Config.loadConfig("~/.rai/config");
+        var client = new Client(cfg);
+
+        // todo: test installModels
+        // todo: test deleteModels
+
+        rsp = client.listModels(db, eng);
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.listModelNames(db, eng);
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.installModel(db, eng, "hello", "def R = \"hello\",\"world!\"");
+        System.out.println(serialize(rsp, 4));
+        rsp = client.getModel(db, eng, "hello");
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.deleteModel(db, eng, "hello");
+        System.out.println(serialize(rsp, 4));
+
+        rsp = client.listModelNames(db, eng);
         System.out.println(serialize(rsp, 4));
     }
 
@@ -852,50 +1064,18 @@ public class Client {
         System.out.println(serialize(rsp, 4));
     }
 
-    static void testModels() throws HttpError, InterruptedException, IOException {
-        Object rsp;
-
-        var cfg = Config.loadConfig("~/.rai/config");
-        var client = new Client(cfg);
-
-        // todo: test installModels
-        // todo: test deleteModels
-
-        rsp = client.listModels("bradlo-test", "bradlo-test");
-        System.out.println(serialize(rsp, 4));
-
-        rsp = client.listModelNames("bradlo-test", "bradlo-test");
-        System.out.println(serialize(rsp, 4));
-
-        rsp = client.installModel(
-                "bradlo-test", "bradlo-test",
-                "hello", "def R = \"hello\",\"world!\"");
-        System.out.println(serialize(rsp, 4));
-
-        rsp = client.getModel("bradlo-test", "bradlo-test", "hello");
-        System.out.println(serialize(rsp, 4));
-
-        rsp = client.deleteModel("bradlo-test", "bradlo-test", "hello");
-        System.out.println(serialize(rsp, 4));
-
-        rsp = client.listModelNames("bradlo-test", "bradlo-test");
-        System.out.println(serialize(rsp, 4));
-    }
-
     static void run() throws HttpError, InterruptedException, IOException {
-        Object rsp;
-
-        var cfg = Config.loadConfig("~/.rai/config");
-        var client = new Client(cfg);
+        // Object rsp;
+        // var cfg = Config.loadConfig("~/.rai/config");
+        // var client = new Client(cfg);
 
         // test();
+        // testDatabase();
+        testLoadCsv();
+        testLoadJson();
+        // testModels();
         // testOAuthClients();
         // testUsers();
-        // testModels();
-        testDatabase();
-
-        rsp = client.listEdbs("bradlo-test", "bradlo-test");
-        System.out.println(serialize(rsp, 4));
     };
 
     public static void main(String[] args) {
