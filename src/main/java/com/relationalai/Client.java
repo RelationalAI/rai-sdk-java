@@ -16,7 +16,6 @@
 
 package com.relationalai;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,8 +30,6 @@ import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.jsoniter.JsonIterator;
-import com.jsoniter.output.JsonStream;
 
 public class Client {
     public static final String DEFAULT_REGION = "us-east";
@@ -122,7 +119,7 @@ public class Client {
         var statusCode = response.statusCode();
         if (statusCode >= 400 && statusCode < 500)
             throw new HttpError(statusCode, data);
-        return deserialize(data, AccessToken.class);
+        return Json.deserialize(data, AccessToken.class);
     }
 
     // todo: add callback func
@@ -317,29 +314,6 @@ public class Client {
         return String.join("/", parts);
     }
 
-    static <T> T deserialize(String s, Class<T> cls) {
-        return JsonIterator.deserialize(s, cls);
-    }
-
-    static String serialize(Entity entity) {
-        return entity.toString();
-    }
-
-    static String serialize(Entity entity, int indent) {
-        return entity.toString(indent);
-    }
-
-    static String serialize(Object obj) {
-        return serialize(obj, 0);
-    }
-
-    static String serialize(Object obj, int indent) {
-        var output = new ByteArrayOutputStream();
-        JsonStream.setIndentionStep(indent);
-        JsonStream.serialize(obj, output);
-        return output.toString();
-    }
-
     //
     // Databases
     //
@@ -355,7 +329,7 @@ public class Client {
         var mode = createMode(null, overwrite);
         var tx = new Transaction(this.region, database, engine, mode, false);
         var rsp = post(PATH_TRANSACTION, tx.queryParams(), tx.payload());
-        return deserialize(rsp, CreateDatabaseResponse.class);
+        return Json.deserialize(rsp, CreateDatabaseResponse.class);
     }
 
     public CreateDatabaseResponse cloneDatabase(
@@ -370,14 +344,14 @@ public class Client {
         var mode = createMode(source, overwrite);
         var tx = new Transaction(this.region, database, engine, mode, false, source);
         var rsp = post(PATH_TRANSACTION, tx.queryParams(), tx.payload());
-        return deserialize(rsp, CreateDatabaseResponse.class);
+        return Json.deserialize(rsp, CreateDatabaseResponse.class);
     }
 
     public DeleteDatabaseResponse deleteDatabase(String database)
             throws HttpError, InterruptedException, IOException {
         var req = new DeleteDatabaseRequest(database);
-        var rsp = delete(PATH_DATABASE, null, serialize(req));
-        return deserialize(rsp, DeleteDatabaseResponse.class);
+        var rsp = delete(PATH_DATABASE, null, Json.serialize(req));
+        return Json.deserialize(rsp, DeleteDatabaseResponse.class);
     }
 
     public Database getDatabase(String database)
@@ -385,7 +359,7 @@ public class Client {
         var params = new QueryParams();
         params.put("name", database);
         var rsp = get(PATH_DATABASE, params);
-        var databases = deserialize(rsp, GetDatabaseResponse.class).databases;
+        var databases = Json.deserialize(rsp, GetDatabaseResponse.class).databases;
         if (databases.length == 0)
             throw new HttpError(404);
         return databases[0];
@@ -404,7 +378,7 @@ public class Client {
             params.put("state", state);
         }
         String rsp = get(PATH_DATABASE, params);
-        return deserialize(rsp, ListDatabasesResponse.class).databases;
+        return Json.deserialize(rsp, ListDatabasesResponse.class).databases;
     }
 
     // Engines
@@ -417,15 +391,15 @@ public class Client {
     public Engine createEngine(String engine, String size)
             throws HttpError, InterruptedException, IOException {
         var req = new CreateEngineRequest(this.region, engine, size);
-        var rsp = put(PATH_ENGINE, null, serialize(req));
-        return deserialize(rsp, CreateEngineResponse.class).engine;
+        var rsp = put(PATH_ENGINE, null, Json.serialize(req));
+        return Json.deserialize(rsp, CreateEngineResponse.class).engine;
     }
 
     public DeleteEngineResponse deleteEngine(String engine)
             throws HttpError, InterruptedException, IOException {
         var req = new DeleteEngineRequest(engine);
-        var rsp = delete(PATH_ENGINE, null, serialize(req));
-        return deserialize(rsp, DeleteEngineResponse.class);
+        var rsp = delete(PATH_ENGINE, null, Json.serialize(req));
+        return Json.deserialize(rsp, DeleteEngineResponse.class);
     }
 
     public Engine getEngine(String engine)
@@ -434,7 +408,7 @@ public class Client {
         params.put("name", engine);
         params.put("deleted_on", "");
         var rsp = get(PATH_ENGINE, params);
-        var engines = deserialize(rsp, GetEngineResponse.class).engines;
+        var engines = Json.deserialize(rsp, GetEngineResponse.class).engines;
         if (engines.length == 0)
             throw new HttpError(404);
         return engines[0];
@@ -453,7 +427,7 @@ public class Client {
             params.put("state", state);
         }
         var rsp = get(PATH_ENGINE, params);
-        return deserialize(rsp, ListEnginesResponse.class).engines;
+        return Json.deserialize(rsp, ListEnginesResponse.class).engines;
     }
 
     // OAuth clients
@@ -466,14 +440,14 @@ public class Client {
     public OAuthClientExtra createOAuthClient(String name, String[] permissions)
             throws HttpError, InterruptedException, IOException {
         var req = new CreateOAuthClientRequest(name, permissions);
-        var rsp = post(PATH_OAUTH_CLIENTS, null, serialize(req));
-        return deserialize(rsp, CreateOAuthClientResponse.class).client;
+        var rsp = post(PATH_OAUTH_CLIENTS, null, Json.serialize(req));
+        return Json.deserialize(rsp, CreateOAuthClientResponse.class).client;
     }
 
     public DeleteOAuthClientResponse deleteOAuthClient(String id)
             throws HttpError, InterruptedException, IOException {
         var rsp = delete(makePath(PATH_OAUTH_CLIENTS, id));
-        return deserialize(rsp, DeleteOAuthClientResponse.class);
+        return Json.deserialize(rsp, DeleteOAuthClientResponse.class);
     }
 
     public OAuthClient findOAuthClient(String name)
@@ -489,13 +463,13 @@ public class Client {
     public OAuthClientExtra getOAuthClient(String id)
             throws HttpError, InterruptedException, IOException {
         var rsp = get(makePath(PATH_OAUTH_CLIENTS, id));
-        return deserialize(rsp, GetOAuthClientResponse.class).client;
+        return Json.deserialize(rsp, GetOAuthClientResponse.class).client;
     }
 
     public OAuthClient[] listOAuthClients()
             throws HttpError, InterruptedException, IOException {
         var rsp = get(PATH_OAUTH_CLIENTS);
-        return deserialize(rsp, ListOAuthClientsResponse.class).clients;
+        return Json.deserialize(rsp, ListOAuthClientsResponse.class).clients;
     }
 
     // Users
@@ -508,14 +482,14 @@ public class Client {
     public User createUser(String email, String[] roles)
             throws HttpError, InterruptedException, IOException {
         var req = new CreateUserRequest(email, roles);
-        var rsp = post(PATH_USERS, null, serialize(req));
-        return deserialize(rsp, CreateUserResponse.class).user;
+        var rsp = post(PATH_USERS, null, Json.serialize(req));
+        return Json.deserialize(rsp, CreateUserResponse.class).user;
     }
 
     public Object deleteUser(String id)
             throws HttpError, InterruptedException, IOException {
         var rsp = delete(makePath(PATH_USERS, id));
-        return deserialize(rsp, DeleteUserResponse.class);
+        return Json.deserialize(rsp, DeleteUserResponse.class);
     }
 
     public User disableUser(String id)
@@ -542,13 +516,13 @@ public class Client {
     public User getUser(String id)
             throws HttpError, InterruptedException, IOException {
         var rsp = get(makePath(PATH_USERS, id));
-        return deserialize(rsp, GetUserResponse.class).user;
+        return Json.deserialize(rsp, GetUserResponse.class).user;
     }
 
     public User[] listUsers()
             throws HttpError, InterruptedException, IOException {
         var rsp = get(PATH_USERS);
-        return deserialize(rsp, ListUsersResponse.class).users;
+        return Json.deserialize(rsp, ListUsersResponse.class).users;
     }
 
     public User updateUser(String id, String status)
@@ -568,8 +542,8 @@ public class Client {
 
     public User updateUser(String id, UpdateUserRequest req)
             throws HttpError, InterruptedException, IOException {
-        var rsp = patch(makePath(PATH_USERS, id), null, serialize(req));
-        return deserialize(rsp, UpdateUserResponse.class).user;
+        var rsp = patch(makePath(PATH_USERS, id), null, Json.serialize(req));
+        return Json.deserialize(rsp, UpdateUserResponse.class).user;
     }
 
     // Transactions
@@ -601,7 +575,7 @@ public class Client {
         var action = DbAction.makeQueryAction(source, inputs);
         var body = tx.payload(action);
         var rsp = post(PATH_TRANSACTION, tx.queryParams(), body);
-        return deserialize(rsp, TransactionResult.class);
+        return Json.deserialize(rsp, TransactionResult.class);
     }
 
     // EDBs
@@ -612,7 +586,7 @@ public class Client {
         var action = DbAction.makeListEdbAction();
         var body = tx.payload(action);
         var rsp = post(PATH_TRANSACTION, tx.queryParams(), body);
-        var actions = deserialize(rsp, ListEdbsResponse.class).actions;
+        var actions = Json.deserialize(rsp, ListEdbsResponse.class).actions;
         if (actions.length == 0)
             return new Edb[] {};
         return actions[0].result.rels;
@@ -627,7 +601,7 @@ public class Client {
         var action = DbAction.makeDeleteModelAction(name);
         var body = tx.payload(action);
         var rsp = post(PATH_TRANSACTION, tx.queryParams(), body);
-        return deserialize(rsp, TransactionResult.class);
+        return Json.deserialize(rsp, TransactionResult.class);
     }
 
     // Delete the list of named models.
@@ -637,7 +611,7 @@ public class Client {
         var actions = DbAction.makeDeleteModelsAction(names);
         var body = tx.payload(actions);
         var rsp = post(PATH_TRANSACTION, tx.queryParams(), body);
-        return deserialize(rsp, TransactionResult.class);
+        return Json.deserialize(rsp, TransactionResult.class);
     }
 
     // Return the named model.
@@ -659,7 +633,7 @@ public class Client {
         var action = DbAction.makeInstallAction(name, model);
         var data = tx.payload(action);
         var rsp = post(PATH_TRANSACTION, tx.queryParams(), data);
-        return deserialize(rsp, TransactionResult.class);
+        return Json.deserialize(rsp, TransactionResult.class);
     }
 
     // Install multiple models in the given database.
@@ -670,7 +644,7 @@ public class Client {
         var actions = DbAction.makeInstallAction(models);
         var data = tx.payload(actions);
         var rsp = post(PATH_TRANSACTION, tx.queryParams(), data);
-        return deserialize(rsp, TransactionResult.class);
+        return Json.deserialize(rsp, TransactionResult.class);
     }
 
     // Returns the list of names of models installed in the given database.
@@ -690,7 +664,7 @@ public class Client {
         var tx = new Transaction(this.region, database, engine, "OPEN", true);
         var body = tx.payload(DbAction.makeListModelsAction());
         var rsp = post(PATH_TRANSACTION, tx.queryParams(), body);
-        var actions = deserialize(rsp, ListModelsResponse.class).actions;
+        var actions = Json.deserialize(rsp, ListModelsResponse.class).actions;
         if (actions.length == 0)
             return new Model[] {};
         return actions[0].result.models;
@@ -829,43 +803,6 @@ public class Client {
     static String db = "sdk-test";
     static String eng = "sdk-test-xs";
 
-    static void test() throws HttpError, InterruptedException, IOException {
-        Object rsp;
-
-        var cfg = Config.loadConfig("~/.rai/config");
-        var client = new Client(cfg);
-
-        // transaction
-
-        rsp = client.execute(db, eng, "1 + 2 + 3");
-        System.out.println(serialize(rsp, 4));
-
-        // engines
-
-        rsp = client.listEngines();
-        System.out.println(serialize(rsp, 4));
-
-        rsp = client.getEngine(eng);
-        System.out.println(serialize(rsp, 4));
-
-        // databases
-
-        rsp = client.deleteDatabase(eng);
-        System.out.println(serialize(rsp, 4));
-
-        rsp = client.createDatabase(db, eng);
-        System.out.println(serialize(rsp, 4));
-
-        rsp = client.listDatabases();
-        System.out.println(serialize(rsp, 4));
-
-        rsp = client.listDatabases("CREATED");
-        System.out.println(serialize(rsp, 4));
-
-        rsp = client.getDatabase(db);
-        System.out.println(serialize(rsp, 4));
-    }
-
     static void testDatabase() throws HttpError, InterruptedException, IOException {
         Object rsp;
 
@@ -873,25 +810,50 @@ public class Client {
         var client = new Client(cfg);
 
         rsp = client.createDatabase(db, eng, true);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         rsp = client.listDatabases();
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         rsp = client.listDatabases("CREATED");
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         rsp = client.getDatabase(db);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         rsp = client.listModelNames(db, eng);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         rsp = client.listModels(db, eng);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         rsp = client.listEdbs(db, eng);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
+    }
+
+    static void testEngine() throws HttpError, InterruptedException, IOException {
+        Object rsp;
+
+        var cfg = Config.loadConfig("~/.rai/config");
+        var client = new Client(cfg);
+
+        // todo: create/delete engine
+
+        rsp = client.listEngines();
+        Json.print(rsp, 4);
+
+        rsp = client.getEngine(eng);
+        Json.print(rsp, 4);
+    }
+
+    static void testExecute() throws HttpError, InterruptedException, IOException {
+        Object rsp;
+
+        var cfg = Config.loadConfig("~/.rai/config");
+        var client = new Client(cfg);
+
+        rsp = client.execute(db, eng, "x, x^2, x^3, x^4 from x in {1; 2; 3; 4; 5}");
+        Json.print(rsp, 4);
     }
 
     static void testLoadCsv() throws HttpError, InterruptedException, IOException {
@@ -904,9 +866,9 @@ public class Client {
 
         input = new FileInputStream("sample.csv");
         rsp = client.loadCsv(db, eng, "sample_csv", input);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
         rsp = client.execute(db, eng, "sample_csv", true);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         var schema = new HashMap<String, String>();
         schema.put("cocktail", "string");
@@ -917,30 +879,30 @@ public class Client {
         options = (new CsvOptions()).withSchema(schema);
         input = new FileInputStream("sample.csv");
         rsp = client.loadCsv(db, eng, "sample_with_schema_csv", input, options);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
         rsp = client.execute(db, eng, "sample_with_schema_csv", true);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         options = (new CsvOptions()).withHeaderRow(0);
         input = new FileInputStream("sample_no_header.csv");
         rsp = client.loadCsv(db, eng, "sample_no_header_csv", input, options);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
         rsp = client.execute(db, eng, "sample_no_header_csv", true);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         options = (new CsvOptions()).withDelim('|').withQuoteChar('\'');
         input = new FileInputStream("sample_alt_syntax.csv");
         rsp = client.loadCsv(db, eng, "sample_alt_syntax_csv", input, options);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
         rsp = client.execute(db, eng, "sample_alt_syntax_csv", true);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         options = (new CsvOptions()).withDelim('|').withQuoteChar('\'').withSchema(schema);
         input = new FileInputStream("sample_alt_syntax.csv");
         rsp = client.loadCsv(db, eng, "sample_alt_syntax_with_schema_csv", input, options);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
         rsp = client.execute(db, eng, "sample_alt_syntax_with_schema_csv", true);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
     }
 
     static void testLoadJson() throws HttpError, InterruptedException, IOException {
@@ -952,9 +914,9 @@ public class Client {
 
         input = new FileInputStream("sample.json");
         rsp = client.loadJson(db, eng, "sample_json", input);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
         rsp = client.execute(db, eng, "sample_json", true);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
     }
 
     static void testModels() throws HttpError, InterruptedException, IOException {
@@ -967,21 +929,21 @@ public class Client {
         // todo: test deleteModels
 
         rsp = client.listModels(db, eng);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         rsp = client.listModelNames(db, eng);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         rsp = client.installModel(db, eng, "hello", "def R = \"hello\",\"world!\"");
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
         rsp = client.getModel(db, eng, "hello");
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         rsp = client.deleteModel(db, eng, "hello");
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         rsp = client.listModelNames(db, eng);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
     }
 
     static void testOAuthClients() throws HttpError, InterruptedException, IOException {
@@ -991,7 +953,7 @@ public class Client {
         var client = new Client(cfg);
 
         rsp = client.listOAuthClients();
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         var oauthClient = client.findOAuthClient("sdk-test");
         if (oauthClient != null)
@@ -999,22 +961,21 @@ public class Client {
 
         String[] permissions = null;
         rsp = client.createOAuthClient("sdk-test", permissions);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         rsp = client.listOAuthClients();
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         oauthClient = client.findOAuthClient("sdk-test");
         assert oauthClient != null;
         rsp = client.getOAuthClient(oauthClient.id);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         rsp = client.deleteOAuthClient(oauthClient.id);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         rsp = client.listOAuthClients();
-        System.out.println(serialize(rsp, 4));
-
+        Json.print(rsp, 4);
     }
 
     static void testUsers() throws HttpError, InterruptedException, IOException {
@@ -1024,7 +985,7 @@ public class Client {
         var client = new Client(cfg);
 
         rsp = client.listUsers();
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         // cleanup if necessarry
         var user = client.findUser("sdk-test@relational.ai");
@@ -1032,50 +993,47 @@ public class Client {
             client.deleteUser(user.id);
 
         rsp = client.createUser("sdk-test@relational.ai");
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         user = client.findUser("sdk-test@relational.ai");
         assert user != null;
 
         rsp = client.getUser(user.id);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         rsp = client.disableUser(user.id);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         rsp = client.enableUser(user.id);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         rsp = client.updateUser(user.id, "INACTIVE");
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         rsp = client.updateUser(user.id, "ACTIVE");
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         String[] rolesAdmin = {"admin", "user"};
         rsp = client.updateUser(user.id, rolesAdmin);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         String[] rolesUser = {"user"};
         rsp = client.updateUser(user.id, "INACTIVE", rolesUser);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
 
         rsp = client.deleteUser(user.id);
-        System.out.println(serialize(rsp, 4));
+        Json.print(rsp, 4);
     }
 
     static void run() throws HttpError, InterruptedException, IOException {
-        // Object rsp;
-        // var cfg = Config.loadConfig("~/.rai/config");
-        // var client = new Client(cfg);
-
-        // test();
-        // testDatabase();
+        testDatabase();
+        testEngine();
+        testExecute();
         testLoadCsv();
         testLoadJson();
-        // testModels();
-        // testOAuthClients();
-        // testUsers();
+        testModels();
+        testOAuthClients();
+        testUsers();
     };
 
     public static void main(String[] args) {

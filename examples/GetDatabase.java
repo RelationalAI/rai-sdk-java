@@ -20,12 +20,12 @@ import com.relationalai.Client;
 import com.relationalai.Config;
 import com.relationalai.Json;
 
-public class ListDatabases {
+public class GetDatabase {
     public static void main(String[] args) {
         try {
             var cfg = Config.loadConfig();
             var client = new Client(cfg);
-            var rsp = client.listDatabases();
+            var rsp = client.getDatabase("sdk-test");
             Json.print(rsp, 4);
         } catch (Exception e) {
             System.out.println(e);

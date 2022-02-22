@@ -1,5 +1,10 @@
 #!/bin/bash
 
+CLASSPATH=""
+CLASSPATH="$CLASSPATH:/Users/bradlo/.m2/repository/com/jsoniter/jsoniter/0.9.19/jsoniter-0.9.19.jar"
+CLASSPATH="$CLASSPATH:/Users/bradlo/rai/rai-sdk-java/target/rai-sdk-java.jar"
+CLASSPATH="$CLASSPATH:/Users/bradlo/rai/rai-sdk-java/target/classes"
+
 set -ex
 
-java -cp target -cp ~/.m2/repository $*
+java $*

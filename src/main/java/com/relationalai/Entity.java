@@ -16,20 +16,13 @@
 
 package com.relationalai;
 
-import java.io.ByteArrayOutputStream;
-import com.jsoniter.output.JsonStream;
-
-// The base class for RelationalAI system entities, all of which can be
-// serialized as JSON objects.
+// The base class for RelationalAI entities.
 public abstract class Entity {
     public String toString() {
-        return toString(0);
+        return Json.serialize(this, 0);
     }
 
     public String toString(int indent) {
-        var output = new ByteArrayOutputStream();
-        JsonStream.setIndentionStep(indent);
-        JsonStream.serialize(this, output);
-        return output.toString();
+        return Json.serialize(this, indent);
     }
 }
