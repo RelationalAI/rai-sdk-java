@@ -20,31 +20,31 @@ import com.jsoniter.annotation.JsonProperty;
 
 public class Database extends Entity {
     @JsonProperty(value = "id", required = true)
-    public String Id;
+    public String id;
 
     @JsonProperty(value = "name", required = true)
-    public String Name;
+    public String name;
 
     @JsonProperty(value = "region", required = true)
-    public String Region;
+    public String region;
 
     @JsonProperty(value = "account_name", required = true)
-    public String AccountName;
+    public String accountName;
 
     @JsonProperty(value = "created_by", required = true)
-    public String CreatedBy;
+    public String createdBy;
 
     @JsonProperty(value = "deleted_on", required = false)
-    public String DeletedOn;
+    public String deletedOn;
 
     @JsonProperty(value = "deleted_by", required = false)
-    public String DeletedBy;
+    public String deletedBy;
 
     @JsonProperty(value = "default_compute_name", required = false)
-    public String DefaultEngine;
+    public String defaultEngine;
 
     @JsonProperty(value = "state", required = true)
-    public String State;
+    public String state;
 
     public Database() {}
 }

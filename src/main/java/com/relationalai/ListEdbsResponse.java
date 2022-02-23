@@ -22,5 +22,5 @@ class ListEdbsResponse extends Entity {
     @JsonProperty(value = "actions", required = true)
     ListEdbsResponseAction[] actions;
 
-    public ListEdbsResponse() {}
+    ListEdbsResponse() {}
 }

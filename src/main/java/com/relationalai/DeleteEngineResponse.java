@@ -18,7 +18,9 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-public class DeleteEngineResponse extends Entity {
+class DeleteEngineResponse extends Entity {
     @JsonProperty(value = "status", required = true)
-    public DeleteEngineStatus status;
+    DeleteEngineStatus status;
+
+    DeleteEngineResponse() {}
 }

@@ -18,7 +18,9 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-public class GetDatabaseResponse extends Entity {
+class GetDatabaseResponse extends Entity {
     @JsonProperty(value = "databases", required = true)
-    public Database[] databases;
+    Database[] databases;
+
+    GetDatabaseResponse() {}
 }

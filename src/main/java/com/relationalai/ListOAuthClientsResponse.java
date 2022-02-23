@@ -18,9 +18,9 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-public class ListOAuthClientsResponse extends Entity {
+class ListOAuthClientsResponse extends Entity {
     @JsonProperty(value = "clients", required = true)
-    public OAuthClient[] clients;
+    OAuthClient[] clients;
 
-    public ListOAuthClientsResponse() {}
+    ListOAuthClientsResponse() {}
 }

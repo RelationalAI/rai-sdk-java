@@ -18,9 +18,9 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-public class CreateEngineResponse extends Entity {
+class CreateEngineResponse extends Entity {
     @JsonProperty(value = "compute", required = true)
-    public Engine engine;
+    Engine engine;
 
-    public CreateEngineResponse() {}
+    CreateEngineResponse() {}
 }

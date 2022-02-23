@@ -314,43 +314,53 @@ public class Client {
         return String.join("/", parts);
     }
 
+    // Answers if the given state is one of the terminal states.
+    static boolean isTerminalState(String state, String targetState) {
+        if (state.equals(targetState))
+            return true;
+        if (state.contains("FAILED"))
+            return true;
+        return false;
+    }
+
     //
     // Databases
     //
 
-    public CreateDatabaseResponse createDatabase(String database, String engine)
+    public Database createDatabase(String database, String engine)
             throws HttpError, InterruptedException, IOException {
         return createDatabase(database, engine, false);
     }
 
-    public CreateDatabaseResponse createDatabase(
+    public Database createDatabase(
             String database, String engine, boolean overwrite)
             throws HttpError, InterruptedException, IOException {
         var mode = createMode(null, overwrite);
         var tx = new Transaction(this.region, database, engine, mode, false);
-        var rsp = post(PATH_TRANSACTION, tx.queryParams(), tx.payload());
-        return Json.deserialize(rsp, CreateDatabaseResponse.class);
+        post(PATH_TRANSACTION, tx.queryParams(), tx.payload());
+        return getDatabase(database);
     }
 
-    public CreateDatabaseResponse cloneDatabase(
+    public Database cloneDatabase(
             String database, String engine, String source)
             throws HttpError, InterruptedException, IOException {
         return cloneDatabase(database, engine, source, false);
     }
 
-    public CreateDatabaseResponse cloneDatabase(
+    public Database cloneDatabase(
             String database, String engine, String source, boolean overwrite)
             throws HttpError, InterruptedException, IOException {
         var mode = createMode(source, overwrite);
         var tx = new Transaction(this.region, database, engine, mode, false, source);
-        var rsp = post(PATH_TRANSACTION, tx.queryParams(), tx.payload());
-        return Json.deserialize(rsp, CreateDatabaseResponse.class);
+        post(PATH_TRANSACTION, tx.queryParams(), tx.payload());
+        return getDatabase(database);
     }
 
     public DeleteDatabaseResponse deleteDatabase(String database)
             throws HttpError, InterruptedException, IOException {
         var req = new DeleteDatabaseRequest(database);
         var rsp = delete(PATH_DATABASE, null, Json.serialize(req));
+        // once this is complete, there is no longer a database resource to return
         return Json.deserialize(rsp, DeleteDatabaseResponse.class);
     }
 
@@ -395,11 +405,37 @@ public class Client {
         return Json.deserialize(rsp, CreateEngineResponse.class).engine;
     }
 
-    public DeleteEngineResponse deleteEngine(String engine)
+    public Engine createEngineWait(String engine)
+            throws HttpError, InterruptedException, IOException {
+        return createEngineWait(engine, "XS");
+    }
+
+    // Create an engine with the given name, and wait for creation to complete.
+    public Engine createEngineWait(String engine, String size)
+            throws HttpError, InterruptedException, IOException {
+        var rsp = createEngine(engine, size);
+        while (!isTerminalState(rsp.state, "PROVISIONED")) {
+            Thread.sleep(2000);
+            rsp = getEngine(engine);
+        }
+        return rsp;
+    }
+
+    public Engine deleteEngine(String engine)
             throws HttpError, InterruptedException, IOException {
         var req = new DeleteEngineRequest(engine);
-        var rsp = delete(PATH_ENGINE, null, Json.serialize(req));
-        return Json.deserialize(rsp, DeleteEngineResponse.class);
+        delete(PATH_ENGINE, null, Json.serialize(req));
+        return getEngine(engine);
+    }
+
+    public Engine deleteEngineWait(String engine)
+            throws HttpError, InterruptedException, IOException {
+        var rsp = deleteEngine(engine);
+        while (!isTerminalState(rsp.state, "DELETED")) {
+            Thread.sleep(2000);
+            rsp = getEngine(engine);
+        }
+        return rsp;
     }
 
     public Engine getEngine(String engine)
@@ -486,7 +522,7 @@ public class Client {
         return Json.deserialize(rsp, CreateUserResponse.class).user;
     }
 
-    public Object deleteUser(String id)
+    public DeleteUserResponse deleteUser(String id)
             throws HttpError, InterruptedException, IOException {
         var rsp = delete(makePath(PATH_USERS, id));
         return Json.deserialize(rsp, DeleteUserResponse.class);
@@ -801,12 +837,12 @@ public class Client {
     // *** integration tests ***
 
     static String db = "sdk-test";
-    static String eng = "sdk-test-xs";
+    static String eng = "sdk-test";
 
     static void testDatabase() throws HttpError, InterruptedException, IOException {
         Object rsp;
 
-        var cfg = Config.loadConfig("~/.rai/config");
+        var cfg = Config.loadConfig();
         var client = new Client(cfg);
 
         rsp = client.createDatabase(db, eng, true);
@@ -834,7 +870,7 @@ public class Client {
     static void testEngine() throws HttpError, InterruptedException, IOException {
         Object rsp;
 
-        var cfg = Config.loadConfig("~/.rai/config");
+        var cfg = Config.loadConfig();
         var client = new Client(cfg);
 
         // todo: create/delete engine
@@ -849,7 +885,7 @@ public class Client {
     static void testExecute() throws HttpError, InterruptedException, IOException {
         Object rsp;
 
-        var cfg = Config.loadConfig("~/.rai/config");
+        var cfg = Config.loadConfig();
         var client = new Client(cfg);
 
         rsp = client.execute(db, eng, "x, x^2, x^3, x^4 from x in {1; 2; 3; 4; 5}");
@@ -861,7 +897,7 @@ public class Client {
         InputStream input;
         CsvOptions options;
 
-        var cfg = Config.loadConfig("~/.rai/config");
+        var cfg = Config.loadConfig();
         var client = new Client(cfg);
 
         input = new FileInputStream("sample.csv");
@@ -909,7 +945,7 @@ public class Client {
         Object rsp;
         InputStream input;
 
-        var cfg = Config.loadConfig("~/.rai/config");
+        var cfg = Config.loadConfig();
         var client = new Client(cfg);
 
         input = new FileInputStream("sample.json");
@@ -922,7 +958,7 @@ public class Client {
     static void testModels() throws HttpError, InterruptedException, IOException {
         Object rsp;
 
-        var cfg = Config.loadConfig("~/.rai/config");
+        var cfg = Config.loadConfig();
         var client = new Client(cfg);
 
         // todo: test installModels
@@ -949,7 +985,7 @@ public class Client {
     static void testOAuthClients() throws HttpError, InterruptedException, IOException {
         Object rsp;
 
-        var cfg = Config.loadConfig("~/.rai/config");
+        var cfg = Config.loadConfig();
         var client = new Client(cfg);
 
         rsp = client.listOAuthClients();
@@ -981,7 +1017,7 @@ public class Client {
     static void testUsers() throws HttpError, InterruptedException, IOException {
         Object rsp;
 
-        var cfg = Config.loadConfig("~/.rai/config");
+        var cfg = Config.loadConfig();
         var client = new Client(cfg);
 
         rsp = client.listUsers();
