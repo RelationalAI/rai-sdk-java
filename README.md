@@ -60,8 +60,8 @@ You can copy `config.spec` from the root of this repo and modify as needed.
 ## Examples
 
 Each of the examples in the `./examples` folder can be run from the command
-line. There are many ways to do this, the following is one method for running
-examples from the root of the repo without installing dependencies.
+line. There are many ways to do this in Java, the following is one method
+for running examples from the root of the repo without installing dependencies.
 
 Build the SDK jar file and copy dependencies with `mvn package`.
 
