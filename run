@@ -1,10 +1,16 @@
 #!/bin/bash
 
-CLASSPATH=""
-CLASSPATH="$CLASSPATH:/Users/bradlo/.m2/repository/com/jsoniter/jsoniter/0.9.19/jsoniter-0.9.19.jar"
-CLASSPATH="$CLASSPATH:/Users/bradlo/rai/rai-sdk-java/target/rai-sdk-java.jar"
-CLASSPATH="$CLASSPATH:/Users/bradlo/rai/rai-sdk-java/target/classes"
+#
+# Script for running a single example java file.
+#
+# Usage:
+#
+#     ./run <sample-name>
+#
+# Example:
+#
+#     ./run ListDatabases
+#
 
-set -ex
-
-java $*
+javac -cp "./target/*" -d "./target/classes" examples/$1.java
+java -cp "./target/classes:./target/*:./target/dependency/*" $1 $2 $3 $4 $5 $6 $7 $8 $9

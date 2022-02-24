@@ -32,7 +32,8 @@ Compile, run units and build that SDK jar file `rai-sdk-java.jar`:
 
     mvn package
 
-The `package` command will also copy runtime dependencies into the target folder.
+The `package` command will also copy runtime dependencies into the target
+folder.
 
 ### Create a configuration file
 
@@ -66,11 +67,11 @@ Build the SDK jar file and copy dependencies with `mvn package`.
 
 Compile the example `examples/ListDatabases.java`:
 
-    javac -cp "./target/rai-sdk-java.jar" -d "./target/classes" examples/ListDatabases.java
+    javac -cp "./target/*" -d "./target/classes" examples/ListDatabases.java
 
 Run the example `ListDatabases`:
 
-    java -cp "./target/dependency/*:./target/rai-sdk-java:./target/classes" ListDatabases
+    java -cp "./target/classes:./target/*:./target/dependency/*" ListDatabases
 
 ## Support
 
