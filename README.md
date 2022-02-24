@@ -20,15 +20,15 @@ dependencies for running the unit and integratin tests.
 
 The SDK build lifecycle is managed using the standard `mvn` lifecycle commands.
 
-Compile the SDK soruce code:
+Compile the SDK soruce code
 
     mvn compile
 
-Run the unit tests:
+Run the unit tests
 
     mvn test
 
-Compile, run units and build that SDK jar file `rai-sdk-java.jar`:
+Compile, run units and build that SDK jar file `rai-sdk-java.jar`
 
     mvn package
 
@@ -65,11 +65,11 @@ examples from the root of the repo without installing dependencies.
 
 Build the SDK jar file and copy dependencies with `mvn package`.
 
-Compile the example `examples/ListDatabases.java`:
+Compile the example `examples/ListDatabases.java`
 
     javac -cp "./target/*" -d "./target/classes" examples/ListDatabases.java
 
-Run the example `ListDatabases`:
+Run the example `ListDatabases`
 
     java -cp "./target/classes:./target/*:./target/dependency/*" ListDatabases
 
