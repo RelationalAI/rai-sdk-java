@@ -16,7 +16,7 @@ The RelationalAI (RAI) SDK for Java enables developers to access the RAI REST AP
 ### Building the SDK
 
 The SDK has a single runtime dependency (jsoniter) and several additional
-dependencies for running the unit and integratin tests.
+dependencies for running the unit and integration tests.
 
 The SDK build lifecycle is managed using the standard `mvn` lifecycle commands.
 
