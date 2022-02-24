@@ -28,7 +28,7 @@ Run the unit tests
 
     mvn test
 
-Compile, run units and build that SDK jar file `rai-sdk-java.jar`
+Compile, run units and build that SDK jar file
 
     mvn package
 
