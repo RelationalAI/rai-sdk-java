@@ -20,7 +20,7 @@ dependencies for running the unit and integratin tests.
 
 The SDK build lifecycle is managed using the standard `mvn` lifecycle commands.
 
-Compile the SDK soruce code
+Compile the SDK source code
 
     mvn compile
 
