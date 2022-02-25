@@ -16,17 +16,19 @@
  * the License.
  */
 
-import java.io.IOException;
-import com.relationalai.Client;
-import com.relationalai.Config;
-import com.relationalai.HttpError;
-import com.relationalai.Json;
+import java.utils.Arrays;
 
-public class ListDatabases {
-    static void run(String[] args) throws HttpError, InterruptedException, IOException {
-        var cfg = Config.loadConfig();
-        var client = new Client(cfg);
-        var rsp = client.listDatabases();
-        Json.print(rsp, 4);
+public class Runner {
+    public static void main(String[] args) {
+        if (args.length < 1) {
+            System.err.println("error: no inputs");
+            System.exit(1);
+        }
+        var cmdName = args[0];
+        var cmdArgs = Arrays.copyOfRange(args, 1, args.length - 1);
+        Class<?> cls = Class.forName(cmdName);
+        Constructor<?> ctor = cls.getConstructor();
+        Runnable cmd = (Runnable) ctor.newInstance();
+        cmd.run(cmdArgs);
     }
 }

@@ -18,17 +18,15 @@
 
 import com.relationalai.Client;
 import com.relationalai.Config;
+import com.relationalai.HttpError;
 import com.relationalai.Json;
+import java.io.IOException;
 
-public class GetDatabase {
-    public static void main(String[] args) {
-        try {
-            var cfg = Config.loadConfig();
-            var client = new Client(cfg);
-            var rsp = client.getDatabase("sdk-test");
-            Json.print(rsp, 4);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+public class GetDatabase extends Example {
+    void run(String[] args) throws HttpError, InterruptedException, IOException {
+        var cfg = Config.loadConfig();
+        var client = new Client(cfg);
+        var rsp = client.getDatabase(database);
+        Json.print(rsp, 4);
     }
 }

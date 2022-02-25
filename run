@@ -12,5 +12,7 @@
 #     ./run ListDatabases
 #
 
-javac -cp "./target/*" -d "./target/classes" examples/$1.java
+set -ex
+
+javac -cp "./examples:./target/*:./target/dependency/*" -d "./target/classes" examples/$1.java
 java -cp "./target/classes:./target/*:./target/dependency/*" $1 $2 $3 $4 $5 $6 $7 $8 $9
