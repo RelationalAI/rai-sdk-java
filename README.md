@@ -15,7 +15,7 @@ The RelationalAI (RAI) SDK for Java enables developers to access the RAI REST AP
 
 ### Dependencies
 
-The SDK has a *single* runtime dependency (jsoniter), a dependency for
+The SDK has a single runtime dependency (jsoniter), a dependency for
 running the SDK examples (commons-cli) and several additional dependencies
 for running the unit and integration tests.
 
@@ -23,15 +23,15 @@ for running the unit and integration tests.
 
 The SDK build lifecycle is managed using the standard `mvn` lifecycle commands.
 
-Compile the SDK soruce code:
+Compile the SDK source code
 
     mvn compile
 
-Run the unit tests:
+Run the unit tests
 
     mvn test
 
-Compile, run units and build that SDK jar file `rai-sdk-java.jar`:
+Compile, run units and build that SDK jar file
 
     mvn package
 
@@ -63,16 +63,16 @@ You can copy `config.spec` from the root of this repo and modify as needed.
 ## Examples
 
 Each of the examples in the `./examples` folder can be run from the command
-line. There are many ways to do this, the following is one method for running
-examples from the root of the repo without installing dependencies.
+line. There are many ways to do this in Java, the following is one method
+for running examples from the root of the repo without installing dependencies.
 
 Build the SDK jar file and copy dependencies with `mvn package`.
 
-Compile the example `examples/ListDatabases.java`:
+Compile the example `examples/ListDatabases.java`
 
     javac -cp "./target/*" -d "./target/classes" examples/ListDatabases.java
 
-Run the example `ListDatabases`:
+Run the example `ListDatabases`
 
     java -cp "./target/classes:./target/*:./target/dependency/*" ListDatabases
 
