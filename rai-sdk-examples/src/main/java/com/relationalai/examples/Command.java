@@ -16,29 +16,33 @@
  * the License.
  */
 
+package com.relationalai.examples;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 /**
  * The `Command` class provides a simplified interface to the commons-cli
- * command line paresr that adds support for required, positional arguments
+ * command line parser and adds support for required, positional arguments
  */
 public class Command {
     String appName;
     List<String> argNames;
     Options options;
-    HashMap<String, Object> results;
+    HashMap<String, Object> result;
 
     // name, type, hasArg, required, description
 
     public Command(String appName) {
         this.appName = appName;
         this.result = null;
-        this.argNames = new List<String>();
+        this.argNames = new ArrayList<String>();
         this.options = new Options();
         this.options.addOption("?", "help", false, "display help");
     }
@@ -53,18 +57,16 @@ public class Command {
         return this;
     }
 
-    public Command addOption(String name, Class type, String description) {
-        var numArgs = type == Boolean ? 0 : 1;
+    public Command addOption(String name, Class<?> type, String description) {
+        var numArgs = type == Boolean.class ? 0 : 1;
         addOption(name, type, numArgs, description);
         return this;
     }
 
-    public Command addOption(String name, Class type, int numArgs, String description) {
-        var option = new Option();
-        option.setArgName(name);
+    public Command addOption(String name, Class<?> type, int numArgs, String description) {
+        var option = new Option(name, description);
         option.setType(type);
         option.setArgs(numArgs);
-        option.setDescription(description);
         this.options.addOption(option);
         return this;
     }
@@ -80,43 +82,48 @@ public class Command {
         return new Command(appName);
     }
 
-    void error(String fmt, Object... args) {
-        Strin msg;
+    void errorMessage(String fmt, Object... args) {
+        String msg;
         msg = String.format(fmt, args);
         msg = String.format("error: %s\n", msg);
         System.err.println(msg);
     }
 
+    void error(String fmt, Object... args) {
+        errorMessage(fmt, args);
+        System.exit(1);
+    }
+
     // Report missing arguments, print usage and exit.
     void errorMissing(int count) {
-        error("missing arguments: %s", missingArgs(count));
+        errorMessage("missing arguments: %s", missingArgs(count));
         printUsage();
         System.exit(1);
     }
 
-    public <T> T getValue(String name) {
-        var v = this.get(name);
-        if (T instanceof String)
-            return v.toString();
-        if (T instanceof Integer)
-            return Integer.parseInt(v);
-        if (T instanceof Boolean)
-            return Boolean.parseBoolean(v);
-        throw new RuntimeException("bad option type");
+    public <T> T getValue(String name, Class<T> cls) {
+        var v = this.result.get(name);
+        return cls.cast(v);
     }
 
     // Returns comma seperated list of missing argument names.
     String missingArgs(int count) {
-        assert count < argNames.length;
-        var missing = new List<String>(argsNames.length - count);
-        for (var i = count; i < argNames.length; ++i)
+        var required = argNames.size();
+        assert count < required;
+        var missing = new ArrayList<String>(required - count);
+        for (var i = count; i < required; ++i)
             missing.add(argNames.get(i));
         return String.join(", ", missing);
     }
 
     public Command parseArgs(String[] args) {
+        CommandLine cmdline = null;
         var parser = new DefaultParser();
-        cmdline = parser.parse(options, args);
+        try {
+            cmdline = parser.parse(options, args);
+        } catch (ParseException e) {
+            error(e.toString()); // noreturn
+        }
         args = cmdline.getArgs();
         if (args.length < argNames.size())
             errorMissing(args.length); // noreturn
@@ -124,12 +131,14 @@ public class Command {
         for (var i = 0; i < argNames.size(); ++i) {
             var name = argNames.get(i);
             var value = args[i];
-            argMap.put(name, value);
+            this.result.put(name, value);
         }
+        return this;
     }
 
     void printUsage() {
         var names = String.join(", ", argNames);
         var msg = String.format("usage: %s [options] ", appName, names);
+        System.out.println(msg);
     }
 }

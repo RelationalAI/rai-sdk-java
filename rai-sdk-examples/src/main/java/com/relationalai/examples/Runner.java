@@ -16,7 +16,10 @@
  * the License.
  */
 
-import java.utils.Arrays;
+package com.relationalai.examples;
+
+import java.lang.reflect.Constructor;
+import java.util.Arrays;
 
 public class Runner {
     public static void main(String[] args) {
@@ -24,11 +27,18 @@ public class Runner {
             System.err.println("error: no inputs");
             System.exit(1);
         }
+
         var cmdName = args[0];
-        var cmdArgs = Arrays.copyOfRange(args, 1, args.length - 1);
-        Class<?> cls = Class.forName(cmdName);
-        Constructor<?> ctor = cls.getConstructor();
-        Runnable cmd = (Runnable) ctor.newInstance();
-        cmd.run(cmdArgs);
+        var cmdArgs = Arrays.copyOfRange(args, 1, args.length);
+        var className = "com.relationalai.examples." + cmdName;
+        try {
+            Class<?> cls = Class.forName(className);
+            Constructor<?> ctor = cls.getConstructor();
+            Runnable cmd = (Runnable) ctor.newInstance();
+            cmd.run(cmdArgs);
+        } catch (Exception e) {
+            System.err.println(e.toString());
+        }
+        System.exit(0);
     }
 }

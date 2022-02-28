@@ -77,7 +77,7 @@ public class Client {
     }
 
     // Returns the current `HttpClient` instance, creating one if necessarry.
-    HttpClient httpClient() {
+    HttpClient getHttpClient() {
         if (this.httpClient == null) {
             this.httpClient = HttpClient.newBuilder().build();
         }
@@ -85,8 +85,9 @@ public class Client {
     }
 
     // Use the HttpClient instance configured by the caller.
-    public void withHttpClient(HttpClient httpClient) {
+    public Client setHttpClient(HttpClient httpClient) {
         this.httpClient = httpClient;
+        return this;
     }
 
     static final String fetchAccessTokenFormat = "{" +
@@ -114,7 +115,7 @@ public class Client {
         addHeaders(builder, _defaultHeaders);
         HttpRequest request = builder.build();
         HttpResponse<String> response =
-                httpClient().send(request, HttpResponse.BodyHandlers.ofString());
+                getHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
         var data = response.body();
         var statusCode = response.statusCode();
         if (statusCode >= 400 && statusCode < 500)
@@ -237,7 +238,7 @@ public class Client {
         HttpRequest request = builder.build();
         // printRequest(request);
         HttpResponse<String> response =
-                httpClient().send(request, HttpResponse.BodyHandlers.ofString());
+                getHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
         int statusCode = response.statusCode();
         if (statusCode >= 400 && statusCode < 500)
             throw new HttpError(statusCode, response.body());

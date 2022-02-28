@@ -16,17 +16,11 @@
  * the License.
  */
 
-import java.io.IOException;
-import com.relationalai.Client;
-import com.relationalai.Config;
-import com.relationalai.HttpError;
-import com.relationalai.Json;
+package com.relationalai.examples;
 
-public class ListDatabases {
-    static void run(String[] args) throws HttpError, InterruptedException, IOException {
-        var cfg = Config.loadConfig();
-        var client = new Client(cfg);
-        var rsp = client.listDatabases();
-        Json.print(rsp, 4);
-    }
+import java.io.IOException;
+import com.relationalai.HttpError;
+
+interface Runnable {
+    void run(String[] args) throws HttpError, InterruptedException, IOException;
 }

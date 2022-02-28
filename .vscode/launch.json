@@ -3,10 +3,11 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch ListDatabases",
+            "name": "Launch Runner",
             "request": "launch",
-            "mainClass": "ListDatabases",
-            "projectName": "rai-sdk-java"
+            "mainClass": "com.relationalai.examples.Runner",
+            "projectName": "rai-sdk-examples",
+            "args": "ListDatabases"
         },
         {
             "type": "java",

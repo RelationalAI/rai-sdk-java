@@ -16,9 +16,21 @@
  * the License.
  */
 
-import java.io.IOError;
-import java.io.IOException;
+package com.relationalai.examples;
 
-public interface Runnable {
-    void run(String[] args) throws HttpError, InterruptedException, IOException;
+import java.io.IOException;
+import com.relationalai.Client;
+import com.relationalai.Config;
+import com.relationalai.HttpError;
+import com.relationalai.Json;
+
+class ListDatabases implements Runnable {
+    public ListDatabases() {}
+
+    public void run(String[] args) throws HttpError, InterruptedException, IOException {
+        var cfg = Config.loadConfig();
+        var client = new Client(cfg);
+        var rsp = client.listDatabases();
+        Json.print(rsp, 4);
+    }
 }

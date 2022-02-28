@@ -14,5 +14,4 @@
 
 set -ex
 
-javac -cp "./examples:./target/*:./target/dependency/*" -d "./target/classes" examples/$1.java
-java -cp "./target/classes:./target/*:./target/dependency/*" $1 $2 $3 $4 $5 $6 $7 $8 $9
+mvn exec:java -f ./rai-sdk-examples/pom.xml -Dexec.mainClass=com.relationalai.examples.Runner -Dexec.args="$*"
