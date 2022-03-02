@@ -21,6 +21,7 @@ package com.relationalai.examples;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
@@ -35,13 +36,11 @@ public class Command {
     String appName;
     List<String> argNames;
     Options options;
-    HashMap<String, Object> result;
-
-    // name, type, hasArg, required, description
+    Map<String, Object> result;
 
     public Command(String appName) {
         this.appName = appName;
-        this.result = null;
+        this.result = new HashMap<String, Object>();
         this.argNames = new ArrayList<String>();
         this.options = new Options();
         this.options.addOption("?", "help", false, "display help");
@@ -65,6 +64,8 @@ public class Command {
 
     public Command addOption(String name, Class<?> type, int numArgs, String description) {
         var option = new Option(name, description);
+        option.setDescription(description);
+        option.setLongOpt(name);
         option.setType(type);
         option.setArgs(numArgs);
         this.options.addOption(option);
@@ -73,7 +74,7 @@ public class Command {
 
     // Add a required positional argument with the given name. Positional args
     // will be parsed in the order they are added here.
-    public Command addArg(String name) {
+    public Command addArgument(String name) {
         this.argNames.add(name);
         return this;
     }
@@ -103,6 +104,8 @@ public class Command {
 
     public <T> T getValue(String name, Class<T> cls) {
         var v = this.result.get(name);
+        if (cls == Boolean.class && v == null)
+            v = false;
         return cls.cast(v);
     }
 
@@ -127,7 +130,11 @@ public class Command {
         args = cmdline.getArgs();
         if (args.length < argNames.size())
             errorMissing(args.length); // noreturn
-        // combine options and positional argumets into command map.
+        for (var option : cmdline.getOptions()) {
+            var name = option.getLongOpt();
+            var value = option.hasArg() ? option.getValue() : true;
+            this.result.put(name, value);
+        }
         for (var i = 0; i < argNames.size(); ++i) {
             var name = argNames.get(i);
             var value = args[i];

@@ -34,7 +34,7 @@ public class Engine extends Entity {
     @JsonProperty(value = "created_by", required = true)
     public String createdBy;
 
-    @JsonProperty(value = "created_on", required = true)
+    @JsonProperty(value = "created_on", required = false)
     public String createdOn;
 
     @JsonProperty(value = "deleted_on", required = false)

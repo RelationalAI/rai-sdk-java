@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#
+# Run a single SDK example by providing the name of the example class
+# and any required an optional arguments.
+#
+# Usage:
+#
+#     ./run <sample-name> [options]
+#
+# Example:
+#
+#     ./run GetDatabase sdk-test
+#
+
+mvn -q exec:java -Dexec.mainClass=com.relationalai.examples.Runner -Dexec.args="$*"

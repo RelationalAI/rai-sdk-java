@@ -24,23 +24,28 @@ import com.relationalai.Config;
 import com.relationalai.HttpError;
 import com.relationalai.Json;
 
-public class ListDatabases implements Runnable {
-    String state, profile;
+public class DeleteEngine implements Runnable {
+    boolean wait;
+    String engine, profile;
 
     public void parseArgs(String[] args) {
-        var c = Command.create("CreateDatabase")
-                .addOption("state", "state filter (default: none)")
+        var c = Command.create("DeleteEngine")
+                .addArgument("engine")
+                .addOption("wait", Boolean.class, "wait for operation to complete")
                 .addOption("profile", "config profile (default: profile)")
                 .parseArgs(args);
-        this.state = c.getValue("state", String.class);
+        this.engine = c.getValue("engine", String.class);
+        this.wait = c.getValue("wait", Boolean.class);
         this.profile = c.getValue("profile", String.class);
     }
 
     public void run(String[] args) throws HttpError, InterruptedException, IOException {
         parseArgs(args);
-        var cfg = Config.loadConfig("~/.rai/config", this.profile);
+        var cfg = Config.loadConfig("~/.rai/config", profile);
         var client = new Client(cfg);
-        var rsp = client.listDatabases(state);
+        var rsp = wait
+                ? client.deleteEngineWait(engine)
+                : client.deleteEngine(engine);
         Json.print(rsp, 4);
     }
 }

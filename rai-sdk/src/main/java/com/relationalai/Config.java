@@ -31,6 +31,9 @@ public class Config {
     public String port;
     public Credentials credentials = null;
 
+    public static String DEFAULT_FILENAME = "~/.rai/config";
+    public static String DEFAULT_PROFILE = "default";
+
     public Config() {}
 
     private static Credentials getCredentials(Properties data) {
@@ -54,28 +57,33 @@ public class Config {
     }
 
     public static Config loadConfig() throws IOException {
-        return loadConfig("~/.rai/config");
+        return loadConfig(DEFAULT_FILENAME, DEFAULT_PROFILE);
     }
 
     public static Config loadConfig(InputStream input) throws IOException {
-        return loadConfig(input, "default");
-    }
-
-    public static Config loadConfig(InputStream input, String profile) throws IOException {
-        Config cfg = new Config();
-        cfg.load(input, profile);
-        return cfg;
+        return loadConfig(input, DEFAULT_PROFILE);
     }
 
     public static Config loadConfig(String fileName) throws IOException {
-        return loadConfig(fileName, "default");
+        return loadConfig(fileName, DEFAULT_PROFILE);
     }
 
     public static Config loadConfig(String fileName, String profile) throws IOException {
+        if (fileName == null)
+            fileName = DEFAULT_FILENAME;
+        if (profile == null)
+            profile = DEFAULT_PROFILE;
         if (fileName.startsWith("~" + File.separator))
             fileName = System.getProperty("user.home") + fileName.substring(1);
         FileInputStream input = new FileInputStream(fileName);
         return loadConfig(input, profile);
+    }
+
+    public static Config loadConfig(InputStream input, String profile) throws IOException {
+        assert profile != null;
+        Config cfg = new Config();
+        cfg.load(input, profile);
+        return cfg;
     }
 
     //

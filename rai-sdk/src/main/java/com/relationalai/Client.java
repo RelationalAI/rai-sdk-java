@@ -396,11 +396,13 @@ public class Client {
 
     public Engine createEngine(String engine)
             throws HttpError, InterruptedException, IOException {
-        return createEngine(engine, "XS");
+        return createEngine(engine, null);
     }
 
     public Engine createEngine(String engine, String size)
             throws HttpError, InterruptedException, IOException {
+        if (size == null)
+            size = "XS";
         var req = new CreateEngineRequest(this.region, engine, size);
         var rsp = put(PATH_ENGINE, null, Json.serialize(req));
         return Json.deserialize(rsp, CreateEngineResponse.class).engine;

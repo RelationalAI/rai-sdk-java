@@ -7,7 +7,11 @@
             "request": "launch",
             "mainClass": "com.relationalai.examples.Runner",
             "projectName": "rai-sdk-examples",
-            "args": "ListDatabases"
+            "args": [
+                "ListEngines",
+                "-state",
+                "FOO"
+            ]
         },
         {
             "type": "java",

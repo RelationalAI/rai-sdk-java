@@ -1,6 +1,7 @@
 # The RelationalAI Software Development Kit for Java
 
-The RelationalAI (RAI) SDK for Java enables developers to access the RAI REST APIs from Java.
+The RelationalAI (RAI) SDK for Java enables developers to access the RAI REST
+APIs from Java.
 
 * You can find RelationalAI Java SDK documentation at <https://docs.relational.ai/rkgms/sdk/java-sdk>
 * You can find RelationalAI product documentation at <https://docs.relational.ai>
@@ -23,20 +24,25 @@ for running the unit and integration tests.
 
 The SDK build lifecycle is managed using the standard `mvn` lifecycle commands.
 
-Compile the SDK source code
+Compile the SDK.
 
     mvn compile
 
-Run the unit tests
+Compile, package, run unit tests and install the SDK.
 
-    mvn test
+    mvn install
 
-Compile, run units and build that SDK jar file
+Compile and package without running unit tests.
 
-    mvn package
+    mvn install -DskipTests
 
-The `package` command will also copy runtime dependencies into the target
-folder.
+Run the unit tests.
+
+    mvn verify
+
+Remove all build output files from the repo.
+
+    mvn clean
 
 ### Create a configuration file
 
@@ -62,19 +68,33 @@ You can copy `config.spec` from the root of this repo and modify as needed.
 
 ## Examples
 
-Each of the examples in the `./examples` folder can be run from the command
-line. There are many ways to do this in Java, the following is one method
-for running examples from the root of the repo without installing dependencies.
+The SDK contain examples for every API, and various other SDK features. These
+are located in the examples project under `./rai-sdk-examples`.
 
-Build the SDK jar file and copy dependencies with `mvn package`.
+The examples are packaged into a single JAR file, and can be run individually
+from the command line using maven.
 
-Compile the example `examples/ListDatabases.java`
+    mvn exec:java -f rai-sdk-examples/pom.xml -Dexec.mainClass=com.relationalai.examples.Runner -Dexec.args="<className> [options]"
 
-    javac -cp "./target/*" -d "./target/classes" examples/ListDatabases.java
+Eg, to run the `GetDatabase` example from the root of the repo.
 
-Run the example `ListDatabases`
+    mvn exec:java -f rai-sdk-examples/pom.xml -Dexec.mainClass=com.relationalai.examples.Runner -Dexec.args="GetDatabase sdk-test"
 
-    java -cp "./target/classes:./target/*:./target/dependency/*" ListDatabases
+There is also a bash script in `./rai-sdk-examples` that can be used for the
+same purpose, eg:
+
+    cd ./rai-sdk/examples
+    ./run GetDatabase sdk-test
+
+You can get a list of available examples by running the maven exec command
+without any arguments, eg:
+
+    ./run
+
+And you can get information on the arguments for a given example by requesting
+help, eg:
+
+    ./run GetDatabase -?
 
 ## Support
 
@@ -87,6 +107,6 @@ to submit an issue or a PR here.
 
 ## License
 
-The RelationalAI Software Development Kit for Julia is licensed under the
+The RelationalAI Software Development Kit for Java is licensed under the
 Apache License 2.0. See:
-https://github.com/RelationalAI/rai-sdk-julia/blob/master/LICENSE
+https://github.com/RelationalAI/rai-sdk-java/blob/master/LICENSE

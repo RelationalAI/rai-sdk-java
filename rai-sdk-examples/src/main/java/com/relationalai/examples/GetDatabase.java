@@ -19,13 +19,27 @@
 package com.relationalai.examples;
 
 import java.io.IOException;
+import com.relationalai.Client;
+import com.relationalai.Config;
 import com.relationalai.HttpError;
+import com.relationalai.Json;
 
 public class GetDatabase implements Runnable {
+    String database, profile;
+
+    public void parseArgs(String[] args) {
+        var c = Command.create("GetDatabase")
+                .addArgument("database")
+                .parseArgs(args);
+        this.database = c.getValue("database", String.class);
+        this.profile = c.getValue("profile", String.class);
+    }
+
     public void run(String[] args) throws HttpError, InterruptedException, IOException {
-        //var cfg = Config.loadConfig();
-        //var client = new Client(cfg);
-        //var rsp = client.getDatabase(database);
-        //Json.print(rsp, 4);
+        parseArgs(args);
+        var cfg = Config.loadConfig("~/.rai/config", profile);
+        var client = new Client(cfg);
+        var rsp = client.getDatabase(database);
+        Json.print(rsp, 4);
     }
 }

@@ -24,23 +24,27 @@ import com.relationalai.Config;
 import com.relationalai.HttpError;
 import com.relationalai.Json;
 
-public class ListDatabases implements Runnable {
-    String state, profile;
+public class CloneDatabase implements Runnable {
+    String database, engine, source, profile;
 
     public void parseArgs(String[] args) {
-        var c = Command.create("CreateDatabase")
-                .addOption("state", "state filter (default: none)")
+        var c = Command.create("CloneDatabase")
+                .addArgument("database")
+                .addArgument("engine")
+                .addArgument("source")
                 .addOption("profile", "config profile (default: profile)")
                 .parseArgs(args);
-        this.state = c.getValue("state", String.class);
+        this.database = c.getValue("database", String.class);
+        this.engine = c.getValue("engine", String.class);
+        this.source = c.getValue("source", String.class);
         this.profile = c.getValue("profile", String.class);
     }
 
     public void run(String[] args) throws HttpError, InterruptedException, IOException {
         parseArgs(args);
-        var cfg = Config.loadConfig("~/.rai/config", this.profile);
+        var cfg = Config.loadConfig("~/.rai/config", profile);
         var client = new Client(cfg);
-        var rsp = client.listDatabases(state);
+        var rsp = client.cloneDatabase(database, engine, source);
         Json.print(rsp, 4);
     }
 }

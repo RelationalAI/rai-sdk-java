@@ -24,23 +24,28 @@ import com.relationalai.Config;
 import com.relationalai.HttpError;
 import com.relationalai.Json;
 
-public class ListDatabases implements Runnable {
-    String state, profile;
+public class CreateDatabase implements Runnable {
+    boolean overwrite;
+    String database, engine, profile;
 
     public void parseArgs(String[] args) {
         var c = Command.create("CreateDatabase")
-                .addOption("state", "state filter (default: none)")
+                .addArgument("database")
+                .addArgument("engine")
+                .addOption("overwrite", Boolean.class, "overwrite existing database")
                 .addOption("profile", "config profile (default: profile)")
                 .parseArgs(args);
-        this.state = c.getValue("state", String.class);
+        this.database = c.getValue("database", String.class);
+        this.engine = c.getValue("engine", String.class);
+        this.overwrite = c.getValue("overwrite", Boolean.class);
         this.profile = c.getValue("profile", String.class);
     }
 
     public void run(String[] args) throws HttpError, InterruptedException, IOException {
         parseArgs(args);
-        var cfg = Config.loadConfig("~/.rai/config", this.profile);
+        var cfg = Config.loadConfig("~/.rai/config", profile);
         var client = new Client(cfg);
-        var rsp = client.listDatabases(state);
+        var rsp = client.createDatabase(database, engine, overwrite);
         Json.print(rsp, 4);
     }
 }

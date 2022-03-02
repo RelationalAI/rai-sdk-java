@@ -4,7 +4,7 @@ import java.util.function.Predicate;
 
 public abstract class UnitTest {
     static String databaseName = "sdk-test";
-    static String engineName = "sdk-test";
+    static String engineName = "sdk-test2";
     static String oauthClientName = "sdk-test";
     static String userName = "sdk-test@relational.ai";
 
