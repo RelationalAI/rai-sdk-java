@@ -52,12 +52,20 @@ public class Command {
     }
 
     public Command addOption(String opt, String description) {
-        addOption(opt, String.class, 1, description);
+        addOption(opt, String.class, description);
         return this;
     }
 
     public Command addOption(String name, Class<?> type, String description) {
-        var numArgs = type == Boolean.class ? 0 : 1;
+        // infer the number of args from the type
+        int numArgs;
+        if (type == Boolean.class) {
+            numArgs = 0; // flag
+        } else if (type.isArray()) {
+            numArgs = Option.UNLIMITED_VALUES;
+        } else {
+            numArgs = 1;
+        }
         addOption(name, type, numArgs, description);
         return this;
     }
@@ -119,6 +127,8 @@ public class Command {
         return String.join(", ", missing);
     }
 
+    // Parse command line arguments and collect both arguments and options
+    // into a single results map.
     public Command parseArgs(String[] args) {
         CommandLine cmdline = null;
         var parser = new DefaultParser();
@@ -132,7 +142,20 @@ public class Command {
             errorMissing(args.length); // noreturn
         for (var option : cmdline.getOptions()) {
             var name = option.getLongOpt();
-            var value = option.hasArg() ? option.getValue() : true;
+            var numArgs = option.getArgs();
+            Object value;
+            switch (numArgs) {
+                case 0:
+                    value = null;
+                    break;
+                case 1:
+                    value = option.getValue();
+                    break;
+                default:
+                    value = option.getValues();
+                    break;
+            }
+            assert name != null;
             this.result.put(name, value);
         }
         for (var i = 0; i < argNames.size(); ++i) {

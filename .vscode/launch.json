@@ -8,9 +8,11 @@
             "mainClass": "com.relationalai.examples.Runner",
             "projectName": "rai-sdk-examples",
             "args": [
-                "ListEngines",
-                "-state",
-                "FOO"
+                "CreateOAuthClient",
+                "sdk-test",
+                "-permissions",
+                "list:database",
+                "list:compute"
             ]
         },
         {
