@@ -24,18 +24,21 @@ import com.relationalai.Config;
 import com.relationalai.HttpError;
 import com.relationalai.Json;
 
-public class CreateOAuthClient implements Runnable {
-    String name, profile;
-    String[] permissions;
+// Updates the user with the given id.
+public class UpdateUser implements Runnable {
+    String id, status, profile;
+    String[] roles;
 
     public void parseArgs(String[] args) {
-        var c = Command.create("CreateOAuthClient")
-                .addArgument("name")
-                .addOption("permissions", String[].class, "OAuth client permissions")
+        var c = Command.create("UpdateUser")
+                .addArgument("id")
+                .addOption("status", String.class, "user status")
+                .addOption("roles", String[].class, "user roles")
                 .addOption("profile", "config profile (default: profile)")
                 .parseArgs(args);
-        this.name = c.getValue("name", String.class);
-        this.permissions = c.getValue("permissions", String[].class);
+        this.id = c.getValue("id", String.class);
+        this.status = c.getValue("status", String.class);
+        this.roles = c.getValue("roles", String[].class);
         this.profile = c.getValue("profile", String.class);
     }
 
@@ -43,7 +46,7 @@ public class CreateOAuthClient implements Runnable {
         parseArgs(args);
         var cfg = Config.loadConfig("~/.rai/config", profile);
         var client = new Client(cfg);
-        var rsp = client.createOAuthClient(name, permissions);
+        var rsp = client.updateUser(id, status, roles);
         Json.print(rsp, 4);
     }
 }

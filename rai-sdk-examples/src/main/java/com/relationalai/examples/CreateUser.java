@@ -24,18 +24,18 @@ import com.relationalai.Config;
 import com.relationalai.HttpError;
 import com.relationalai.Json;
 
-public class CreateOAuthClient implements Runnable {
-    String name, profile;
-    String[] permissions;
+public class CreateUser implements Runnable {
+    String email, profile;
+    String[] roles;
 
     public void parseArgs(String[] args) {
-        var c = Command.create("CreateOAuthClient")
-                .addArgument("name")
-                .addOption("permissions", String[].class, "OAuth client permissions")
+        var c = Command.create("CreateUser")
+                .addArgument("email")
+                .addOption("roles", String[].class, "user roles")
                 .addOption("profile", "config profile (default: profile)")
                 .parseArgs(args);
-        this.name = c.getValue("name", String.class);
-        this.permissions = c.getValue("permissions", String[].class);
+        this.email = c.getValue("email", String.class);
+        this.roles = c.getValue("roles", String[].class);
         this.profile = c.getValue("profile", String.class);
     }
 
@@ -43,7 +43,7 @@ public class CreateOAuthClient implements Runnable {
         parseArgs(args);
         var cfg = Config.loadConfig("~/.rai/config", profile);
         var client = new Client(cfg);
-        var rsp = client.createOAuthClient(name, permissions);
+        var rsp = client.createUser(email, roles);
         Json.print(rsp, 4);
     }
 }

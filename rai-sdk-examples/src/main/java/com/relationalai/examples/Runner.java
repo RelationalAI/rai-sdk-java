@@ -21,14 +21,15 @@ package com.relationalai.examples;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 
+// Helper class that provides a convenient command line interface for executing
+// individual SDK examples.
 public class Runner {
     public static void main(String[] args) {
         if (args.length < 1) {
             System.err.println("error: no inputs");
             System.exit(1);
         }
-
-        var cmdName = args[0];
+        var cmdName = args[0]; // name of the example class
         var cmdArgs = Arrays.copyOfRange(args, 1, args.length);
         var className = "com.relationalai.examples." + cmdName;
         try {
@@ -37,6 +38,7 @@ public class Runner {
             Runnable cmd = (Runnable) ctor.newInstance();
             cmd.run(cmdArgs);
         } catch (Exception e) {
+            // error trying to run example
             System.err.println(e.toString());
         }
         System.exit(0);
