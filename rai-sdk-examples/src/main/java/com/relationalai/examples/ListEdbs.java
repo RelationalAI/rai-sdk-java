@@ -24,15 +24,17 @@ import com.relationalai.Config;
 import com.relationalai.HttpError;
 import com.relationalai.Json;
 
-public class ListDatabases implements Runnable {
-    String state, profile;
+public class ListEdbs implements Runnable {
+    String database, engine, profile;
 
     public void parseArgs(String[] args) {
-        var c = Command.create("ListDatabases")
-                .addOption("state", "state filter (default: none)")
+        var c = Command.create("ListEdbs")
+                .addArgument("database")
+                .addArgument("engine")
                 .addOption("profile", "config profile (default: profile)")
                 .parseArgs(args);
-        this.state = c.getValue("state", String.class);
+        this.database = c.getValue("database", String.class);
+        this.engine = c.getValue("engine", String.class);
         this.profile = c.getValue("profile", String.class);
     }
 
@@ -40,7 +42,7 @@ public class ListDatabases implements Runnable {
         parseArgs(args);
         var cfg = Config.loadConfig("~/.rai/config", this.profile);
         var client = new Client(cfg);
-        var rsp = client.listDatabases(state);
+        var rsp = client.listEdbs(database, engine);
         Json.print(rsp, 4);
     }
 }

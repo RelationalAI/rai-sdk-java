@@ -1,0 +1,17 @@
+# Todo
+
+* implement proper units for config, etc
+* finish integration tests
+* consider moving integration tests to a more appropriate location
+* verbosity option for requests
+* investigate logging
+
+## Examples
+
+* Execute
+* Model examples (delete, get, list, load)
+* ListEdbs
+* LoadCsv
+* LoadJson
+* ShowProblems
+* ShowResults
