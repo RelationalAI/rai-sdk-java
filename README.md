@@ -28,7 +28,8 @@ Compile the SDK.
 
     mvn compile
 
-Compile, package, run unit tests and install the SDK.
+Compile, package, run unit tests and install the SDK.  Note that `mvn install`
+is required to build and run the examples.
 
     mvn install
 
@@ -80,21 +81,11 @@ Eg, to run the `GetDatabase` example from the root of the repo.
 
     mvn exec:java -f rai-sdk-examples/pom.xml -Dexec.mainClass=com.relationalai.examples.Runner -Dexec.args="GetDatabase sdk-test"
 
-There is also a bash script in `./rai-sdk-examples` that can be used for the
-same purpose, eg:
+There is also a bash script in `./rai-sdk-examples` that can be used to run
+individual examples, eg:
 
     cd ./rai-sdk/examples
     ./run GetDatabase sdk-test
-
-You can get a list of available examples by running the maven exec command
-without any arguments, eg:
-
-    ./run
-
-And you can get information on the arguments for a given example by requesting
-help, eg:
-
-    ./run GetDatabase -?
 
 ## Support
 
