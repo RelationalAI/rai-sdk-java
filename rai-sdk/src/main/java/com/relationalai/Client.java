@@ -118,7 +118,7 @@ public class Client {
                 getHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
         var data = response.body();
         var statusCode = response.statusCode();
-        if (statusCode >= 400 && statusCode < 500)
+        if (statusCode >= 400)
             throw new HttpError(statusCode, data);
         return Json.deserialize(data, AccessToken.class);
     }
@@ -240,7 +240,7 @@ public class Client {
         HttpResponse<String> response =
                 getHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
         int statusCode = response.statusCode();
-        if (statusCode >= 400 && statusCode < 500)
+        if (statusCode >= 400)
             throw new HttpError(statusCode, response.body());
         return response.body();
     }
@@ -664,8 +664,15 @@ public class Client {
         throw new HttpError(404);
     }
 
-    // Install a model in the given database.
-    public TransactionResult installModel(
+    // Load a model into the given database.
+    public TransactionResult loadModel(
+            String database, String engine, String name, InputStream model)
+            throws HttpError, InterruptedException, IOException {
+        var s = new String(model.readAllBytes());
+        return loadModel(database, engine, name, s);
+    }
+
+    public TransactionResult loadModel(
             String database, String engine, String name, String model)
             throws HttpError, InterruptedException, IOException {
         var tx = new Transaction(this.region, database, engine, "OPEN", false);
@@ -675,8 +682,8 @@ public class Client {
         return Json.deserialize(rsp, TransactionResult.class);
     }
 
-    // Install multiple models in the given database.
-    public TransactionResult installModels(
+    // Load multiple models into the given database.
+    public TransactionResult loadModels(
             String database, String engine, Map<String, String> models)
             throws HttpError, InterruptedException, IOException {
         var tx = new Transaction(this.region, database, engine, "OPEN", false);
@@ -964,16 +971,13 @@ public class Client {
         var cfg = Config.loadConfig();
         var client = new Client(cfg);
 
-        // todo: test installModels
-        // todo: test deleteModels
-
         rsp = client.listModels(db, eng);
         Json.print(rsp, 4);
 
         rsp = client.listModelNames(db, eng);
         Json.print(rsp, 4);
 
-        rsp = client.installModel(db, eng, "hello", "def R = \"hello\",\"world!\"");
+        rsp = client.loadModel(db, eng, "hello", "def R = \"hello\",\"world!\"");
         Json.print(rsp, 4);
         rsp = client.getModel(db, eng, "hello");
         Json.print(rsp, 4);

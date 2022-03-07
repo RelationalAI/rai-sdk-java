@@ -31,15 +31,15 @@ public class GetEngine implements Runnable {
         var c = Command.create("GetEngine")
                 .addArgument("engine")
                 .parseArgs(args);
-        this.engine = c.getValue("engine", String.class);
-        this.profile = c.getValue("profile", String.class);
+        this.engine = c.getValue("engine");
+        this.profile = c.getValue("profile");
     }
 
     public void run(String[] args) throws HttpError, InterruptedException, IOException {
         parseArgs(args);
         var cfg = Config.loadConfig("~/.rai/config", profile);
         var client = new Client(cfg);
-        var rsp = client.getEngine(this.engine);
+        var rsp = client.getEngine(engine);
         Json.print(rsp, 4);
     }
 }

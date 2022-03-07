@@ -8,9 +8,10 @@
 #
 #     ./run <sample-name> [options]
 #
-# Example:
+# Eg:
 #
 #     ./run GetDatabase sdk-test
 #
 
+echo $* >&2
 mvn -q exec:java -Dexec.mainClass=com.relationalai.examples.Runner -Dexec.args="$*"

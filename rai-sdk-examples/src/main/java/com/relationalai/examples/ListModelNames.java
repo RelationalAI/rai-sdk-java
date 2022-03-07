@@ -33,14 +33,14 @@ public class ListModelNames implements Runnable {
                 .addArgument("engine")
                 .addOption("profile", "config profile (default: profile)")
                 .parseArgs(args);
-        this.database = c.getValue("database", String.class);
-        this.engine = c.getValue("engine", String.class);
-        this.profile = c.getValue("profile", String.class);
+        this.database = c.getValue("database");
+        this.engine = c.getValue("engine");
+        this.profile = c.getValue("profile");
     }
 
     public void run(String[] args) throws HttpError, InterruptedException, IOException {
         parseArgs(args);
-        var cfg = Config.loadConfig("~/.rai/config", this.profile);
+        var cfg = Config.loadConfig("~/.rai/config", profile);
         var client = new Client(cfg);
         var rsp = client.listModelNames(database, engine);
         Json.print(rsp, 4);

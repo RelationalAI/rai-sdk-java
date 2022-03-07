@@ -22,13 +22,14 @@ public class UpdateUserRequest extends Entity {
     @JsonProperty(value = "status", required = false, defaultValueToOmit = "null")
     public String status;
 
-    @JsonProperty(value = "roles", required = false, defaultValueToOmit = "null")
+    @JsonProperty(value = "roles", required = true)
     public String[] roles;
 
     public UpdateUserRequest() {}
 
     public UpdateUserRequest(String status) {
         this.status = status;
+        this.roles = new String[] {};
     }
 
     public UpdateUserRequest(String[] roles) {
@@ -37,6 +38,8 @@ public class UpdateUserRequest extends Entity {
 
     public UpdateUserRequest(String status, String[] roles) {
         this.status = status;
+        if (roles == null)
+            roles = new String[] {};
         this.roles = roles;
     }
 }

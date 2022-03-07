@@ -24,22 +24,27 @@ import com.relationalai.Config;
 import com.relationalai.HttpError;
 import com.relationalai.Json;
 
-public class DeleteDatabase implements Runnable {
-    String database, profile;
+public class DeleteModel implements Runnable {
+    String database, engine, model, profile;
 
     public void parseArgs(String[] args) {
-        var c = Command.create("DeleteDatabase")
+        var c = Command.create("DeleteModel")
                 .addArgument("database")
+                .addArgument("engine")
+                .addArgument("model")
+                .addOption("profile", "config profile (default: profile)")
                 .parseArgs(args);
         this.database = c.getValue("database");
+        this.engine = c.getValue("engine");
+        this.model = c.getValue("model");
         this.profile = c.getValue("profile");
     }
 
     public void run(String[] args) throws HttpError, InterruptedException, IOException {
         parseArgs(args);
-        var cfg = Config.loadConfig("~/.rai/config", profile);
+        var cfg = Config.loadConfig("~/.rai/config", this.profile);
         var client = new Client(cfg);
-        var rsp = client.deleteDatabase(database);
+        var rsp = client.deleteModel(database, engine, model);
         Json.print(rsp, 4);
     }
 }

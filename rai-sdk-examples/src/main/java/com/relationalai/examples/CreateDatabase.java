@@ -32,13 +32,13 @@ public class CreateDatabase implements Runnable {
         var c = Command.create("CreateDatabase")
                 .addArgument("database")
                 .addArgument("engine")
-                .addOption("overwrite", Boolean.class, "overwrite existing database")
+                .addFlag("overwrite", "overwrite existing database")
                 .addOption("profile", "config profile (default: profile)")
                 .parseArgs(args);
-        this.database = c.getValue("database", String.class);
-        this.engine = c.getValue("engine", String.class);
+        this.database = c.getValue("database");
+        this.engine = c.getValue("engine");
         this.overwrite = c.getValue("overwrite", Boolean.class);
-        this.profile = c.getValue("profile", String.class);
+        this.profile = c.getValue("profile");
     }
 
     public void run(String[] args) throws HttpError, InterruptedException, IOException {

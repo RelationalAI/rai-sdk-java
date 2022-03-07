@@ -18,20 +18,37 @@
 
 package com.relationalai.examples;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import com.relationalai.Client;
 import com.relationalai.Config;
 import com.relationalai.HttpError;
 import com.relationalai.Json;
 
-public class DeleteDatabase implements Runnable {
-    String database, profile;
+public class LoadModel implements Runnable {
+    String database, engine, filename, relation, profile;
 
+    // Returns the name of the file, without extension.
+    static String sansext(String fname) {
+        var file = new File(fname);
+        var name = file.getName();
+        var dot = name.lastIndexOf('.');
+        if (dot > 0)
+            name = name.substring(0, dot);
+        return name;
+    }
+
+    // todo: schema
     public void parseArgs(String[] args) {
-        var c = Command.create("DeleteDatabase")
+        var c = Command.create("LoadModel")
                 .addArgument("database")
+                .addArgument("engine")
+                .addArgument("file")
                 .parseArgs(args);
         this.database = c.getValue("database");
+        this.engine = c.getValue("engine");
+        this.filename = c.getValue("file");
         this.profile = c.getValue("profile");
     }
 
@@ -39,7 +56,9 @@ public class DeleteDatabase implements Runnable {
         parseArgs(args);
         var cfg = Config.loadConfig("~/.rai/config", profile);
         var client = new Client(cfg);
-        var rsp = client.deleteDatabase(database);
+        var name = sansext(filename);
+        var input = new FileInputStream(filename);
+        var rsp = client.loadModel(database, engine, name, input);
         Json.print(rsp, 4);
     }
 }

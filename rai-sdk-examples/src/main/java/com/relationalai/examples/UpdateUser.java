@@ -32,14 +32,14 @@ public class UpdateUser implements Runnable {
     public void parseArgs(String[] args) {
         var c = Command.create("UpdateUser")
                 .addArgument("id")
-                .addOption("status", String.class, "user status")
-                .addOption("roles", String[].class, "user roles")
+                .addOption("status", "user status")
+                .addOption("roles", "user roles")
                 .addOption("profile", "config profile (default: profile)")
                 .parseArgs(args);
-        this.id = c.getValue("id", String.class);
-        this.status = c.getValue("status", String.class);
+        this.id = c.getValue("id");
+        this.status = c.getValue("status");
         this.roles = c.getValue("roles", String[].class);
-        this.profile = c.getValue("profile", String.class);
+        this.profile = c.getValue("profile");
     }
 
     public void run(String[] args) throws HttpError, InterruptedException, IOException {

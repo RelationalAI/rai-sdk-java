@@ -1,0 +1,125 @@
+#!/bin/bash
+
+# Run all SDK examples
+
+DATABASE="sdk-test"
+DATABASECLONE="sdk-test-clone"
+ENGINE="sdk-test2"
+TEST="./target/test-classes"
+
+set -e
+
+# reset state
+./run DeleteDatabase $DATABASECLONE
+./run DeleteDatabase $DATABASE
+./run DeleteEngine -wait $ENGINE
+
+# engines
+./run CreateEngine -wait -size XS $ENGINE
+./run ListEngines
+./run ListEngines -state PROVISIONED
+./run ListEngines -state NONSENSE
+./run GetEngine $ENGINE
+
+# databases
+./run CreateDatabase -overwrite $DATABASE $ENGINE
+./run ListDatabases
+./run ListDatabases -state CREATED
+./run ListDatabases -state NONSENSE
+./run GetDatabase $DATABASE
+./run ListEdbs $DATABASE $ENGINE
+./run ListModelNames $DATABASE $ENGINE
+./run ListModels $DATABASE $ENGINE
+./run GetModel $DATABASE $ENGINE stdlib
+
+# exec
+QUERY='x, x^2, x^3, x^4 from x in {1; 2; 3; 4; 5}'
+./run Execute -c "\"$QUERY\"" $DATABASE $ENGINE
+./run Execute -c "\"$QUERY\"" -readonly $DATABASE $ENGINE
+#./run ./show-result.jl $DATABASE $ENGINE
+#./run ./show-problems.jl $DATABASE $ENGINE
+
+# load model
+./run LoadModel $DATABASE $ENGINE $TEST/hello.rel
+./run GetModel $DATABASE $ENGINE hello
+./run ListModels $DATABASE $ENGINE
+./run ListModelNames $DATABASE $ENGINE
+./run DeleteModel $DATABASE $ENGINE hello
+./run ListModelNames $DATABASE $ENGINE
+
+# load-csv
+./run ListEdbs $DATABASE $ENGINE
+./run LoadCsv $DATABASE $ENGINE $TEST/sample.csv -r sample_csv
+./run Execute -c sample_csv $DATABASE $ENGINE
+./run LoadCsv -headerrow 0 -r sample_no_header_csv $DATABASE $ENGINE $TEST/sample_no_header.csv
+./run Execute -c sample_no_header_csv $DATABASE $ENGINE
+./run LoadCsv -delim "|" -quotechar \""'\"" -r sample_alt_syntax_csv $DATABASE $ENGINE $TEST/sample_alt_syntax.csv
+./run Execute -c sample_alt_syntax_csv $DATABASE $ENGINE 
+./run ListEdbs $DATABASE $ENGINE
+
+# load-json
+./run LoadJson -r sample_json $DATABASE $ENGINE $TEST/sample.json
+./run Execute -c sample_json $DATABASE $ENGINE
+./run ListEdbs $DATABASE $ENGINE
+
+# clone database
+./run CreateDatabase -overwrite $DATABASE $ENGINE
+./run LoadJson -r sample_json $DATABASE $ENGINE $TEST/sample.json
+./run LoadModel $DATABASE $ENGINE $TEST/hello.rel
+./run CloneDatabase $DATABASECLONE $ENGINE $DATABASE
+./run ListDatabases
+./run GetDatabase $DATABASECLONE
+./run ListEdbs $DATABASECLONE $ENGINE
+./run ListModels $DATABASECLONE $ENGINE
+./run GetModel $DATABASECLONE $ENGINE hello
+
+# oauth-clients
+CLIENTID=`./run FindOAuthClient sdk-test | jq -r '.id'`
+if [[ "$CLIENTID" != null ]]; then
+./run DeleteOAuthClient $CLIENTID
+fi
+./run ListOAuthClients
+./run CreateOAuthClient sdk-test
+./run ListOAuthClients
+./run FindOAuthClient sdk-test
+CLIENTID=`./run FindOAuthClient sdk-test | jq -r '.id'`
+./run GetOAuthClient $CLIENTID
+./run DeleteOAuthClient $CLIENTID
+./run ListOAuthClients
+
+# users
+EMAIL=sdk-test@relational.ai
+USERID=`./run FindUser $EMAIL | jq -r '.id'`
+if [[ "$USERID" != null ]]; then
+./run DeleteUser "$USERID"
+fi
+./run ListUsers
+./run CreateUser $EMAIL
+./run ListUsers
+./run FindUser $EMAIL
+USERID=`./run FindUser $EMAIL | jq -r '.id'`
+./run GetUser "$USERID"
+./run DisableUser "$USERID"
+./run EnableUser "$USERID"
+./run UpdateUser -status INACTIVE "$USERID"
+./run UpdateUser -status ACTIVE "$USERID"
+./run UpdateUser -roles admin,user "$USERID"
+./run UpdateUser -roles user -status INACTIVE "$USERID"
+./run UpdateUser "$USERID"
+./run DeleteUser "$USERID"
+./run ListUsers
+
+exit
+
+# cleanup
+./run DeleteDatabase $DATABASECLONE
+./run DeleteDatabase $DATABASE
+./run DeleteEngine $ENGINE
+CLIENTID=`./run FindOAuthClient sdk-test | jq -r '.id'`
+if [[ "$CLIENTID" != null ]]; then
+./run DeleteOAuthClient $CLIENTID
+fi
+USERID=`./run FindUser $EMAIL | jq -r '.id'`
+if [[ "$USERID" != null ]]; then
+./run DeleteUser "$USERID"
+fi

@@ -32,8 +32,8 @@ public class FindUser implements Runnable {
         var c = Command.create("FindUser")
                 .addArgument("email")
                 .parseArgs(args);
-        this.email = c.getValue("email", String.class);
-        this.profile = c.getValue("profile", String.class);
+        this.email = c.getValue("email");
+        this.profile = c.getValue("profile");
     }
 
     public void run(String[] args) throws HttpError, InterruptedException, IOException {

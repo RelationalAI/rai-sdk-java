@@ -32,8 +32,8 @@ public class FindOAuthClient implements Runnable {
         var c = Command.create("FindOAuthClient")
                 .addArgument("name")
                 .parseArgs(args);
-        this.name = c.getValue("name", String.class);
-        this.profile = c.getValue("profile", String.class);
+        this.name = c.getValue("name");
+        this.profile = c.getValue("profile");
     }
 
     public void run(String[] args) throws HttpError, InterruptedException, IOException {

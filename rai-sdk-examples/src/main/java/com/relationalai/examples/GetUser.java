@@ -32,8 +32,8 @@ public class GetUser implements Runnable {
         var c = Command.create("GetUser")
                 .addArgument("id")
                 .parseArgs(args);
-        this.id = c.getValue("id", String.class);
-        this.profile = c.getValue("profile", String.class);
+        this.id = c.getValue("id");
+        this.profile = c.getValue("profile");
     }
 
     public void run(String[] args) throws HttpError, InterruptedException, IOException {

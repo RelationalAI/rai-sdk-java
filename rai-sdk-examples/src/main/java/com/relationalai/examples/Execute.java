@@ -19,19 +19,44 @@
 package com.relationalai.examples;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import com.relationalai.Client;
 import com.relationalai.Config;
 import com.relationalai.HttpError;
 import com.relationalai.Json;
 
-public class DeleteDatabase implements Runnable {
-    String database, profile;
+public class Execute implements Runnable {
+    boolean readonly;
+    String database, engine, command, filename, profile;
 
+    // Returns the name of the file, without extension.
+    static String readFile(String fname) throws IOException {
+        return Files.readAllBytes(Path.of(fname)).toString();
+    }
+
+    String getCommand() throws IOException {
+        if (command != null)
+            return command; // prefer command line
+        if (filename != null)
+            return readFile(filename);
+        return null;
+    }
+
+    // todo: schema
     public void parseArgs(String[] args) {
-        var c = Command.create("DeleteDatabase")
+        var c = Command.create("Execute")
                 .addArgument("database")
+                .addArgument("engine")
+                .addOption("c", "rel source string")
+                .addOption("f", "rel source file")
+                .addFlag("readonly", "readonly query (default: false)")
                 .parseArgs(args);
         this.database = c.getValue("database");
+        this.engine = c.getValue("engine");
+        this.command = c.getValue("c");
+        this.filename = c.getValue("f");
+        this.readonly = c.getValue("readonly", Boolean.class);
         this.profile = c.getValue("profile");
     }
 
@@ -39,7 +64,10 @@ public class DeleteDatabase implements Runnable {
         parseArgs(args);
         var cfg = Config.loadConfig("~/.rai/config", profile);
         var client = new Client(cfg);
-        var rsp = client.deleteDatabase(database);
+        String source = getCommand();
+        if (source == null)
+            return; // nothing to execute
+        var rsp = client.execute(database, engine, source, readonly);
         Json.print(rsp, 4);
     }
 }

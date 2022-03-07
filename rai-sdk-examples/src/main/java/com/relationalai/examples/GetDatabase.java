@@ -31,8 +31,8 @@ public class GetDatabase implements Runnable {
         var c = Command.create("GetDatabase")
                 .addArgument("database")
                 .parseArgs(args);
-        this.database = c.getValue("database", String.class);
-        this.profile = c.getValue("profile", String.class);
+        this.database = c.getValue("database");
+        this.profile = c.getValue("profile");
     }
 
     public void run(String[] args) throws HttpError, InterruptedException, IOException {

@@ -34,10 +34,10 @@ public class CloneDatabase implements Runnable {
                 .addArgument("source")
                 .addOption("profile", "config profile (default: profile)")
                 .parseArgs(args);
-        this.database = c.getValue("database", String.class);
-        this.engine = c.getValue("engine", String.class);
-        this.source = c.getValue("source", String.class);
-        this.profile = c.getValue("profile", String.class);
+        this.database = c.getValue("database");
+        this.engine = c.getValue("engine");
+        this.source = c.getValue("source");
+        this.profile = c.getValue("profile");
     }
 
     public void run(String[] args) throws HttpError, InterruptedException, IOException {

@@ -46,27 +46,18 @@ public class Command {
         this.options.addOption("?", "help", false, "display help");
     }
 
+    public Command addFlag(String name, String description) {
+        addOption(name, Boolean.class, 0, description);
+        return this;
+    }
+
     public Command addOption(Option opt) {
-        this.options.addOption(opt);
+        options.addOption(opt);
         return this;
     }
 
-    public Command addOption(String opt, String description) {
-        addOption(opt, String.class, description);
-        return this;
-    }
-
-    public Command addOption(String name, Class<?> type, String description) {
-        // infer the number of args from the type
-        int numArgs;
-        if (type == Boolean.class) {
-            numArgs = 0; // flag
-        } else if (type.isArray()) {
-            numArgs = Option.UNLIMITED_VALUES;
-        } else {
-            numArgs = 1;
-        }
-        addOption(name, type, numArgs, description);
+    public Command addOption(String name, String description) {
+        addOption(name, String.class, 1, description);
         return this;
     }
 
@@ -74,16 +65,17 @@ public class Command {
         var option = new Option(name, description);
         option.setDescription(description);
         option.setLongOpt(name);
-        option.setType(type);
+        option.setType(String.class);
         option.setArgs(numArgs);
-        this.options.addOption(option);
+        option.setValueSeparator(',');
+        options.addOption(option);
         return this;
     }
 
     // Add a required positional argument with the given name. Positional args
     // will be parsed in the order they are added here.
     public Command addArgument(String name) {
-        this.argNames.add(name);
+        argNames.add(name);
         return this;
     }
 
@@ -94,26 +86,46 @@ public class Command {
     void errorMessage(String fmt, Object... args) {
         String msg;
         msg = String.format(fmt, args);
-        msg = String.format("error: %s\n", msg);
+        msg = String.format("error: %s", msg);
         System.err.println(msg);
     }
 
+    // Print an error message and exit.
     void error(String fmt, Object... args) {
         errorMessage(fmt, args);
         System.exit(1);
     }
 
-    // Report missing arguments, print usage and exit.
-    void errorMissing(int count) {
-        errorMessage("missing arguments: %s", missingArgs(count));
+    // Print an error message, usage string and exit.
+    void errorUsage(String fmt, Object... args) {
+        errorMessage(fmt, args);
         printUsage();
         System.exit(1);
     }
 
+    void errorMissing(int count) {
+        errorUsage("missing arguments: %s", missingArgs(count));
+    }
+
+    void errorTooMany(int count) {
+        errorUsage("too many arguments");
+    }
+
+    public String getValue(String name) {
+        return getValue(name, String.class);
+    }
+
     public <T> T getValue(String name, Class<T> cls) {
-        var v = this.result.get(name);
-        if (cls == Boolean.class && v == null)
-            v = false;
+        var v = result.get(name);
+        var s = (String) v;
+        if (cls == Boolean.class)
+            v = s == null ? false : true;
+        else if (cls == Character.class)
+            v = s == null ? null : s.charAt(0);
+        else if (cls == Integer.class)
+            v = s == null ? null : Integer.parseInt(s);
+        else if (cls == String[].class)
+            v = s == null ? null : s.split(",");
         return cls.cast(v);
     }
 
@@ -140,13 +152,16 @@ public class Command {
         args = cmdline.getArgs();
         if (args.length < argNames.size())
             errorMissing(args.length); // noreturn
+        if (args.length > argNames.size())
+            errorTooMany(args.length); //  noreturn
         for (var option : cmdline.getOptions()) {
             var name = option.getLongOpt();
             var numArgs = option.getArgs();
             Object value;
             switch (numArgs) {
                 case 0:
-                    value = null;
+                    assert option.getType() == Boolean.class;
+                    value = "true";
                     break;
                 case 1:
                     value = option.getValue();
@@ -156,19 +171,19 @@ public class Command {
                     break;
             }
             assert name != null;
-            this.result.put(name, value);
+            result.put(name, value);
         }
         for (var i = 0; i < argNames.size(); ++i) {
             var name = argNames.get(i);
             var value = args[i];
-            this.result.put(name, value);
+            result.put(name, value);
         }
         return this;
     }
 
     void printUsage() {
-        var names = String.join(", ", argNames);
-        var msg = String.format("usage: %s [options] ", appName, names);
+        String args = argNames.size() == 0 ? "" : String.join(" ", argNames);
+        var msg = String.format("usage: %s [options] %s", appName, args);
         System.out.println(msg);
     }
 }

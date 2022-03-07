@@ -31,12 +31,12 @@ public class CreateUser implements Runnable {
     public void parseArgs(String[] args) {
         var c = Command.create("CreateUser")
                 .addArgument("email")
-                .addOption("roles", String[].class, "user roles")
+                .addOption("roles", "user roles")
                 .addOption("profile", "config profile (default: profile)")
                 .parseArgs(args);
-        this.email = c.getValue("email", String.class);
+        this.email = c.getValue("email");
         this.roles = c.getValue("roles", String[].class);
-        this.profile = c.getValue("profile", String.class);
+        this.profile = c.getValue("profile");
     }
 
     public void run(String[] args) throws HttpError, InterruptedException, IOException {

@@ -31,12 +31,12 @@ public class CreateOAuthClient implements Runnable {
     public void parseArgs(String[] args) {
         var c = Command.create("CreateOAuthClient")
                 .addArgument("name")
-                .addOption("permissions", String[].class, "OAuth client permissions")
+                .addOption("permissions", "OAuth client permissions")
                 .addOption("profile", "config profile (default: profile)")
                 .parseArgs(args);
-        this.name = c.getValue("name", String.class);
+        this.name = c.getValue("name");
         this.permissions = c.getValue("permissions", String[].class);
-        this.profile = c.getValue("profile", String.class);
+        this.profile = c.getValue("profile");
     }
 
     public void run(String[] args) throws HttpError, InterruptedException, IOException {

@@ -32,13 +32,13 @@ public class CreateEngine implements Runnable {
         var c = Command.create("CreateEngine")
                 .addArgument("engine")
                 .addOption("size", "engine size (default: XS)")
-                .addOption("wait", Boolean.class, "wait for operation to complete")
+                .addFlag("wait", "wait for operation to complete")
                 .addOption("profile", "config profile (default: profile)")
                 .parseArgs(args);
-        this.engine = c.getValue("engine", String.class);
-        this.size = c.getValue("size", String.class);
+        this.engine = c.getValue("engine");
+        this.size = c.getValue("size");
         this.wait = c.getValue("wait", Boolean.class);
-        this.profile = c.getValue("profile", String.class);
+        this.profile = c.getValue("profile");
     }
 
     public void run(String[] args) throws HttpError, InterruptedException, IOException {

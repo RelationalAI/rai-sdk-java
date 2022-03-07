@@ -32,13 +32,13 @@ public class ListDatabases implements Runnable {
                 .addOption("state", "state filter (default: none)")
                 .addOption("profile", "config profile (default: profile)")
                 .parseArgs(args);
-        this.state = c.getValue("state", String.class);
-        this.profile = c.getValue("profile", String.class);
+        this.state = c.getValue("state");
+        this.profile = c.getValue("profile");
     }
 
     public void run(String[] args) throws HttpError, InterruptedException, IOException {
         parseArgs(args);
-        var cfg = Config.loadConfig("~/.rai/config", this.profile);
+        var cfg = Config.loadConfig("~/.rai/config", profile);
         var client = new Client(cfg);
         var rsp = client.listDatabases(state);
         Json.print(rsp, 4);

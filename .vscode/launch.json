@@ -8,11 +8,9 @@
             "mainClass": "com.relationalai.examples.Runner",
             "projectName": "rai-sdk-examples",
             "args": [
-                "CreateUser",
-                "sdk-test",
-                "-roles",
-                "user",
-                "admin"
+                "DeleteEngine",
+                "-wait",
+                "sdk-test2"
             ]
         },
         {

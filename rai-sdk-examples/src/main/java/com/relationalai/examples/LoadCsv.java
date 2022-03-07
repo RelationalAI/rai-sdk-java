@@ -47,30 +47,29 @@ public class LoadCsv implements Runnable {
                 .addArgument("database")
                 .addArgument("engine")
                 .addArgument("file")
-                .addOption("headerrow", Integer.class,
-                        "header row number, 0 for no header (default: 1)")
-                .addOption("delim", Character.class, "field delimiter")
-                .addOption("escapechar", Character.class, "character used to escape quotes")
-                .addOption("quotechar", Character.class, "quoted field character")
-                .addOption("relation", "relation name (default: file name)")
+                .addOption("r", "relation name (default: file name)")
+                .addOption("headerrow", "header row number, 0 for no header (default: 1)")
+                .addOption("delim", "field delimiter")
+                .addOption("escapechar", "character used to escape quotes")
+                .addOption("quotechar", "quoted field character")
                 .addOption("profile", "config profile (default: profile)")
                 .parseArgs(args);
-        this.database = c.getValue("database", String.class);
-        this.engine = c.getValue("engine", String.class);
-        this.filename = c.getValue("file", String.class);
-        this.relation = c.getValue("relation", String.class);
+        this.database = c.getValue("database");
+        this.engine = c.getValue("engine");
+        this.filename = c.getValue("file");
+        this.relation = c.getValue("r");
         options.delim = c.getValue("delim", Character.class);
         options.escapeChar = c.getValue("escapechar", Character.class);
         options.quoteChar = c.getValue("quotechar", Character.class);
         options.headerRow = c.getValue("headerrow", Integer.class);
-        this.profile = c.getValue("profile", String.class);
+        this.profile = c.getValue("profile");
     }
 
     public void run(String[] args) throws HttpError, InterruptedException, IOException {
         parseArgs(args);
-        var cfg = Config.loadConfig("~/.rai/config", this.profile);
+        var cfg = Config.loadConfig("~/.rai/config", profile);
         var client = new Client(cfg);
-        var input = new FileInputStream(this.filename);
+        var input = new FileInputStream(filename);
         var rname = relation != null ? relation : sansext(filename);
         var rsp = client.loadCsv(database, engine, rname, input, options);
         Json.print(rsp, 4);

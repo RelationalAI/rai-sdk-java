@@ -31,12 +31,12 @@ public class DeleteEngine implements Runnable {
     public void parseArgs(String[] args) {
         var c = Command.create("DeleteEngine")
                 .addArgument("engine")
-                .addOption("wait", Boolean.class, "wait for operation to complete")
+                .addFlag("wait", "wait for operation to complete")
                 .addOption("profile", "config profile (default: profile)")
                 .parseArgs(args);
-        this.engine = c.getValue("engine", String.class);
+        this.engine = c.getValue("engine");
         this.wait = c.getValue("wait", Boolean.class);
-        this.profile = c.getValue("profile", String.class);
+        this.profile = c.getValue("profile");
     }
 
     public void run(String[] args) throws HttpError, InterruptedException, IOException {
