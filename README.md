@@ -24,25 +24,27 @@ for running the unit and integration tests.
 
 The SDK build lifecycle is managed using the standard `mvn` lifecycle commands.
 
-Compile the SDK.
+**Compile the SDK**
 
     mvn compile
 
-Run the tests.
+**Run the tests**
 
     mvn test
+    
+Note, the test are run against the account configured in your SDK config file.
 
-Compile, package, run tests and install the SDK.
+**Compile, package, run tests and install the SDK**
 
     mvn install
 
 Note that `mvn install` is required to build and run the examples.
 
-Compile and package without running tests.
+**Compile, package and install without running tests**
 
     mvn install -DskipTests
 
-Remove all build output files from the repo.
+**Remove all build output files from the repo**
 
     mvn clean
 
