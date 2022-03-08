@@ -63,4 +63,16 @@ public abstract class UnitTest {
         }
         return null;
     }
+
+    static Relation findRelation(Relation[] relations, String colName) {
+        for (var relation : relations) {
+            var keys = relation.relKey.keys;
+            if (keys.length == 0)
+                continue;
+            var name = keys[0];
+            if (name.equals(colName))
+                return relation;
+        }
+        return null;
+    }
 }

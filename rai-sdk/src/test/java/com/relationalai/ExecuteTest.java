@@ -25,10 +25,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
-// Test the database management APIs.
+// Test transaction execution.
 @TestInstance(Lifecycle.PER_CLASS)
 public class ExecuteTest extends UnitTest {
-    @Test void runTests() throws HttpError, InterruptedException, IOException {
+    @Test void testExecute() throws HttpError, InterruptedException, IOException {
         var client = createClient();
 
         ensureDatabase(client);

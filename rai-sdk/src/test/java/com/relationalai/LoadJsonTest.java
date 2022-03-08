@@ -30,18 +30,6 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 // Test loading JSON data.
 @TestInstance(Lifecycle.PER_CLASS)
 public class LoadJsonTest extends UnitTest {
-    Relation findRelation(Relation[] relations, String colName) {
-        for (var relation : relations) {
-            var keys = relation.relKey.keys;
-            if (keys.length == 0)
-                continue;
-            var name = keys[0];
-            if (name.equals(colName))
-                return relation;
-        }
-        return null;
-    }
-
     static final String sample = "{" +
             "\"name\":\"Amira\",\n" +
             "\"age\":32,\n" +

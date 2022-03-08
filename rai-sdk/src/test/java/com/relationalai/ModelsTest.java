@@ -27,50 +27,51 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
-// Test the models APIs.
+// Test model APIs.
 @TestInstance(Lifecycle.PER_CLASS)
 public class ModelsTest extends UnitTest {
-    @Test void runTests() throws HttpError, InterruptedException, IOException {
+    static final String testModel = "def R = \"hello\", \"world\"";
+
+    @Test void testModels() throws HttpError, InterruptedException, IOException {
         var client = createClient();
 
         ensureDatabase(client);
 
-        var source = "def R = \"hello\", \"world\"";
-        var loadRsp = client.loadModel(databaseName, engineName, "hello", source);
+        var loadRsp = client.loadModel(databaseName, engineName, "test_model", testModel);
         assertEquals(false, loadRsp.aborted);
         assertEquals(0, loadRsp.output.length);
         assertEquals(0, loadRsp.problems.length);
 
-        var model = client.getModel(databaseName, engineName, "hello");
-        assertEquals("hello", model.name);
+        var model = client.getModel(databaseName, engineName, "test_model");
+        assertEquals("test_model", model.name);
 
         var modelNames = client.listModelNames(databaseName, engineName);
-        var modelName = find(modelNames, item -> item.equals("hello"));
+        var modelName = find(modelNames, item -> item.equals("test_model"));
         assertNotNull(modelName);
 
         var models = client.listModels(databaseName, engineName);
-        model = find(models, item -> item.name.equals("hello"));
+        model = find(models, item -> item.name.equals("test_model"));
         assertNotNull(model);
 
-        var deleteRsp = client.deleteModel(databaseName, engineName, "hello");
+        var deleteRsp = client.deleteModel(databaseName, engineName, "test_model");
         assertEquals(false, deleteRsp.aborted);
         assertEquals(0, deleteRsp.output.length);
         assertEquals(0, deleteRsp.problems.length);
 
         HttpError error = null;
         try {
-            client.getModel(databaseName, engineName, "hello");
+            client.getModel(databaseName, engineName, "test_model");
         } catch (HttpError e) {
             error = e;
         }
         assertTrue(error != null && error.statusCode == 404);
 
         modelNames = client.listModelNames(databaseName, engineName);
-        modelName = find(modelNames, item -> item.equals("hello"));
+        modelName = find(modelNames, item -> item.equals("test_model"));
         assertNull(modelName);
 
         models = client.listModels(databaseName, engineName);
-        model = find(models, item -> item.name.equals("hello"));
+        model = find(models, item -> item.name.equals("test_model"));
         assertNull(model);
     }
 }

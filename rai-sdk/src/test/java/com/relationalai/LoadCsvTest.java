@@ -30,18 +30,6 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 // Test loading CSV data.
 @TestInstance(Lifecycle.PER_CLASS)
 public class LoadCsvTest extends UnitTest {
-    Relation findRelation(Relation[] relations, String colName) {
-        for (var relation : relations) {
-            var keys = relation.relKey.keys;
-            if (keys.length == 0)
-                continue;
-            var name = keys[0];
-            if (name.equals(colName))
-                return relation;
-        }
-        return null;
-    }
-
     static final String sample = "" +
             "cocktail,quantity,price,date\n" +
             "\"martini\",2,12.50,\"2020-01-01\"\n" +
@@ -227,7 +215,6 @@ public class LoadCsvTest extends UnitTest {
         assertEquals(0, loadRsp.problems.length);
 
         var rsp = client.execute(databaseName, engineName, "def output = sample");
-        Json.print(rsp, 4);
 
         Relation rel;
 

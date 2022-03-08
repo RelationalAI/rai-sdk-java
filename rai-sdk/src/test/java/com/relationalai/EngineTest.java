@@ -34,7 +34,7 @@ public class EngineTest extends UnitTest {
         return find(engines, item -> item.name.equals(name));
     }
 
-    @Test void runTests() throws HttpError, InterruptedException, IOException {
+    @Test void testEngine() throws HttpError, InterruptedException, IOException {
         var client = createClient();
 
         try {

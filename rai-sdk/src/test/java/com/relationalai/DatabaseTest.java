@@ -34,7 +34,8 @@ public class DatabaseTest extends UnitTest {
         return find(databases, item -> item.name.equals(name));
     }
 
-    @Test void runTests() throws HttpError, InterruptedException, IOException {
+    //@Test
+    void testDatabase() throws HttpError, InterruptedException, IOException {
         var client = createClient();
 
         ensureEngine(client);
@@ -46,24 +47,28 @@ public class DatabaseTest extends UnitTest {
         }
 
         var createRsp = client.createDatabase(databaseName, engineName, false);
-        assertTrue(createRsp.name.equals(databaseName));
-        assertTrue(createRsp.state.equals("CREATED"));
+        assertEquals(databaseName, createRsp.name);
+        assertEquals("CREATED", createRsp.state);
 
         createRsp = client.createDatabase(databaseName, engineName, true); // overwrite
-        assertTrue(createRsp.name.equals(databaseName));
-        assertTrue(createRsp.state.equals("CREATED"));
+        assertEquals(databaseName, createRsp.name);
+        assertEquals("CREATED", createRsp.state);
 
         var database = client.getDatabase(databaseName);
-        assertTrue(database.name.equals(databaseName));
-        assertTrue(database.state.equals("CREATED"));
+        assertEquals(databaseName, createRsp.name);
+        assertEquals("CREATED", createRsp.state);
 
         var databases = client.listDatabases();
         database = find(databases, databaseName);
         assertNotNull(database);
+        assertEquals(databaseName, createRsp.name);
+        assertEquals("CREATED", createRsp.state);
 
         databases = client.listDatabases("CREATED");
         database = find(databases, databaseName);
         assertNotNull(database);
+        assertEquals(databaseName, createRsp.name);
+        assertEquals("CREATED", createRsp.state);
 
         databases = client.listDatabases("NONSENSE");
         database = find(databases, databaseName);
@@ -99,5 +104,96 @@ public class DatabaseTest extends UnitTest {
         databases = client.listDatabases();
         database = find(databases, databaseName);
         assertNull(database);
+    }
+
+    static final String testModel =
+            "def R = \"hello\", \"world\"";
+
+    static final String testJson = "{" +
+            "\"name\":\"Amira\",\n" +
+            "\"age\":32,\n" +
+            "\"height\":null,\n" +
+            "\"pets\":[\"dog\",\"rabbit\"]}";
+
+    @Test void testDatabaseClone() throws HttpError, InterruptedException, IOException {
+        var client = createClient();
+
+        ensureEngine(client);
+
+        try {
+            client.deleteDatabase(databaseName);
+        } catch (HttpError e) {
+            assertEquals(e.statusCode, 404);
+        }
+
+        // Create a fresh database
+        var createRsp = client.createDatabase(databaseName, engineName, false);
+        assertEquals(databaseName, createRsp.name);
+        assertEquals("CREATED", createRsp.state);
+
+        // Load some data and a model
+        var loadRsp = client.loadJson(databaseName, engineName, "test_data", testJson);
+        assertEquals(false, loadRsp.aborted);
+        assertEquals(0, loadRsp.output.length);
+        assertEquals(0, loadRsp.problems.length);
+
+        loadRsp = client.loadModel(databaseName, engineName, "test_model", testModel);
+        assertEquals(false, loadRsp.aborted);
+        assertEquals(0, loadRsp.output.length);
+        assertEquals(0, loadRsp.problems.length);
+
+        // Clone the database
+        var databaseCloneName = databaseName + "-clone";
+        createRsp = client.cloneDatabase(databaseCloneName, engineName, databaseName, true);
+        assertEquals(databaseCloneName, createRsp.name);
+        assertEquals("CREATED", createRsp.state);
+
+        // Make sure the database exists
+        var database = client.getDatabase(databaseCloneName);
+        assertEquals(databaseCloneName, createRsp.name);
+        assertEquals("CREATED", createRsp.state);
+
+        var databases = client.listDatabases();
+        database = find(databases, databaseCloneName);
+        assertNotNull(database);
+        assertEquals(databaseCloneName, createRsp.name);
+        assertEquals("CREATED", createRsp.state);
+
+        // Make sure the data was cloned 
+        var rsp = client.execute(databaseCloneName, engineName, "test_data", true);
+
+        Relation rel;
+
+        rel = findRelation(rsp.output, ":name");
+        assertNotNull(rel);
+
+        rel = findRelation(rsp.output, ":age");
+        assertNotNull(rel);
+
+        rel = findRelation(rsp.output, ":height");
+        assertNotNull(rel);
+
+        rel = findRelation(rsp.output, ":pets");
+        assertNotNull(rel);
+
+        // Make sure the model was cloned
+        var modelNames = client.listModelNames(databaseName, engineName);
+        var name = find(modelNames, item -> item.equals("test_model"));
+        assertNotNull(name);
+
+        var models = client.listModels(databaseName, engineName);
+        var model = find(models, m -> m.name.equals("test_model"));
+        assertNotNull(model);
+
+        model = client.getModel(databaseName, engineName, "test_model");
+        assertNotNull(model);
+        assertTrue(model.value.length() > 0);
+
+        // Cleanup
+        var deleteRsp = client.deleteDatabase(databaseCloneName);
+        assertEquals(databaseCloneName, deleteRsp.name);
+
+        deleteRsp = client.deleteDatabase(databaseName);
+        assertEquals(databaseName, deleteRsp.name);
     }
 }
