@@ -16,17 +16,17 @@ set -e
 
 # engines
 ./run CreateEngine -wait -size XS $ENGINE
+./run GetEngine $ENGINE
 ./run ListEngines
 ./run ListEngines -state PROVISIONED
 ./run ListEngines -state NONSENSE
-./run GetEngine $ENGINE
 
 # databases
 ./run CreateDatabase -overwrite $DATABASE $ENGINE
+./run GetDatabase $DATABASE
 ./run ListDatabases
 ./run ListDatabases -state CREATED
 ./run ListDatabases -state NONSENSE
-./run GetDatabase $DATABASE
 ./run ListEdbs $DATABASE $ENGINE
 ./run ListModelNames $DATABASE $ENGINE
 ./run ListModels $DATABASE $ENGINE

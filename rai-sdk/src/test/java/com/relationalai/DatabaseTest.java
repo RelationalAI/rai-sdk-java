@@ -18,37 +18,39 @@
 
 package com.relationalai;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
-// Unit tests for the database management APIs.
+// Test the database management APIs.
 @TestInstance(Lifecycle.PER_CLASS)
 public class DatabaseTest extends UnitTest {
-    Client client;
+    Database find(Database[] databases, String name) {
+        return find(databases, item -> item.name.equals(name));
+    }
 
-    void ensureDatabaseDeleted() throws InterruptedException, IOException {
+    @Test
+    void runTests() throws HttpError, InterruptedException, IOException {
+        var client = createClient();
+
+        ensureEngine(client);
+
         try {
             client.deleteDatabase(databaseName);
         } catch (HttpError e) {
-            assertTrue(e.statusCode == 404);
+            assertEquals(e.statusCode, 404);
         }
-    }
 
-    @BeforeAll void setup() throws IOException {
-        var cfg = Config.loadConfig();
-        this.client = new Client(cfg);
-    }
+        var createRsp = client.createDatabase(databaseName, engineName, false);
+        assertTrue(createRsp.name.equals(databaseName));
+        assertTrue(createRsp.state.equals("CREATED"));
 
-    @Test void testCreateDatabase() throws HttpError, InterruptedException, IOException {
-        ensureDatabaseDeleted();
-
-        var createRsp = client.createDatabase(databaseName, engineName, true); // overwrite
+        createRsp = client.createDatabase(databaseName, engineName, true); // overwrite
         assertTrue(createRsp.name.equals(databaseName));
         assertTrue(createRsp.state.equals("CREATED"));
 
@@ -57,34 +59,46 @@ public class DatabaseTest extends UnitTest {
         assertTrue(database.state.equals("CREATED"));
 
         var databases = client.listDatabases();
-        database = find(databases, item -> item.name.equals(databaseName));
+        database = find(databases, databaseName);
         assertNotNull(database);
 
         databases = client.listDatabases("CREATED");
-        database = find(databases, item -> item.name.equals(databaseName));
+        database = find(databases, databaseName);
         assertNotNull(database);
 
-        databases = client.listDatabases("FOOBAR");
-        database = find(databases, item -> item.name.equals(databaseName));
+        databases = client.listDatabases("NONSENSE");
+        database = find(databases, databaseName);
         assertNull(database);
 
-        var model = client.getModel(databaseName, engineName, "stdlib");
-        assertNotNull(model);
-        assertTrue(model.value.length() > 0);
+        var edbs = client.listEdbs(databaseName, engineName);
+        var edb = find(edbs, item -> item.name.equals("rel"));
+        assertNotNull(edb);
 
         var modelNames = client.listModelNames(databaseName, engineName);
         var name = find(modelNames, item -> item.equals("stdlib"));
         assertNotNull(name);
 
         var models = client.listModels(databaseName, engineName);
-        model = find(models, m -> m.name.equals("stdlib"));
+        var model = find(models, m -> m.name.equals("stdlib"));
         assertNotNull(model);
 
-        var edbs = client.listEdbs(databaseName, engineName);
-        var edb = find(edbs, item -> item.name.equals("rel"));
-        assertNotNull(edb);
+        model = client.getModel(databaseName, engineName, "stdlib");
+        assertNotNull(model);
+        assertTrue(model.value.length() > 0);
 
         var deleteRsp = client.deleteDatabase(databaseName);
         assertTrue(deleteRsp.name.equals(databaseName));
+
+        HttpError error = null;
+        try {
+            client.getDatabase(databaseName);
+        } catch (HttpError e) {
+            error = e;
+        }
+        assertTrue(error != null && error.statusCode == 404);
+
+        databases = client.listDatabases();
+        database = find(databases, databaseName);
+        assertNull(database);
     }
 }

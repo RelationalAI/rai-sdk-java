@@ -16,7 +16,6 @@
 
 package com.relationalai;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -54,7 +53,8 @@ public class Client {
         _defaultHeaders.put("User-Agent", userAgent());
     }
 
-    public Client() {}
+    public Client() {
+    }
 
     public Client(String region, String scheme, String host, int port, Credentials credentials) {
         this.region = region;
@@ -114,8 +114,7 @@ public class Client {
         builder.uri(URI.create(credentials.clientCredentialsUrl));
         addHeaders(builder, _defaultHeaders);
         HttpRequest request = builder.build();
-        HttpResponse<String> response =
-                getHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = getHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
         var data = response.body();
         var statusCode = response.statusCode();
         if (statusCode >= 400)
@@ -237,8 +236,7 @@ public class Client {
         authenticate(builder, this.credentials);
         HttpRequest request = builder.build();
         // printRequest(request);
-        HttpResponse<String> response =
-                getHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = getHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
         int statusCode = response.statusCode();
         if (statusCode >= 400)
             throw new HttpError(statusCode, response.body());
@@ -703,8 +701,8 @@ public class Client {
         return result;
     }
 
-    // Returns the list of models (including source) installed in the given 
-    // database. 
+    // Returns the list of models (including source) installed in the given
+    // database.
     public Model[] listModels(String database, String engine)
             throws HttpError, InterruptedException, IOException {
         var tx = new Transaction(this.region, database, engine, "OPEN", true);
@@ -842,248 +840,5 @@ public class Client {
         inputs.put("data", data);
         var source = genLoadJson(relation);
         return execute(database, engine, source, false, inputs);
-    }
-
-    // *** integration tests ***
-
-    static String db = "sdk-test";
-    static String eng = "sdk-test";
-
-    static void testDatabase() throws HttpError, InterruptedException, IOException {
-        Object rsp;
-
-        var cfg = Config.loadConfig();
-        var client = new Client(cfg);
-
-        rsp = client.createDatabase(db, eng, true);
-        Json.print(rsp, 4);
-
-        rsp = client.listDatabases();
-        Json.print(rsp, 4);
-
-        rsp = client.listDatabases("CREATED");
-        Json.print(rsp, 4);
-
-        rsp = client.getDatabase(db);
-        Json.print(rsp, 4);
-
-        rsp = client.listModelNames(db, eng);
-        Json.print(rsp, 4);
-
-        rsp = client.listModels(db, eng);
-        Json.print(rsp, 4);
-
-        rsp = client.listEdbs(db, eng);
-        Json.print(rsp, 4);
-    }
-
-    static void testEngine() throws HttpError, InterruptedException, IOException {
-        Object rsp;
-
-        var cfg = Config.loadConfig();
-        var client = new Client(cfg);
-
-        // todo: create/delete engine
-
-        rsp = client.listEngines();
-        Json.print(rsp, 4);
-
-        rsp = client.getEngine(eng);
-        Json.print(rsp, 4);
-    }
-
-    static void testExecute() throws HttpError, InterruptedException, IOException {
-        Object rsp;
-
-        var cfg = Config.loadConfig();
-        var client = new Client(cfg);
-
-        rsp = client.execute(db, eng, "x, x^2, x^3, x^4 from x in {1; 2; 3; 4; 5}");
-        Json.print(rsp, 4);
-    }
-
-    static void testLoadCsv() throws HttpError, InterruptedException, IOException {
-        Object rsp;
-        InputStream input;
-        CsvOptions options;
-
-        var cfg = Config.loadConfig();
-        var client = new Client(cfg);
-
-        input = new FileInputStream("sample.csv");
-        rsp = client.loadCsv(db, eng, "sample_csv", input);
-        Json.print(rsp, 4);
-        rsp = client.execute(db, eng, "sample_csv", true);
-        Json.print(rsp, 4);
-
-        var schema = new HashMap<String, String>();
-        schema.put("cocktail", "string");
-        schema.put("quantity", "int");
-        schema.put("price", "decimal(64, 2)");
-        schema.put("date", "date");
-
-        options = (new CsvOptions()).withSchema(schema);
-        input = new FileInputStream("sample.csv");
-        rsp = client.loadCsv(db, eng, "sample_with_schema_csv", input, options);
-        Json.print(rsp, 4);
-        rsp = client.execute(db, eng, "sample_with_schema_csv", true);
-        Json.print(rsp, 4);
-
-        options = (new CsvOptions()).withHeaderRow(0);
-        input = new FileInputStream("sample_no_header.csv");
-        rsp = client.loadCsv(db, eng, "sample_no_header_csv", input, options);
-        Json.print(rsp, 4);
-        rsp = client.execute(db, eng, "sample_no_header_csv", true);
-        Json.print(rsp, 4);
-
-        options = (new CsvOptions()).withDelim('|').withQuoteChar('\'');
-        input = new FileInputStream("sample_alt_syntax.csv");
-        rsp = client.loadCsv(db, eng, "sample_alt_syntax_csv", input, options);
-        Json.print(rsp, 4);
-        rsp = client.execute(db, eng, "sample_alt_syntax_csv", true);
-        Json.print(rsp, 4);
-
-        options = (new CsvOptions()).withDelim('|').withQuoteChar('\'').withSchema(schema);
-        input = new FileInputStream("sample_alt_syntax.csv");
-        rsp = client.loadCsv(db, eng, "sample_alt_syntax_with_schema_csv", input, options);
-        Json.print(rsp, 4);
-        rsp = client.execute(db, eng, "sample_alt_syntax_with_schema_csv", true);
-        Json.print(rsp, 4);
-    }
-
-    static void testLoadJson() throws HttpError, InterruptedException, IOException {
-        Object rsp;
-        InputStream input;
-
-        var cfg = Config.loadConfig();
-        var client = new Client(cfg);
-
-        input = new FileInputStream("sample.json");
-        rsp = client.loadJson(db, eng, "sample_json", input);
-        Json.print(rsp, 4);
-        rsp = client.execute(db, eng, "sample_json", true);
-        Json.print(rsp, 4);
-    }
-
-    static void testModels() throws HttpError, InterruptedException, IOException {
-        Object rsp;
-
-        var cfg = Config.loadConfig();
-        var client = new Client(cfg);
-
-        rsp = client.listModels(db, eng);
-        Json.print(rsp, 4);
-
-        rsp = client.listModelNames(db, eng);
-        Json.print(rsp, 4);
-
-        rsp = client.loadModel(db, eng, "hello", "def R = \"hello\",\"world!\"");
-        Json.print(rsp, 4);
-        rsp = client.getModel(db, eng, "hello");
-        Json.print(rsp, 4);
-
-        rsp = client.deleteModel(db, eng, "hello");
-        Json.print(rsp, 4);
-
-        rsp = client.listModelNames(db, eng);
-        Json.print(rsp, 4);
-    }
-
-    static void testOAuthClients() throws HttpError, InterruptedException, IOException {
-        Object rsp;
-
-        var cfg = Config.loadConfig();
-        var client = new Client(cfg);
-
-        rsp = client.listOAuthClients();
-        Json.print(rsp, 4);
-
-        var oauthClient = client.findOAuthClient("sdk-test");
-        if (oauthClient != null)
-            client.deleteOAuthClient(oauthClient.id);
-
-        String[] permissions = null;
-        rsp = client.createOAuthClient("sdk-test", permissions);
-        Json.print(rsp, 4);
-
-        rsp = client.listOAuthClients();
-        Json.print(rsp, 4);
-
-        oauthClient = client.findOAuthClient("sdk-test");
-        assert oauthClient != null;
-        rsp = client.getOAuthClient(oauthClient.id);
-        Json.print(rsp, 4);
-
-        rsp = client.deleteOAuthClient(oauthClient.id);
-        Json.print(rsp, 4);
-
-        rsp = client.listOAuthClients();
-        Json.print(rsp, 4);
-    }
-
-    static void testUsers() throws HttpError, InterruptedException, IOException {
-        Object rsp;
-
-        var cfg = Config.loadConfig();
-        var client = new Client(cfg);
-
-        rsp = client.listUsers();
-        Json.print(rsp, 4);
-
-        // cleanup if necessarry
-        var user = client.findUser("sdk-test@relational.ai");
-        if (user != null)
-            client.deleteUser(user.id);
-
-        rsp = client.createUser("sdk-test@relational.ai");
-        Json.print(rsp, 4);
-
-        user = client.findUser("sdk-test@relational.ai");
-        assert user != null;
-
-        rsp = client.getUser(user.id);
-        Json.print(rsp, 4);
-
-        rsp = client.disableUser(user.id);
-        Json.print(rsp, 4);
-
-        rsp = client.enableUser(user.id);
-        Json.print(rsp, 4);
-
-        rsp = client.updateUser(user.id, "INACTIVE");
-        Json.print(rsp, 4);
-
-        rsp = client.updateUser(user.id, "ACTIVE");
-        Json.print(rsp, 4);
-
-        String[] rolesAdmin = {"admin", "user"};
-        rsp = client.updateUser(user.id, rolesAdmin);
-        Json.print(rsp, 4);
-
-        String[] rolesUser = {"user"};
-        rsp = client.updateUser(user.id, "INACTIVE", rolesUser);
-        Json.print(rsp, 4);
-
-        rsp = client.deleteUser(user.id);
-        Json.print(rsp, 4);
-    }
-
-    static void run() throws HttpError, InterruptedException, IOException {
-        testDatabase();
-        testEngine();
-        testExecute();
-        testLoadCsv();
-        testLoadJson();
-        testModels();
-        testOAuthClients();
-        testUsers();
-    };
-
-    public static void main(String[] args) {
-        try {
-            run();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
     }
 }

@@ -28,18 +28,19 @@ Compile the SDK.
 
     mvn compile
 
-Compile, package, run unit tests and install the SDK.  Note that `mvn install`
-is required to build and run the examples.
+Run the tests.
+
+    mvn test
+
+Compile, package, run tests and install the SDK.
 
     mvn install
 
-Compile and package without running unit tests.
+Note that `mvn install` is required to build and run the examples.
+
+Compile and package without running tests.
 
     mvn install -DskipTests
-
-Run the unit tests.
-
-    mvn verify
 
 Remove all build output files from the repo.
 
