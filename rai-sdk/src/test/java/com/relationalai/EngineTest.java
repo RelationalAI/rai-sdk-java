@@ -34,8 +34,7 @@ public class EngineTest extends UnitTest {
         return find(engines, item -> item.name.equals(name));
     }
 
-    @Test
-    void runTests() throws HttpError, InterruptedException, IOException {
+    @Test void runTests() throws HttpError, InterruptedException, IOException {
         var client = createClient();
 
         try {
@@ -67,6 +66,7 @@ public class EngineTest extends UnitTest {
         HttpError error = null;
 
         try {
+            // deleteEngineWait terminates its polling loop with a 404
             client.deleteEngineWait(engineName);
         } catch (HttpError e) {
             error = e;

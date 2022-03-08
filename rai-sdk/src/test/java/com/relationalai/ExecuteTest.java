@@ -28,8 +28,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 // Test the database management APIs.
 @TestInstance(Lifecycle.PER_CLASS)
 public class ExecuteTest extends UnitTest {
-    @Test
-    void runTests() throws HttpError, InterruptedException, IOException {
+    @Test void runTests() throws HttpError, InterruptedException, IOException {
         var client = createClient();
 
         ensureDatabase(client);
@@ -43,14 +42,14 @@ public class ExecuteTest extends UnitTest {
         var relation = output[0];
         var relKey = relation.relKey;
         assertEquals(relKey.name, "output");
-        assertArrayEquals(relKey.keys, new String[] { "Int64", "Int64", "Int64" });
-        assertArrayEquals(relKey.values, new String[] { "Int64" });
+        assertArrayEquals(relKey.keys, new String[] {"Int64", "Int64", "Int64"});
+        assertArrayEquals(relKey.values, new String[] {"Int64"});
         var columns = relation.columns;
         var expected = new Object[][] {
-                { 1., 2., 3., 4., 5. },
-                { 1., 4., 9., 16., 25. },
-                { 1., 8., 27., 64., 125. },
-                { 1., 16., 81., 256., 625. } };
+                {1., 2., 3., 4., 5.},
+                {1., 4., 9., 16., 25.},
+                {1., 8., 27., 64., 125.},
+                {1., 16., 81., 256., 625.}};
         assertArrayEquals(expected, columns);
     }
 }

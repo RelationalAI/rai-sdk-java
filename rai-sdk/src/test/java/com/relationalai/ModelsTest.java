@@ -30,8 +30,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 // Test the models APIs.
 @TestInstance(Lifecycle.PER_CLASS)
 public class ModelsTest extends UnitTest {
-    @Test
-    void runTests() throws HttpError, InterruptedException, IOException {
+    @Test void runTests() throws HttpError, InterruptedException, IOException {
         var client = createClient();
 
         ensureDatabase(client);

@@ -34,8 +34,7 @@ public class DatabaseTest extends UnitTest {
         return find(databases, item -> item.name.equals(name));
     }
 
-    @Test
-    void runTests() throws HttpError, InterruptedException, IOException {
+    @Test void runTests() throws HttpError, InterruptedException, IOException {
         var client = createClient();
 
         ensureEngine(client);
