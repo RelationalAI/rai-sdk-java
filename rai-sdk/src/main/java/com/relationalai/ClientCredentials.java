@@ -17,7 +17,8 @@
 package com.relationalai;
 
 public class ClientCredentials implements Credentials {
-    public static String DEFAULT_CLIENT_CREDENTIALS_URL = "https://login.relationalai.com/oauth/token";
+    public static String DEFAULT_CLIENT_CREDENTIALS_URL =
+        "https://login.relationalai.com/oauth/token";
 
     public AccessToken accessToken; // cached access token
     public String clientId;
