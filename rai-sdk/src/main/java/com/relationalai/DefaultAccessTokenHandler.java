@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import com.jsoniter.ValueType;
 import com.jsoniter.any.Any;
 
 // Attempts to load cached token from ~/.rai/tokens.json, and if not found or
@@ -33,20 +34,13 @@ public class DefaultAccessTokenHandler implements AccessTokenHandler {
         return home + File.separator + ".rai" + File.separator + "tokens.json";
     }
 
-    AccessToken fetchToken(Client client, ClientCredentials credentials) {
-        AccessToken token = null;
-        try {
-            token = client.fetchAccessToken(credentials);
-        } catch (HttpError e) {} catch (InterruptedException e) {} catch (IOException e) {}
-        return token;
-    }
-
-    public AccessToken getAccessToken(Client client, ClientCredentials credentials) {
+    public AccessToken getAccessToken(Client client, ClientCredentials credentials)
+            throws HttpError, InterruptedException, IOException {
         var token = readAccessToken(credentials);
         if (token != null && !token.isExpired())
             return token;
 
-        token = fetchToken(client, credentials);
+        token = client.fetchAccessToken(credentials);
         if (token != null)
             writeAccessToken(credentials, token);
 
@@ -58,16 +52,22 @@ public class DefaultAccessTokenHandler implements AccessTokenHandler {
         if (cache == null)
             return null;
         var item = cache.get(credentials.clientId);
-        if (item == null)
+        var valueType = item.valueType();
+        if (valueType == ValueType.INVALID) // not found
             return null;
+        assert valueType == ValueType.OBJECT; // validated by readTokenCache
         return item.bindTo(new AccessToken());
     }
 
+    // Attempt to read and deserialize the token cache file.
     Any readTokenCache() {
         try (var input = new FileInputStream(cacheName())) {
             try {
                 var data = new String(input.readAllBytes());
-                return Json.deserialize(data);
+                var cache = Json.deserialize(data);
+                if (cache.valueType() != ValueType.OBJECT)
+                    return null; // cache file corrupt, ignore
+                return cache;
             } catch (IOException e) {}
         } catch (IOException e) {}
         return null;

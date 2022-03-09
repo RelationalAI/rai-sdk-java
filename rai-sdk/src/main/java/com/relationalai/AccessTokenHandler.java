@@ -16,6 +16,9 @@
 
 package com.relationalai;
 
+import java.io.IOException;
+
 public interface AccessTokenHandler {
-    AccessToken getAccessToken(Client client, ClientCredentials credentials);
+    AccessToken getAccessToken(Client client, ClientCredentials credentials)
+            throws HttpError, InterruptedException, IOException;
 }

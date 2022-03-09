@@ -239,6 +239,8 @@ public class Client {
     void authenticate(HttpRequest.Builder builder, ClientCredentials credentials)
             throws HttpError, InterruptedException, IOException {
         AccessToken accessToken = getAccessToken(credentials);
+        if (accessToken == null)
+            return; // if no token is available, don't authenticate the request
         builder.header("Authorization", String.format("Bearer %s", accessToken.token));
     }
 
