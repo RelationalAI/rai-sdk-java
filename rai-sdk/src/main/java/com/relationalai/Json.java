@@ -19,9 +19,14 @@ package com.relationalai;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import com.jsoniter.JsonIterator;
+import com.jsoniter.any.Any;
 import com.jsoniter.output.JsonStream;
 
 public class Json {
+    public static Any deserialize(String s) {
+        return JsonIterator.deserialize(s);
+    }
+
     public static <T> T deserialize(String s, Class<T> cls) {
         return JsonIterator.deserialize(s, cls);
     }

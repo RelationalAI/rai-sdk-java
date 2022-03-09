@@ -26,6 +26,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,27 +44,24 @@ public class Client {
     public Credentials credentials;
 
     HttpClient httpClient;
+    AccessTokenHandler accessTokenHandler;
 
-    static Map<String, String> _defaultHeaders = null;
+    static Map<String, String> defaultHeaders = null;
 
     static {
-        _defaultHeaders = new HashMap<String, String>();
-        _defaultHeaders.put("Accept", "application/json");
-        _defaultHeaders.put("Content-Type", "application/json");
-        _defaultHeaders.put("User-Agent", userAgent());
+        defaultHeaders = new HashMap<String, String>();
+        defaultHeaders.put("Accept", "application/json");
+        defaultHeaders.put("Content-Type", "application/json");
+        defaultHeaders.put("User-Agent", userAgent());
     }
 
-    public Client() {
-    }
+    public Client() {}
 
-    public Client(String region, String scheme, String host, int port, Credentials credentials) {
-        this.region = region;
-        this.scheme = scheme;
-        this.host = host;
-        this.port = port;
-        this.credentials = credentials;
-    }
-
+    // Note, creating a client from config will also enable the default access
+    // token handler, which will cache access tokens in ~/.rai/tokens.json.
+    // This behavior can be replaced by callign setAccessTokenHandler with an
+    // alternate implementation of AccessTokenHandler handler, or it can be
+    // disabled by caling setAccessTokenHandler(null).
     public Client(Config cfg) {
         if (cfg.region != null)
             this.region = cfg.region;
@@ -74,6 +72,7 @@ public class Client {
         if (cfg.port != null)
             this.port = Integer.parseInt(cfg.port);
         this.credentials = cfg.credentials;
+        this.setAccessTokenHandler(new DefaultAccessTokenHandler());
     }
 
     // Returns the current `HttpClient` instance, creating one if necessarry.
@@ -88,6 +87,10 @@ public class Client {
     public Client setHttpClient(HttpClient httpClient) {
         this.httpClient = httpClient;
         return this;
+    }
+
+    public void setAccessTokenHandler(AccessTokenHandler handler) {
+        this.accessTokenHandler = handler;
     }
 
     static final String fetchAccessTokenFormat = "{" +
@@ -106,32 +109,41 @@ public class Client {
                 audience);
     }
 
+    // Fetch the access token from the configured client credentials URL.
     public AccessToken fetchAccessToken(ClientCredentials credentials)
             throws HttpError, InterruptedException, IOException {
         String body = fetchAccessTokenBody(credentials);
         HttpRequest.Builder builder = HttpRequest.newBuilder();
         builder.POST(HttpRequest.BodyPublishers.ofString(body));
         builder.uri(URI.create(credentials.clientCredentialsUrl));
-        addHeaders(builder, _defaultHeaders);
+        addHeaders(builder, defaultHeaders);
         HttpRequest request = builder.build();
-        HttpResponse<String> response = getHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response =
+                getHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
         var data = response.body();
         var statusCode = response.statusCode();
         if (statusCode >= 400)
             throw new HttpError(statusCode, data);
-        return Json.deserialize(data, AccessToken.class);
+        var token = Json.deserialize(data, AccessToken.class);
+        var now = Instant.now().toEpochMilli() / 1000l; // epoch secs
+        token.createdOn = now;
+        return token;
     }
 
     // todo: add callback func
     public AccessToken getAccessToken(ClientCredentials credentials)
             throws HttpError, InterruptedException, IOException {
-        AccessToken accessToken = credentials.accessToken;
-        if (accessToken == null || accessToken.isExpired()) {
-            accessToken = fetchAccessToken(credentials);
-            credentials.accessToken = accessToken;
-        }
-        credentials.accessToken = fetchAccessToken(credentials);
-        return accessToken;
+        var token = credentials.accessToken;
+        if (token != null && !token.isExpired())
+            return token; // already have it
+
+        if (accessTokenHandler != null)
+            token = accessTokenHandler.getAccessToken(this, credentials);
+        else
+            token = fetchAccessToken(credentials);
+
+        credentials.accessToken = token;
+        return token;
     }
 
     static boolean containsInsensitive(Map<String, String> headers, String key) {
@@ -144,9 +156,9 @@ public class Client {
     }
 
     // Ensures that the given headers contain the required default values.
-    static Map<String, String> defaultHeaders(Map<String, String> headers) {
+    static Map<String, String> ensureHeaders(Map<String, String> headers) {
         if (headers == null)
-            return _defaultHeaders;
+            return defaultHeaders;
         if (!containsInsensitive(headers, "Accept"))
             headers.put("Accept", "application/json");
         if (!containsInsensitive(headers, "Content-Type"))
@@ -232,11 +244,12 @@ public class Client {
 
     String sendRequest(HttpRequest.Builder builder)
             throws HttpError, InterruptedException, IOException {
-        addHeaders(builder, _defaultHeaders);
+        addHeaders(builder, defaultHeaders);
         authenticate(builder, this.credentials);
         HttpRequest request = builder.build();
         // printRequest(request);
-        HttpResponse<String> response = getHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response =
+                getHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
         int statusCode = response.statusCode();
         if (statusCode >= 400)
             throw new HttpError(statusCode, response.body());

@@ -29,9 +29,17 @@ public class AccessToken extends Entity {
     @JsonProperty(value = "expires_in", required = true)
     public int expiresIn; // total lifetime in seconds
 
-    public long expiresOn; // expiration instant in epoch millis
+    @JsonProperty(value = "created_on", required = false)
+    public long createdOn; // epoch seconds
 
+    // Instant that the token expires in epoch seconds.
+    public long expiresOn() {
+        return createdOn + expiresIn;
+    }
+
+    // Answers if the token is expired.
     public boolean isExpired() {
-        return Instant.now().toEpochMilli() > expiresOn;
+        var now = Instant.now().toEpochMilli() / 1000l;
+        return now > expiresOn();
     }
 }
