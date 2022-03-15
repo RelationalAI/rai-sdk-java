@@ -25,10 +25,12 @@ import java.util.Map;
 import com.jsoniter.ValueType;
 import com.jsoniter.any.Any;
 
-// Attempts to load cached token from ~/.rai/tokens.json, and if not found or
-// the token is expired, will delegate to client.fetchAccessToken to retrieve
-// a new token and will save in the tokens file.
+// This handler caches tokens in ~/.rai/tokens.json. It will attempt to load
+// a token from the cache file and if it is not found or has expired, it will
+// delegate to client.GetAccessToken to retrieve a new token and will save it
+// in the cache file.
 public class DefaultAccessTokenHandler implements AccessTokenHandler {
+    // Returns the name of the token cache file.
     String cacheName() {
         var home = System.getProperty("user.home");
         return home + File.separator + ".rai" + File.separator + "tokens.json";

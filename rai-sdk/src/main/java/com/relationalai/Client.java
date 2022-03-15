@@ -130,7 +130,6 @@ public class Client {
         return token;
     }
 
-    // todo: add callback func
     public AccessToken getAccessToken(ClientCredentials credentials)
             throws HttpError, InterruptedException, IOException {
         var token = credentials.accessToken;
@@ -196,7 +195,7 @@ public class Client {
 
     // Returns the default User-Agent string.
     static String userAgent() {
-        return String.format("rai-sdk-java/%s", "0.0.1"); // todo: version
+        return String.format("rai-sdk-java/%s", "0.0.1");
     }
 
     // Returns an HttpRequest.Builder constructed from the given args.
@@ -314,7 +313,7 @@ public class Client {
     }
 
     //
-    // REST APIs
+    // RAI APIs
     //
 
     static final String PATH_DATABASE = "/database";
