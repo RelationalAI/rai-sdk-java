@@ -50,6 +50,11 @@
                             <goals>
                                 <goal>copy-dependencies</goal>
                             </goals>
+                            <configuration>
+                                <outputDirectory>
+                                    ${project.build.directory}/libs
+                                </outputDirectory>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
