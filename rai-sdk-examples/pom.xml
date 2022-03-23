@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.relationalai</groupId>
         <artifactId>rai-sdk-pom</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
 
     <name>RelationalAI SDK for Java Examples</name>
@@ -56,6 +56,10 @@
                         </manifest>
                     </archive>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
