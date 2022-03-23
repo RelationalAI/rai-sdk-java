@@ -195,7 +195,8 @@ public class Client {
 
     // Returns the default User-Agent string.
     static String userAgent() {
-        return String.format("rai-sdk-java/%s", "0.0.1");
+        String sdkVersion = SDKProperties.getSDKVersion();
+        return String.format("rai-sdk-java/%s", sdkVersion);
     }
 
     // Returns an HttpRequest.Builder constructed from the given args.
