@@ -1,3 +1,4 @@
+![SDK Build](https://github.com/RelationalAI/rai-sdk-java/actions/workflows/maven.yaml/badge.svg)
 # The RelationalAI Software Development Kit for Java
 
 The RelationalAI (RAI) SDK for Java enables developers to access the RAI REST

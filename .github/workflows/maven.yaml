@@ -1,4 +1,4 @@
-name: Build SDK
+name: SDK Build
 
 on: [push]
 
