@@ -16,16 +16,34 @@
 
 package com.relationalai;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 public abstract class UnitTest {
-    static String databaseName = "sdk-test";
-    static String engineName = "sdk-test";
+    static UUID uuid = UUID.randomUUID();
+    static String databaseName = String.format("java-sdk-test-%s", uuid);
+    static String engineName = String.format("java-sdk-test-%s", uuid);
 
+    Config getConfig() throws IOException {
+        var filename = String.format("%s/.rai/config", System.getenv("HOME"));
+        if ((new File(filename)).exists()) {
+            return Config.loadConfig(filename);
+        }
+        var cfg = String.format(
+                "[default]\nregion=us-east\nport=443\nscheme=https\nclient_id=%s\nclient_secret=%s\nclient_credentials_url=%s",
+                System.getenv("CLIENT_ID"),
+                System.getenv("CLIENT_SECRET"),
+                System.getenv("CLIENT_CREDENTIALS_URL")
+        );
+        var stream = new ByteArrayInputStream(cfg.getBytes());
+        return Config.loadConfig(stream);
+    }
     // Returns a new client object constructed from default config settings.
     Client createClient() throws IOException {
-        var cfg = Config.loadConfig();
+        var cfg = getConfig();
         return new Client(cfg);
     }
 
