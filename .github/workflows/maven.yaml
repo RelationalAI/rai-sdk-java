@@ -18,4 +18,13 @@ jobs:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           CLIENT_CREDENTIALS_URL: ${{ secrets.CLIENT_CREDENTIALS_URL }}
-        run: mvn clean install
+        run: |
+          mvn clean package
+          mvn test -Dtest="LoadJsonTest"
+          mvn test -Dtest="LoadCsvTest"
+          mvn test -Dtest="ModelsTest"
+          mvn test -Dtest="UserTest"
+          mvn test -Dtest="ExecuteTest"
+          mvn test -Dtest="OAuthClientTest"
+          mvn test -Dtest="DatabaseTest"
+          mvn test -Dtest="EngineTest"
