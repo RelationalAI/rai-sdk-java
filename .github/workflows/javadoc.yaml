@@ -3,7 +3,7 @@ name: Deploy Javadoc
 on:
   push:
     branches:
-      - hnr-maven-github-workflow
+      - main
 
 jobs:
   publish:
