@@ -19,4 +19,3 @@ jobs:
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           CLIENT_CREDENTIALS_URL: ${{ secrets.CLIENT_CREDENTIALS_URL }}
         run: mvn clean install
-
