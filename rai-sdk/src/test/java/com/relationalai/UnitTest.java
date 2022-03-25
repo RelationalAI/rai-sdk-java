@@ -32,7 +32,7 @@ public abstract class UnitTest {
         if ((new File(filename)).exists()) {
             return Config.loadConfig(filename);
         }
-        System.out.println("===> client credentials url" + System.getenv("CLIENT_CREDENTIALS_URL"));
+
         var cfg = String.format(
                 "[default]\nregion=us-east\nport=443\nscheme=https\nclient_id=%s\nclient_secret=%s\nclient_credentials_url=%s",
                 System.getenv("CLIENT_ID"),
