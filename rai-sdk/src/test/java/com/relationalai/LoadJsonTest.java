@@ -20,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.IOException;
+
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -66,5 +68,18 @@ public class LoadJsonTest extends UnitTest {
         assertNotNull(rel);
         assertEquals(2, rel.columns.length);
         assertArrayEquals(new Object[][] {{1., 2.}, {"dog", "rabbit"}}, rel.columns);
+    }
+
+    @AfterAll
+    void tearDown() throws IOException, HttpError, InterruptedException {
+        var client = createClient();
+        var deleteRsp = client.deleteDatabase(databaseName);
+        assertEquals(databaseName, deleteRsp.name);
+        try {
+            // deleteEngineWait terminates its polling loop with a 404
+            client.deleteEngineWait(engineName);
+        } catch (HttpError e) {
+            assertEquals(e.statusCode, 404);
+        }
     }
 }

@@ -1,3 +1,12 @@
+# General
+
+| Workflow | Status |
+| --------------------------- | ---------------------------------------------------------------------- |
+| Continuous Integration (CI) | ![build](https://github.com/RelationalAI/rai-sdk-java/actions/workflows/maven-build.yaml/badge.svg) |
+| Publish to GitHub packages  | ![publish](https://github.com/RelationalAI/rai-sdk-java/actions/workflows/maven-publish.yaml/badge.svg) |
+| Generate java documentation | ![javadoc](https://github.com/RelationalAI/rai-sdk-java/actions/workflows/maven-javadoc.yaml/badge.svg) |
+
+
 # The RelationalAI Software Development Kit for Java
 
 The RelationalAI (RAI) SDK for Java enables developers to access the RAI REST
@@ -70,6 +79,50 @@ https://console.relationalai.com/login
 
 You can copy `config.spec` from the root of this repo and modify as needed.
 
+### Using the SDK as a maven dependency
+
+In order to use the `rai-sdk-java`, you need add this dependency to your project's POM:
+
+    <dependency>
+        <groupId>com.relationalai</groupId>
+        <artifactId>rai-sdk</artifactId>
+        <version>0.0.1</version>
+    </dependency>
+
+You need also to point maven to the SDK GitHub packages repository in the project's POM:
+
+    <repositories>
+        <repository>
+            <id>github</id>
+            <name>The RelationalAI SDK for Apache Maven</name>
+            <url>https://maven.pkg.github.com/RelationalAI/rai-sdk-java</url>
+        </repository>
+    </repositories>
+
+The registry access is available through GiHub api which is protected. You have to add GitHub credentials to `$HOME/.m2/settings.xml`:
+
+    <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+        <localRepository/>
+            ...
+            <servers>
+                <server>
+                    <id>github</id>
+                    <username>GITHUB_USERNAME</username>
+                    <password>GITHUB_ACCESS_TOKEN</password>
+                </server>
+            </servers>
+            ...
+        </settings>
+
+`GITHUB_USERNAME` is your GitHub login name.
+
+`GITHUB_ACCESS_TOKEN` is a generated GitHub personal access token:
+
+*GitHub > Settings > Developer Settings > Personal access tokens > Generate new token.*
+
+The token needs at least the read:packages scope.
+
 ## Examples
 
 The SDK contain examples for every API, and various other SDK features. These
@@ -89,6 +142,10 @@ individual examples, eg:
 
     cd ./rai-sdk/examples
     ./run GetDatabase sdk-test
+
+## Javadocs
+
+Javadocs for `rai-sdk` are available [here](https://musical-winner-94955c55.pages.github.io/com/relationalai/package-summary.html).
 
 ## Support
 

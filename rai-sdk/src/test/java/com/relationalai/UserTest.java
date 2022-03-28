@@ -21,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import java.io.IOException;
+import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -28,7 +30,8 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 // Test User APIs.
 @TestInstance(Lifecycle.PER_CLASS)
 public class UserTest extends UnitTest {
-    static String userEmail = "sdk-test@relational.ai";
+    static UUID uuid = UUID.randomUUID();
+    static String userEmail = String.format("java-sdk-test-%s@relational.ai", uuid);
 
     @Test void testUser() throws HttpError, InterruptedException, IOException {
         var client = createClient();

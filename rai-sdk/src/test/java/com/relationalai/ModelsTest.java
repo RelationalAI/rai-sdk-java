@@ -21,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
+
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -71,5 +73,18 @@ public class ModelsTest extends UnitTest {
         models = client.listModels(databaseName, engineName);
         model = find(models, item -> item.name.equals("test_model"));
         assertNull(model);
+    }
+
+    @AfterAll
+    void tearDown() throws IOException, HttpError, InterruptedException {
+        var client = createClient();
+        var deleteRsp = client.deleteDatabase(databaseName);
+        assertEquals(databaseName, deleteRsp.name);
+        try {
+            // deleteEngineWait terminates its polling loop with a 404
+            client.deleteEngineWait(engineName);
+        } catch (HttpError e) {
+            assertEquals(e.statusCode, 404);
+        }
     }
 }
