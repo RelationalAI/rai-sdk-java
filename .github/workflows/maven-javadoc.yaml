@@ -1,4 +1,4 @@
-name: Deploy Javadoc
+name: javadoc
 
 on:
   push:

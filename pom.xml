@@ -76,6 +76,14 @@
         </pluginManagement>
     </build>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/RelationalAI/rai-sdk-java</url>
+        </repository>
+    </distributionManagement>
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>

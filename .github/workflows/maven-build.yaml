@@ -1,4 +1,4 @@
-name: SDK Build
+name: build/test
 
 on: [push]
 
