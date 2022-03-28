@@ -111,6 +111,7 @@ The registry access is available through GiHub api which is protected. You have 
                     <username>GITHUB_USERNAME</username>
                     <password>GITHUB_ACCESS_TOKEN</password>
                 </server>
+            </servers>
             ...
         </settings>
 
