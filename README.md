@@ -92,6 +92,10 @@ individual examples, eg:
     cd ./rai-sdk/examples
     ./run GetDatabase sdk-test
 
+## Javadocs
+
+Javadocs for `rai-sdk` are available [here](https://musical-winner-94955c55.pages.github.io/com/relationalai/package-summary.html).
+
 ## Support
 
 You can reach the RAI developer support team at `support@relational.ai`

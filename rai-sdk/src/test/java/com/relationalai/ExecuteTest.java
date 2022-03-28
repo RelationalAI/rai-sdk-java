@@ -19,6 +19,8 @@ package com.relationalai;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;
+
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -49,5 +51,17 @@ public class ExecuteTest extends UnitTest {
                 {1., 8., 27., 64., 125.},
                 {1., 16., 81., 256., 625.}};
         assertArrayEquals(expected, columns);
+    }
+
+    @AfterAll void tearDown() throws IOException, HttpError, InterruptedException {
+        var client = createClient();
+        var deleteRsp = client.deleteDatabase(databaseName);
+        assertEquals(databaseName, deleteRsp.name);
+        try {
+            // deleteEngineWait terminates its polling loop with a 404
+            client.deleteEngineWait(engineName);
+        } catch (HttpError e) {
+            assertEquals(e.statusCode, 404);
+        }
     }
 }

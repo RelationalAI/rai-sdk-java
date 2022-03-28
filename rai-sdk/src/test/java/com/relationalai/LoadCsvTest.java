@@ -21,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.IOException;
 import java.util.HashMap;
+
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -255,5 +257,18 @@ public class LoadCsvTest extends UnitTest {
         }, rel.columns);
         assertEquals(1, rel.relKey.values.length);
         assertEquals("String", rel.relKey.values[0]);
+    }
+
+    @AfterAll
+    void tearDown() throws IOException, HttpError, InterruptedException {
+        var client = createClient();
+        var deleteRsp = client.deleteDatabase(databaseName);
+        assertEquals(databaseName, deleteRsp.name);
+        try {
+            // deleteEngineWait terminates its polling loop with a 404
+            client.deleteEngineWait(engineName);
+        } catch (HttpError e) {
+            assertEquals(e.statusCode, 404);
+        }
     }
 }
