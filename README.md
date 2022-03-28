@@ -1,6 +1,11 @@
-![build](https://github.com/RelationalAI/rai-sdk-java/actions/workflows/maven-build.yaml/badge.svg)
-![publish](https://github.com/RelationalAI/rai-sdk-java/actions/workflows/maven-publish.yaml/badge.svg)
-![javadoc](https://github.com/RelationalAI/rai-sdk-java/actions/workflows/maven-javadoc.yaml/badge.svg)
+# General
+
+| Workflow | Status |
+| --------------------------- | ---------------------------------------------------------------------- |
+| Continuous Integration (CI) | ![build](https://github.com/RelationalAI/rai-sdk-java/actions/workflows/maven-build.yaml/badge.svg) |
+| Publish to GitHub packages  | ![publish](https://github.com/RelationalAI/rai-sdk-java/actions/workflows/maven-publish.yaml/badge.svg) |
+| Generate java documentation | ![javadoc](https://github.com/RelationalAI/rai-sdk-java/actions/workflows/maven-javadoc.yaml/badge.svg) |
+
 
 # The RelationalAI Software Development Kit for Java
 
