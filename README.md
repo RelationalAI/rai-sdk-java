@@ -144,7 +144,7 @@ individual examples, eg:
 
 ## Javadocs
 
-Javadocs for `rai-sdk` are available [here](https://musical-winner-94955c55.pages.github.io/com/relationalai/package-summary.html).
+Javadocs for `rai-sdk` are available [here](https://relationalai.github.io/rai-sdk-java/com/relationalai/package-summary.html).
 
 ## Support
 
