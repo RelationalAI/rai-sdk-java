@@ -16,9 +16,14 @@
 
 package com.relationalai;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.arrow.memory.RootAllocator;
+import org.apache.arrow.vector.VectorSchemaRoot;
+import org.apache.arrow.vector.ipc.ArrowStreamReader;
+import org.apache.arrow.vector.types.pojo.Field;
+import org.apache.commons.fileupload.MultipartStream;
+
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
@@ -26,10 +31,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Client {
     public static final String DEFAULT_REGION = "us-east";
@@ -250,13 +254,90 @@ public class Client {
         authenticate(builder, this.credentials);
         HttpRequest request = builder.build();
         // printRequest(request);
-        HttpResponse<String> response =
-                getHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<byte[]> response =
+                getHttpClient().send(request, HttpResponse.BodyHandlers.ofByteArray());
         int statusCode = response.statusCode();
+        String contentType = response.headers().firstValue("Content-Type").orElse("");
         if (statusCode >= 400)
-            throw new HttpError(statusCode, response.body());
-        return response.body();
+            throw new HttpError(statusCode, new String(response.body(), StandardCharsets.UTF_8));
+        if (contentType.toLowerCase().contains("application/json"))
+            return new String(response.body(), StandardCharsets.UTF_8);
+        else if (contentType.toLowerCase().contains("multipart/form-data")) {
+            return parseMultipartResponse(response);
+        } else {
+            throw new HttpError(statusCode, "invalid response type");
+        }
     }
+
+    private String parseMultipartResponse(HttpResponse<byte[]> response) throws IOException, HttpError {
+        int statusCode = response.statusCode();
+        String contentType = response.headers().firstValue("Content-Type").orElse("");
+
+        List<String> result = new ArrayList<>();
+
+        String boundary = null;
+        for (String part: contentType.split(";"))
+            if (part.trim().startsWith("boundary"))
+                boundary = part.split("=")[1].trim();
+
+        MultipartStream multipartStream = new MultipartStream(
+                new ByteArrayInputStream(response.body()),
+                boundary.getBytes(StandardCharsets.UTF_8),
+                1024,
+                null
+        );
+
+        boolean nextPart = multipartStream.skipPreamble();
+
+        while (nextPart) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+            String partHeaders = multipartStream.readHeaders();
+            multipartStream.readBodyData(out);
+
+            String partContentType = null;
+            for (String row : partHeaders.split("\n")) {
+                if (row.toLowerCase().startsWith("content-type"))
+                    partContentType = row.split(":")[1].trim();
+            }
+
+            if (partContentType.toLowerCase().equals("application/json")) {
+                result.add(out.toString(StandardCharsets.UTF_8));
+            } else if (partContentType.toLowerCase().equals("application/vnd.apache.arrow.stream")) {
+                result.add(parseArrowResponse(out));
+            } else {
+                throw new HttpError(statusCode, String.format("unknown part content type: %s", partContentType));
+            }
+
+            nextPart = multipartStream.readBoundary();
+        }
+
+        return result.toString();
+    }
+
+    private String parseArrowResponse(ByteArrayOutputStream out) throws IOException {
+        Map<String, String> result = new HashMap<>();
+
+        RootAllocator allocator = new RootAllocator(Integer.MAX_VALUE);
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        ArrowStreamReader reader = new ArrowStreamReader(in, allocator);
+
+        VectorSchemaRoot readBatch = reader.getVectorSchemaRoot();
+
+        for (Field f : readBatch.getSchema().getFields()) {
+            result.put(f.getName(), String.valueOf(readBatch.getVector(f)));
+        }
+
+        while(reader.loadNextBatch()) {
+            readBatch = reader.getVectorSchemaRoot();
+
+            for (Field f : readBatch.getSchema().getFields()) {
+                result.put(f.getName(), String.valueOf(readBatch.getVector(f)));
+            }
+        }
+        return new ObjectMapper().writeValueAsString(result);
+    }
+
 
     static void printRequest(HttpRequest request) {
         System.out.printf("%s %s\n", request.method(), request.uri());
@@ -321,6 +402,7 @@ public class Client {
     static final String PATH_ENGINE = "/compute";
     static final String PATH_OAUTH_CLIENTS = "/oauth-clients";
     static final String PATH_TRANSACTION = "/transaction";
+    static final String PATH_TRANSACTIONS = "/transactions";
     static final String PATH_USERS = "/users";
 
     // Returns a URL path constructed from the given parts.
@@ -628,6 +710,54 @@ public class Client {
         var body = tx.payload(action);
         var rsp = post(PATH_TRANSACTION, tx.queryParams(), body);
         return Json.deserialize(rsp, TransactionResult.class);
+    }
+
+    // TODO: map string to result object
+    public String executeAsync(
+            String database, String engine, String source, boolean readonly) throws HttpError, IOException, InterruptedException {
+        return executeAsync(database, engine, source, readonly, null);
+    }
+
+    // TODO: map string to result object
+    public String executeAsync(
+            String database, String engine,
+            String source, boolean readonly,
+            Map<String, String> inputs) throws HttpError, IOException, InterruptedException {
+        var tx = new TransactionAsync(database, engine,  source, readonly);
+        var action = DbAction.makeQueryAction(source, inputs);
+        var body = tx.payload(action);
+        var rsp = post(PATH_TRANSACTIONS, tx.queryParams(), body);
+        return rsp;
+    }
+
+    // TODO: map string to result object
+    public String getTransaction(String id) throws HttpError, IOException, InterruptedException {
+        var rsp = get(String.format("%s/%s", PATH_TRANSACTIONS, id));
+        return rsp;
+    }
+
+    // TODO: map string to result object
+    public String getTransactions() throws HttpError, IOException, InterruptedException {
+        var rsp = get(PATH_TRANSACTIONS);
+        return rsp;
+    }
+
+    // TODO: map string to result object
+    public String getTransactionResults(String id) throws HttpError, IOException, InterruptedException {
+        var rsp = get(String.format("%s/%s/results", PATH_TRANSACTIONS, id));
+        return rsp;
+    }
+
+    // TODO: map string to result object
+    public String getTransactionMetadata(String id) throws HttpError, IOException, InterruptedException {
+        var rsp = get(String.format("%s/%s/metadata", PATH_TRANSACTIONS, id));
+        return rsp;
+    }
+
+    // TODO: map string to result object
+    public String getTransactionProblems(String id) throws HttpError, IOException, InterruptedException {
+        var rsp = get(String.format("%s/%s/problems", PATH_TRANSACTIONS, id));
+        return rsp;
     }
 
     // EDBs
