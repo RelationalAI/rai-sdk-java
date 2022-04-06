@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import com.relationalai.Client;
 import com.relationalai.Config;
 import com.relationalai.HttpError;
+import com.relationalai.Json;
 
 public class ExecuteAsync implements Runnable {
     boolean readonly;
@@ -65,6 +66,6 @@ public class ExecuteAsync implements Runnable {
         if (source == null)
             return; // nothing to execute
         var rsp = client.executeAsync(database, engine, source, readonly);
-        System.out.println(rsp);
+        Json.print(rsp);
     }
 }

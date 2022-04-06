@@ -17,6 +17,7 @@
 package com.relationalai;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jsoniter.any.Any;
 import org.apache.arrow.memory.RootAllocator;
 import org.apache.arrow.vector.VectorSchemaRoot;
 import org.apache.arrow.vector.ipc.ArrowStreamReader;
@@ -335,9 +336,9 @@ public class Client {
                 result.put(f.getName(), String.valueOf(readBatch.getVector(f)));
             }
         }
+        // serialize map to json string
         return new ObjectMapper().writeValueAsString(result);
     }
-
 
     static void printRequest(HttpRequest request) {
         System.out.printf("%s %s\n", request.method(), request.uri());
@@ -712,14 +713,57 @@ public class Client {
         return Json.deserialize(rsp, TransactionResult.class);
     }
 
-    // TODO: map string to result object
-    public String executeAsync(
+    public HashMap<String, Any> executeAsyncWait(
+            String database, String engine, String source, boolean readonly) throws HttpError, IOException, InterruptedException {
+        return executeAsyncWait(database, engine, source, readonly, null);
+    }
+
+    public HashMap<String, Any> executeAsyncWait(
+            String database, String engine,
+            String source, boolean readonly,
+            Map<String, String> inputs) throws HttpError, IOException, InterruptedException {
+        String transactionId = null;
+        var output = new HashMap<String, Any>();
+
+        var rsp = executeAsync(database, engine, source, readonly, inputs);
+
+        try {
+            transactionId = rsp.asMap().get("id").toString();
+        } catch (ClassCastException e) {
+            transactionId = rsp.get(0).asMap().get("id").toString();
+        }
+
+        var state =  getTransaction(transactionId)
+                .asMap()
+                .get("transaction")
+                .asMap()
+                .get("state")
+                .toString();
+
+        while (!"COMPLETED".equals(state)){
+            Thread.sleep(2000);
+
+            state =  getTransaction(transactionId)
+                    .asMap()
+                    .get("transaction")
+                    .asMap()
+                    .get("state")
+                    .toString();
+        }
+
+        output.put("results", getTransactionResults(transactionId));
+        output.put("metadata", getTransactionMetadata(transactionId));
+        output.put("problems", getTransactionProblems(transactionId));
+
+        return output;
+    }
+
+    public Any executeAsync(
             String database, String engine, String source, boolean readonly) throws HttpError, IOException, InterruptedException {
         return executeAsync(database, engine, source, readonly, null);
     }
 
-    // TODO: map string to result object
-    public String executeAsync(
+    public Any executeAsync(
             String database, String engine,
             String source, boolean readonly,
             Map<String, String> inputs) throws HttpError, IOException, InterruptedException {
@@ -727,37 +771,32 @@ public class Client {
         var action = DbAction.makeQueryAction(source, inputs);
         var body = tx.payload(action);
         var rsp = post(PATH_TRANSACTIONS, tx.queryParams(), body);
-        return rsp;
+        return Json.deserialize(rsp);
     }
 
-    // TODO: map string to result object
-    public String getTransaction(String id) throws HttpError, IOException, InterruptedException {
+    public Any getTransaction(String id) throws HttpError, IOException, InterruptedException {
         var rsp = get(String.format("%s/%s", PATH_TRANSACTIONS, id));
-        return rsp;
+        return Json.deserialize(rsp);
     }
 
-    // TODO: map string to result object
-    public String getTransactions() throws HttpError, IOException, InterruptedException {
+    public Any getTransactions() throws HttpError, IOException, InterruptedException {
         var rsp = get(PATH_TRANSACTIONS);
-        return rsp;
+        return Json.deserialize(rsp);
     }
 
-    // TODO: map string to result object
-    public String getTransactionResults(String id) throws HttpError, IOException, InterruptedException {
+    public Any getTransactionResults(String id) throws HttpError, IOException, InterruptedException {
         var rsp = get(String.format("%s/%s/results", PATH_TRANSACTIONS, id));
-        return rsp;
+        return Json.deserialize(rsp);
     }
 
-    // TODO: map string to result object
-    public String getTransactionMetadata(String id) throws HttpError, IOException, InterruptedException {
+    public Any getTransactionMetadata(String id) throws HttpError, IOException, InterruptedException {
         var rsp = get(String.format("%s/%s/metadata", PATH_TRANSACTIONS, id));
-        return rsp;
+        return Json.deserialize(rsp);
     }
 
-    // TODO: map string to result object
-    public String getTransactionProblems(String id) throws HttpError, IOException, InterruptedException {
+    public Any getTransactionProblems(String id) throws HttpError, IOException, InterruptedException {
         var rsp = get(String.format("%s/%s/problems", PATH_TRANSACTIONS, id));
-        return rsp;
+        return Json.deserialize(rsp);
     }
 
     // EDBs
