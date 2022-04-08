@@ -715,7 +715,7 @@ public class Client {
 
     public HashMap<String, Any> executeAsyncWait(
             String database, String engine, String source, boolean readonly) throws HttpError, IOException, InterruptedException {
-        return executeAsyncWait(database, engine, source, readonly, null);
+        return executeAsyncWait(database, engine, source, readonly, new HashMap<>());
     }
 
     public HashMap<String, Any> executeAsyncWait(
