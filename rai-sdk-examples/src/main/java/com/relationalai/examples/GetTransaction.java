@@ -19,6 +19,7 @@ package com.relationalai.examples;
 import com.relationalai.Client;
 import com.relationalai.Config;
 import com.relationalai.HttpError;
+import com.relationalai.Json;
 
 import java.io.IOException;
 
@@ -41,6 +42,6 @@ public class GetTransaction implements Runnable {
         var client = new Client(cfg);
 
         var rsp = client.getTransaction(id);
-        System.out.println(rsp);
+        Json.print(rsp);
     }
 }

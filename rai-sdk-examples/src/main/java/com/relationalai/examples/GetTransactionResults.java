@@ -26,7 +26,6 @@ import java.io.IOException;
 public class GetTransactionResults implements Runnable {
     String id, profile;
 
-    // todo: schema
     public void parseArgs(String[] args) {
         var c = Command.create("GetTransactionResults")
                 .addArgument("id")
