@@ -24,7 +24,7 @@ import com.relationalai.Config;
 import com.relationalai.HttpError;
 import com.relationalai.Json;
 
-public class Execute implements Runnable {
+public class ExecuteAsync implements Runnable {
     boolean readonly;
     String database, engine, command, filename, profile;
 
@@ -42,7 +42,7 @@ public class Execute implements Runnable {
     }
 
     public void parseArgs(String[] args) {
-        var c = Command.create("Execute")
+        var c = Command.create("ExecuteAsync")
                 .addArgument("database")
                 .addArgument("engine")
                 .addOption("c", "rel source string")
@@ -64,7 +64,7 @@ public class Execute implements Runnable {
         String source = getCommand();
         if (source == null)
             return; // nothing to execute
-        var rsp = client.execute(database, engine, source, readonly);
-        Json.print(rsp, 4);
+        var rsp = client.executeAsync(database, engine, source, readonly);
+        Json.print(rsp);
     }
 }

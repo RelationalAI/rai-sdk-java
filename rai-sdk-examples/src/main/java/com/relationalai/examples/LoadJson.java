@@ -37,7 +37,6 @@ public class LoadJson implements Runnable {
         return name;
     }
 
-    // todo: schema
     public void parseArgs(String[] args) {
         var c = Command.create("LoadJson")
                 .addArgument("database")
