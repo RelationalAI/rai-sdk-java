@@ -41,7 +41,6 @@ public class ExecuteAsync implements Runnable {
         return null;
     }
 
-    // todo: schema
     public void parseArgs(String[] args) {
         var c = Command.create("ExecuteAsync")
                 .addArgument("database")

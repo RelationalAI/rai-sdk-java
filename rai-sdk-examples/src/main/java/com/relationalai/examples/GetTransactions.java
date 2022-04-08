@@ -26,7 +26,6 @@ import java.io.IOException;
 public class GetTransactions implements Runnable {
     String profile;
 
-    // todo: schema
     public void parseArgs(String[] args) {
         var c = Command.create("GetTransactions")
                 .addOption("profile", "config profile (default: default)")

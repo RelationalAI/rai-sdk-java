@@ -41,7 +41,6 @@ public class Execute implements Runnable {
         return null;
     }
 
-    // todo: schema
     public void parseArgs(String[] args) {
         var c = Command.create("Execute")
                 .addArgument("database")

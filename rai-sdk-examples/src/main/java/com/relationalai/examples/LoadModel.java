@@ -37,7 +37,6 @@ public class LoadModel implements Runnable {
         return name;
     }
 
-    // todo: schema
     public void parseArgs(String[] args) {
         var c = Command.create("LoadModel")
                 .addArgument("database")
