@@ -19,6 +19,7 @@ package com.relationalai.examples;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
 import com.relationalai.Client;
 import com.relationalai.Config;
 import com.relationalai.HttpError;

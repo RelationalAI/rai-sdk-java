@@ -50,7 +50,7 @@ public class TransactionAsync extends Entity {
     }
 
     // Construct the transaction payload and return serialized JSON string.
-    String payload(DbAction... actions) {
+    String payload() {
         var data = new HashMap<String, Object>();
         data.put("dbname", database);
         data.put("readonly", readonly);
@@ -58,16 +58,7 @@ public class TransactionAsync extends Entity {
         data.put("query", command);
 
         var inputsList = new ArrayList<>();
-        for (Map.Entry<String, String> entry : inputs.entrySet()) {
-            inputsList.add(
-                    DbAction.makeQueryActionInput(
-                            entry.getKey(),
-                            entry.getValue()
-                    )
-            );
-        }
-
-        data.put("inputs", inputsList);
+        inputs.forEach((k, v) -> inputsList.add(DbAction.makeQueryActionInput(k, v)));
 
         var output = new ByteArrayOutputStream();
         JsonStream.setIndentionStep(0);

@@ -760,16 +760,15 @@ public class Client {
 
     public Any executeAsync(
             String database, String engine, String source, boolean readonly) throws HttpError, IOException, InterruptedException {
-        return executeAsync(database, engine, source, readonly, null);
+        return executeAsync(database, engine, source, readonly, new HashMap<>());
     }
 
     public Any executeAsync(
             String database, String engine,
             String source, boolean readonly,
             Map<String, String> inputs) throws HttpError, IOException, InterruptedException {
-        var tx = new TransactionAsync(database, engine,  source, readonly);
-        var action = DbAction.makeQueryAction(source, inputs);
-        var body = tx.payload(action);
+        var tx = new TransactionAsync(database, engine,  source, readonly, inputs);
+        var body = tx.payload();
         var rsp = post(PATH_TRANSACTIONS, tx.queryParams(), body);
         return Json.deserialize(rsp);
     }
