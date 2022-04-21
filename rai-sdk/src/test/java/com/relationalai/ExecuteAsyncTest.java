@@ -16,6 +16,7 @@
 
 package com.relationalai;
 
+import com.jsoniter.JsonIterator;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -30,22 +31,23 @@ public class ExecuteAsyncTest extends UnitTest {
     void testExecuteAsync() throws HttpError, InterruptedException, IOException {
         var client = createClient();
 
-        ensureDatabase(client);
+        //ensureDatabase(client);
 
         var query = "x, x^2, x^3, x^4 from x in {1; 2; 3; 4; 5}";
 
         var rsp = client.executeAsyncWait(databaseName, engineName, query, true);
+        System.out.println(rsp);
+
         assertEquals(
-                rsp.get("results").toString(),
-                "[{\"v1\":\"[1, 2, 3, 4, 5]\",\"v2\":\"[1, 4, 9, 16, 25]\",\"v3\":\"[1, 8, 27, 64, 125]\",\"v4\":\"[1, 16, 81, 256, 625]\"}]"
+                rsp.get("results"),
+                JsonIterator.deserialize("[[{\"v1\":[1,2,3,4,5]},{\"v2\":[1,4,9,16,25]},{\"v3\":[1,8,27,64,125]},{\"v4\":[1,16,81,256,625]}]]"));
+        assertEquals(
+                rsp.get("metadata"),
+                JsonIterator.deserialize("[{\"relationId\":\"/:output/Int64/Int64/Int64/Int64\",\"types\":[\":output\",\"Int64\",\"Int64\",\"Int64\",\"Int64\"]}]")
         );
         assertEquals(
-                rsp.get("metadata").toString(),
-                "[{\"relationId\":\"/:output/Int64/Int64/Int64/Int64\",\"types\":[\":output\",\"Int64\",\"Int64\",\"Int64\",\"Int64\"]}]"
-        );
-        assertEquals(
-                rsp.get("problems").toString(),
-                "[]"
+                rsp.get("problems"),
+                JsonIterator.deserialize("[]")
         );
     }
 
