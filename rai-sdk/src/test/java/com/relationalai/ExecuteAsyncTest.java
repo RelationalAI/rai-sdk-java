@@ -36,7 +36,6 @@ public class ExecuteAsyncTest extends UnitTest {
         var query = "x, x^2, x^3, x^4 from x in {1; 2; 3; 4; 5}";
 
         var rsp = client.executeAsyncWait(databaseName, engineName, query, true);
-        System.out.println(rsp);
 
         assertEquals(
                 rsp.get("results"),
