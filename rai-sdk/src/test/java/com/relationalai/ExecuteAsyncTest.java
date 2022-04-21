@@ -31,7 +31,7 @@ public class ExecuteAsyncTest extends UnitTest {
     void testExecuteAsync() throws HttpError, InterruptedException, IOException {
         var client = createClient();
 
-        //ensureDatabase(client);
+        ensureDatabase(client);
 
         var query = "x, x^2, x^3, x^4 from x in {1; 2; 3; 4; 5}";
 
