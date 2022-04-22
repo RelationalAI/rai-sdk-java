@@ -19,6 +19,7 @@ package com.relationalai;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jsoniter.any.Any;
 import org.apache.arrow.memory.RootAllocator;
+import org.apache.arrow.vector.FieldVector;
 import org.apache.arrow.vector.VectorSchemaRoot;
 import org.apache.arrow.vector.ipc.ArrowStreamReader;
 import org.apache.arrow.vector.types.pojo.Field;
@@ -306,6 +307,7 @@ public class Client {
                 result.add(out.toString(StandardCharsets.UTF_8));
             } else if (partContentType.toLowerCase().equals("application/vnd.apache.arrow.stream")) {
                 result.add(parseArrowResponse(out));
+                out.close();
             } else {
                 throw new HttpError(statusCode, String.format("unknown part content type: %s", partContentType));
             }
@@ -317,27 +319,43 @@ public class Client {
     }
 
     private String parseArrowResponse(ByteArrayOutputStream out) throws IOException {
-        Map<String, String> result = new HashMap<>();
+        List<Object> output = new ArrayList<>();
 
-        RootAllocator allocator = new RootAllocator(Integer.MAX_VALUE);
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-        ArrowStreamReader reader = new ArrowStreamReader(in, allocator);
+        List<FieldVector> fieldVectors = null;
+        RootAllocator allocator = new RootAllocator(Long.MAX_VALUE);
+        try(ArrowStreamReader arrowStreamReader = new ArrowStreamReader(in, allocator)){
 
-        VectorSchemaRoot readBatch = reader.getVectorSchemaRoot();
+            VectorSchemaRoot root = arrowStreamReader.getVectorSchemaRoot();
+            fieldVectors = root.getFieldVectors();
 
-        for (Field f : readBatch.getSchema().getFields()) {
-            result.put(f.getName(), String.valueOf(readBatch.getVector(f)));
-        }
+            while(arrowStreamReader.loadNextBatch()) {
+                 for(FieldVector fieldVector : fieldVectors) {
+                     Map<String, List<Object>> col = new HashMap<>();
 
-        while(reader.loadNextBatch()) {
-            readBatch = reader.getVectorSchemaRoot();
-
-            for (Field f : readBatch.getSchema().getFields()) {
-                result.put(f.getName(), String.valueOf(readBatch.getVector(f)));
+                     col.put(fieldVector.getField().getName(), new ArrayList<>());
+                     for (int i = 0; i < fieldVector.getValueCount(); i ++) {
+                         col.get(fieldVector.getField().getName()).add(fieldVector.getObject(i));
+                     }
+                     output.add(col);
+                 }
             }
+        } finally {
+            if (in != null ) {
+                in.close();
+            }
+            if (fieldVectors != null) {
+                for (FieldVector fieldVector : fieldVectors) {
+                    if (fieldVector != null) {
+                        fieldVector.close();
+                    }
+                }
+            }
+            allocator.close();
         }
+
         // serialize map to json string
-        return new ObjectMapper().writeValueAsString(result);
+        return new ObjectMapper().writeValueAsString(output);
     }
 
     static void printRequest(HttpRequest request) {
