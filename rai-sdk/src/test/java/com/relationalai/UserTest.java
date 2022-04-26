@@ -31,9 +31,13 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 @TestInstance(Lifecycle.PER_CLASS)
 public class UserTest extends UnitTest {
     static UUID uuid = UUID.randomUUID();
-    static String userEmail = String.format("java-sdk-test-%s@relational.ai", uuid);
+    static String userEmail = String.format("java-sdk-%s@example.com", uuid);
 
-    @Test void testUser() throws HttpError, InterruptedException, IOException {
+    // Created users are deleted from the account
+    // but not deleted from the database.
+    // We should enable back this test when
+    // the behavior is addressed (delete also users from the database).
+    void testUser() throws HttpError, InterruptedException, IOException {
         var client = createClient();
 
         var rsp = client.findUser(userEmail);

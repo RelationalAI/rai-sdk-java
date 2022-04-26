@@ -16,12 +16,13 @@
 
 package com.relationalai;
 
-import com.jsoniter.JsonIterator;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,17 +38,31 @@ public class ExecuteAsyncTest extends UnitTest {
 
         var rsp = client.executeAsyncWait(databaseName, engineName, query, true);
 
-        assertEquals(
-                rsp.get("results"),
-                JsonIterator.deserialize("[[{\"v1\":[1,2,3,4,5]},{\"v2\":[1,4,9,16,25]},{\"v3\":[1,8,27,64,125]},{\"v4\":[1,16,81,256,625]}]]"));
-        assertEquals(
-                rsp.get("metadata"),
-                JsonIterator.deserialize("[{\"relationId\":\"/:output/Int64/Int64/Int64/Int64\",\"types\":[\":output\",\"Int64\",\"Int64\",\"Int64\",\"Int64\"]}]")
-        );
-        assertEquals(
-                rsp.get("problems"),
-                JsonIterator.deserialize("[]")
-        );
+        var results = new ArrayList<ArrowRelation> () {
+            {
+                add(new ArrowRelation("v1", Arrays.asList(new Object[] {1L, 2L, 3L, 4L, 5L}) ));
+                add(new ArrowRelation("v2", Arrays.asList(new Object[] {1L, 4L, 9L, 16L, 25L}) ));
+                add(new ArrowRelation("v3", Arrays.asList(new Object[] {1L, 8L, 27L, 64L, 125L}) ));
+                add(new ArrowRelation("v4", Arrays.asList(new Object[] {1L, 16L, 81L, 256L, 625L}) ));
+            }
+        };
+
+        var metadata = new ArrayList<TransactionAsyncMetadataResponse>() {
+            {
+                add(
+                        new TransactionAsyncMetadataResponse(
+                                "/:output/Int64/Int64/Int64/Int64",
+                                Arrays.asList(new String[] {":output", "Int64", "Int64", "Int64", "Int64"})
+                        )
+                );
+            }
+        };
+
+        var problems = new ArrayList<Object>();
+
+        assertEquals(rsp.results, results);
+        assertEquals(rsp.metadata, metadata);
+        assertEquals(rsp.problems, problems);
     }
 
     @AfterAll
