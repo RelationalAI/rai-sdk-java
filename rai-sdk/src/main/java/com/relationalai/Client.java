@@ -16,14 +16,11 @@
 
 package com.relationalai;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jsoniter.any.Any;
+import com.jsoniter.spi.JsonException;
 import org.apache.arrow.memory.RootAllocator;
 import org.apache.arrow.vector.FieldVector;
 import org.apache.arrow.vector.VectorSchemaRoot;
 import org.apache.arrow.vector.ipc.ArrowStreamReader;
-import org.apache.arrow.vector.types.pojo.Field;
-import org.apache.commons.fileupload.MultipartStream;
 
 import java.io.*;
 import java.net.URI;
@@ -36,6 +33,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Client {
     public static final String DEFAULT_REGION = "us-east";
@@ -250,7 +248,7 @@ public class Client {
         builder.header("Authorization", String.format("Bearer %s", accessToken.token));
     }
 
-    String sendRequest(HttpRequest.Builder builder)
+    Object sendRequest(HttpRequest.Builder builder)
             throws HttpError, InterruptedException, IOException {
         addHeaders(builder, defaultHeaders);
         authenticate(builder, this.credentials);
@@ -265,99 +263,65 @@ public class Client {
         if (contentType.toLowerCase().contains("application/json"))
             return new String(response.body(), StandardCharsets.UTF_8);
         else if (contentType.toLowerCase().contains("multipart/form-data")) {
-            return parseMultipartResponse(response);
+            return MultipartReader.parseMultipartResponse(response);
         } else {
             throw new HttpError(statusCode, "invalid response type");
         }
     }
+    private List<ArrowRelation> readArrowFiles(List<TransactionAsyncFile> files) throws IOException {
+        var output = new ArrayList<ArrowRelation>();
+        for (var file : files) {
+            if ("application/vnd.apache.arrow.stream".equals(file.contentType.toLowerCase())) {
+                ByteArrayInputStream in = new ByteArrayInputStream(file.data);
+                List<FieldVector> fieldVectors = null;
+                RootAllocator allocator = new RootAllocator(Long.MAX_VALUE);
 
-    private String parseMultipartResponse(HttpResponse<byte[]> response) throws IOException, HttpError {
-        int statusCode = response.statusCode();
-        String contentType = response.headers().firstValue("Content-Type").orElse("");
+                try(ArrowStreamReader arrowStreamReader = new ArrowStreamReader(in, allocator)){
+                    VectorSchemaRoot root = arrowStreamReader.getVectorSchemaRoot();
+                    fieldVectors = root.getFieldVectors();
 
-        List<String> result = new ArrayList<>();
+                    while(arrowStreamReader.loadNextBatch()) {
+                        for(FieldVector fieldVector : fieldVectors) {
+                            List<Object> values = new ArrayList<>();
 
-        String boundary = null;
-        for (String part: contentType.split(";"))
-            if (part.trim().startsWith("boundary"))
-                boundary = part.split("=")[1].trim();
-
-        MultipartStream multipartStream = new MultipartStream(
-                new ByteArrayInputStream(response.body()),
-                boundary.getBytes(StandardCharsets.UTF_8),
-                1024,
-                null
-        );
-
-        boolean nextPart = multipartStream.skipPreamble();
-
-        while (nextPart) {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-            String partHeaders = multipartStream.readHeaders();
-            multipartStream.readBodyData(out);
-
-            String partContentType = null;
-            for (String row : partHeaders.split("\n")) {
-                if (row.toLowerCase().startsWith("content-type"))
-                    partContentType = row.split(":")[1].trim();
-            }
-
-            if (partContentType.toLowerCase().equals("application/json")) {
-                result.add(out.toString(StandardCharsets.UTF_8));
-            } else if (partContentType.toLowerCase().equals("application/vnd.apache.arrow.stream")) {
-                result.add(parseArrowResponse(out));
-                out.close();
-            } else {
-                throw new HttpError(statusCode, String.format("unknown part content type: %s", partContentType));
-            }
-
-            nextPart = multipartStream.readBoundary();
-        }
-
-        return result.toString();
-    }
-
-    private String parseArrowResponse(ByteArrayOutputStream out) throws IOException {
-        List<Object> output = new ArrayList<>();
-
-        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-        List<FieldVector> fieldVectors = null;
-        RootAllocator allocator = new RootAllocator(Long.MAX_VALUE);
-        try(ArrowStreamReader arrowStreamReader = new ArrowStreamReader(in, allocator)){
-
-            VectorSchemaRoot root = arrowStreamReader.getVectorSchemaRoot();
-            fieldVectors = root.getFieldVectors();
-
-            while(arrowStreamReader.loadNextBatch()) {
-                 for(FieldVector fieldVector : fieldVectors) {
-                     Map<String, List<Object>> col = new HashMap<>();
-
-                     col.put(fieldVector.getField().getName(), new ArrayList<>());
-                     for (int i = 0; i < fieldVector.getValueCount(); i ++) {
-                         col.get(fieldVector.getField().getName()).add(fieldVector.getObject(i));
-                     }
-                     output.add(col);
-                 }
-            }
-        } finally {
-            if (in != null ) {
-                in.close();
-            }
-            if (fieldVectors != null) {
-                for (FieldVector fieldVector : fieldVectors) {
-                    if (fieldVector != null) {
-                        fieldVector.close();
+                            for (int i = 0; i < fieldVector.getValueCount(); i ++) {
+                                values.add(fieldVector.getObject(i));
+                            }
+                            output.add(new ArrowRelation(fieldVector.getField().getName(), values));
+                        }
                     }
+                } finally {
+                    if (in != null ) {
+                        in.close();
+                    }
+                    if (fieldVectors != null) {
+                        for (FieldVector fieldVector : fieldVectors) {
+                            if (fieldVector != null) {
+                                fieldVector.close();
+                            }
+                        }
+                    }
+                    allocator.close();
                 }
             }
-            allocator.close();
         }
-
-        // serialize map to json string
-        return new ObjectMapper().writeValueAsString(output);
+        return output;
     }
 
+    private List<Object> parseProblemsResult(String rsp) {
+        var output = new ArrayList<Object>();
+        var problems = Json.deserialize(rsp).asList();
+
+        for (var problem : problems) {
+            var data = Json.serialize(problem);
+            try {
+                output.add(Json.deserialize(data, IntegrityConstraintViolation.class));
+            } catch (JsonException e) {
+                output.add(Json.deserialize(data, ClientProblem.class));
+            }
+        }
+        return output;
+    }
     static void printRequest(HttpRequest request) {
         System.out.printf("%s %s\n", request.method(), request.uri());
         for (Map.Entry<String, List<String>> entry : request.headers().map().entrySet()) {
@@ -368,47 +332,47 @@ public class Client {
         // todo: figure out how to get the body from a request (non-trivial)
     }
 
-    public String request(String method, String path, QueryParams params)
+    public Object request(String method, String path, QueryParams params)
             throws HttpError, InterruptedException, IOException {
         return sendRequest(newRequestBuilder(method, path, params));
     }
 
-    public String request(String method, String path, QueryParams params, String body)
+    public Object request(String method, String path, QueryParams params, String body)
             throws HttpError, InterruptedException, IOException {
         return sendRequest(newRequestBuilder(method, path, params, body));
     }
 
-    public String delete(String path)
+    public Object delete(String path)
             throws HttpError, InterruptedException, IOException {
         return delete(path, null, null);
     }
 
-    public String delete(String path, QueryParams params, String body)
+    public Object delete(String path, QueryParams params, String body)
             throws HttpError, InterruptedException, IOException {
         return request("DELETE", path, params, body);
     }
 
-    public String get(String path)
+    public Object get(String path)
             throws HttpError, InterruptedException, IOException {
         return get(path, null);
     }
 
-    public String get(String path, QueryParams params)
+    public Object get(String path, QueryParams params)
             throws HttpError, InterruptedException, IOException {
         return request("GET", path, params);
     }
 
-    public String patch(String path, QueryParams params, String body)
+    public Object patch(String path, QueryParams params, String body)
             throws HttpError, InterruptedException, IOException {
         return request("PATCH", path, params, body);
     }
 
-    public String post(String path, QueryParams params, String body)
+    public Object post(String path, QueryParams params, String body)
             throws HttpError, InterruptedException, IOException {
         return request("POST", path, params, body);
     }
 
-    public String put(String path, QueryParams params, String body)
+    public Object put(String path, QueryParams params, String body)
             throws HttpError, InterruptedException, IOException {
         return request("PUT", path, params, body);
     }
@@ -476,7 +440,7 @@ public class Client {
         var req = new DeleteDatabaseRequest(database);
         var rsp = delete(PATH_DATABASE, null, Json.serialize(req));
         // once this is complete, there is no longer a database resource to return
-        return Json.deserialize(rsp, DeleteDatabaseResponse.class);
+        return Json.deserialize((String) rsp, DeleteDatabaseResponse.class);
     }
 
     public Database getDatabase(String database)
@@ -484,7 +448,7 @@ public class Client {
         var params = new QueryParams();
         params.put("name", database);
         var rsp = get(PATH_DATABASE, params);
-        var databases = Json.deserialize(rsp, GetDatabaseResponse.class).databases;
+        var databases = Json.deserialize((String) rsp, GetDatabaseResponse.class).databases;
         if (databases.length == 0)
             throw new HttpError(404);
         return databases[0];
@@ -502,8 +466,8 @@ public class Client {
             params = new QueryParams();
             params.put("state", state);
         }
-        String rsp = get(PATH_DATABASE, params);
-        return Json.deserialize(rsp, ListDatabasesResponse.class).databases;
+        var rsp = get(PATH_DATABASE, params);
+        return Json.deserialize((String) rsp, ListDatabasesResponse.class).databases;
     }
 
     // Engines
@@ -519,7 +483,7 @@ public class Client {
             size = "XS";
         var req = new CreateEngineRequest(this.region, engine, size);
         var rsp = put(PATH_ENGINE, null, Json.serialize(req));
-        return Json.deserialize(rsp, CreateEngineResponse.class).engine;
+        return Json.deserialize((String) rsp, CreateEngineResponse.class).engine;
     }
 
     public Engine createEngineWait(String engine)
@@ -561,7 +525,7 @@ public class Client {
         params.put("name", engine);
         params.put("deleted_on", "");
         var rsp = get(PATH_ENGINE, params);
-        var engines = Json.deserialize(rsp, GetEngineResponse.class).engines;
+        var engines = Json.deserialize((String) rsp, GetEngineResponse.class).engines;
         if (engines.length == 0)
             throw new HttpError(404);
         return engines[0];
@@ -580,7 +544,7 @@ public class Client {
             params.put("state", state);
         }
         var rsp = get(PATH_ENGINE, params);
-        return Json.deserialize(rsp, ListEnginesResponse.class).engines;
+        return Json.deserialize((String) rsp, ListEnginesResponse.class).engines;
     }
 
     // OAuth clients
@@ -594,13 +558,13 @@ public class Client {
             throws HttpError, InterruptedException, IOException {
         var req = new CreateOAuthClientRequest(name, permissions);
         var rsp = post(PATH_OAUTH_CLIENTS, null, Json.serialize(req));
-        return Json.deserialize(rsp, CreateOAuthClientResponse.class).client;
+        return Json.deserialize((String) rsp, CreateOAuthClientResponse.class).client;
     }
 
     public DeleteOAuthClientResponse deleteOAuthClient(String id)
             throws HttpError, InterruptedException, IOException {
         var rsp = delete(makePath(PATH_OAUTH_CLIENTS, id));
-        return Json.deserialize(rsp, DeleteOAuthClientResponse.class);
+        return Json.deserialize((String) rsp, DeleteOAuthClientResponse.class);
     }
 
     public OAuthClient findOAuthClient(String name)
@@ -616,13 +580,13 @@ public class Client {
     public OAuthClientExtra getOAuthClient(String id)
             throws HttpError, InterruptedException, IOException {
         var rsp = get(makePath(PATH_OAUTH_CLIENTS, id));
-        return Json.deserialize(rsp, GetOAuthClientResponse.class).client;
+        return Json.deserialize((String) rsp, GetOAuthClientResponse.class).client;
     }
 
     public OAuthClient[] listOAuthClients()
             throws HttpError, InterruptedException, IOException {
         var rsp = get(PATH_OAUTH_CLIENTS);
-        return Json.deserialize(rsp, ListOAuthClientsResponse.class).clients;
+        return Json.deserialize((String) rsp, ListOAuthClientsResponse.class).clients;
     }
 
     // Users
@@ -636,13 +600,13 @@ public class Client {
             throws HttpError, InterruptedException, IOException {
         var req = new CreateUserRequest(email, roles);
         var rsp = post(PATH_USERS, null, Json.serialize(req));
-        return Json.deserialize(rsp, CreateUserResponse.class).user;
+        return Json.deserialize((String) rsp, CreateUserResponse.class).user;
     }
 
     public DeleteUserResponse deleteUser(String id)
             throws HttpError, InterruptedException, IOException {
         var rsp = delete(makePath(PATH_USERS, id));
-        return Json.deserialize(rsp, DeleteUserResponse.class);
+        return Json.deserialize((String) rsp, DeleteUserResponse.class);
     }
 
     public User disableUser(String id)
@@ -669,13 +633,13 @@ public class Client {
     public User getUser(String id)
             throws HttpError, InterruptedException, IOException {
         var rsp = get(makePath(PATH_USERS, id));
-        return Json.deserialize(rsp, GetUserResponse.class).user;
+        return Json.deserialize((String) rsp, GetUserResponse.class).user;
     }
 
     public User[] listUsers()
             throws HttpError, InterruptedException, IOException {
         var rsp = get(PATH_USERS);
-        return Json.deserialize(rsp, ListUsersResponse.class).users;
+        return Json.deserialize((String) rsp, ListUsersResponse.class).users;
     }
 
     public User updateUser(String id, String status)
@@ -696,7 +660,7 @@ public class Client {
     public User updateUser(String id, UpdateUserRequest req)
             throws HttpError, InterruptedException, IOException {
         var rsp = patch(makePath(PATH_USERS, id), null, Json.serialize(req));
-        return Json.deserialize(rsp, UpdateUserResponse.class).user;
+        return Json.deserialize((String) rsp, UpdateUserResponse.class).user;
     }
 
     // Transactions
@@ -728,92 +692,121 @@ public class Client {
         var action = DbAction.makeQueryAction(source, inputs);
         var body = tx.payload(action);
         var rsp = post(PATH_TRANSACTION, tx.queryParams(), body);
-        return Json.deserialize(rsp, TransactionResult.class);
+        return Json.deserialize((String) rsp, TransactionResult.class);
     }
 
-    public HashMap<String, Any> executeAsyncWait(
+    public TransactionAsyncResult executeAsyncWait(
             String database, String engine, String source, boolean readonly) throws HttpError, IOException, InterruptedException {
         return executeAsyncWait(database, engine, source, readonly, new HashMap<>());
     }
 
-    public HashMap<String, Any> executeAsyncWait(
+    public TransactionAsyncResult executeAsyncWait(
             String database, String engine,
             String source, boolean readonly,
             Map<String, String> inputs) throws HttpError, IOException, InterruptedException {
-        String transactionId = null;
-        var output = new HashMap<String, Any>();
 
-        var rsp = executeAsync(database, engine, source, readonly, inputs);
+        var id = executeAsync(database, engine, source, readonly, inputs).transaction.id;
 
-        try {
-            transactionId = rsp.asMap().get("id").toString();
-        } catch (ClassCastException e) {
-            transactionId = rsp.get(0).asMap().get("id").toString();
-        }
+        var transaction = getTransaction(id).transaction;
 
-        var state =  getTransaction(transactionId)
-                .asMap()
-                .get("transaction")
-                .asMap()
-                .get("state")
-                .toString();
-
-        while (!"COMPLETED".equals(state)){
+        while ( !("COMPLETED".equals(transaction.state) || "ABORTED".equals(transaction.state)) ) {
             Thread.sleep(2000);
-
-            state =  getTransaction(transactionId)
-                    .asMap()
-                    .get("transaction")
-                    .asMap()
-                    .get("state")
-                    .toString();
+            transaction = getTransaction(id).transaction;
         }
 
-        output.put("results", getTransactionResults(transactionId));
-        output.put("metadata", getTransactionMetadata(transactionId));
-        output.put("problems", getTransactionProblems(transactionId));
+        var results = getTransactionResults(id);
+        var metadata = getTransactionMetadata(id);
+        var problems = getTransactionProblems(id);
 
-        return output;
+        return new TransactionAsyncResult(
+                transaction,
+                results,
+                metadata,
+                problems
+        );
     }
 
-    public Any executeAsync(
+    public TransactionAsyncResult executeAsync(
             String database, String engine, String source, boolean readonly) throws HttpError, IOException, InterruptedException {
         return executeAsync(database, engine, source, readonly, new HashMap<>());
     }
 
-    public Any executeAsync(
+    public TransactionAsyncResult executeAsync(
             String database, String engine,
             String source, boolean readonly,
             Map<String, String> inputs) throws HttpError, IOException, InterruptedException {
         var tx = new TransactionAsync(database, engine,  source, readonly, inputs);
         var body = tx.payload();
         var rsp = post(PATH_TRANSACTIONS, tx.queryParams(), body);
-        return Json.deserialize(rsp);
+        if (rsp instanceof String) {
+            var txn = Json.deserialize((String) rsp, TransactionAsyncCompactResponse.class);
+            return new TransactionAsyncResult(txn, new ArrayList<ArrowRelation>(), new ArrayList<TransactionAsyncMetadataResponse>(), new ArrayList<Object>());
+        }
+        return readTransactionAsyncResults((List<TransactionAsyncFile>) rsp);
     }
 
-    public Any getTransaction(String id) throws HttpError, IOException, InterruptedException {
+    private TransactionAsyncResult readTransactionAsyncResults(List<TransactionAsyncFile> files) throws HttpError, IOException {
+        var transaction = files
+                .stream().
+                filter(f -> f.name.equals("transaction"))
+                .collect(Collectors.toList());
+        var metadata = files
+                .stream()
+                .filter(f -> f.name.equals("metadata"))
+                .collect(Collectors.toList());
+        var problems = files
+                .stream()
+                .filter(f -> f.name.equals("problems"))
+                .collect(Collectors.toList());
+
+        if (transaction.isEmpty()) {
+            throw new HttpError(404, "transaction part is missing");
+        }
+        var transactionResponse = Json.deserialize(new String(transaction.get(0).data, StandardCharsets.UTF_8), TransactionAsyncCompactResponse.class);
+
+        if (metadata.isEmpty()) {
+            throw new HttpError(404, "metadata part is missing");
+        }
+        var metadataResponse = Json.deserialize(new String(metadata.get(0).data, StandardCharsets.UTF_8), TransactionAsyncMetadataResponse[].class);
+
+        if (problems.isEmpty()) {
+            throw new HttpError(404, "problems part is missing");
+        }
+        var problemsResult = parseProblemsResult(new String(problems.get(0).data, StandardCharsets.UTF_8));
+
+        var results = readArrowFiles(files);
+        return new TransactionAsyncResult(
+                transactionResponse,
+                results,
+                Arrays.asList(metadataResponse),
+                problemsResult
+        );
+    }
+
+    public TransactionAsyncSingleResponse getTransaction(String id) throws HttpError, IOException, InterruptedException {
         var rsp = get(String.format("%s/%s", PATH_TRANSACTIONS, id));
-        return Json.deserialize(rsp);
+        return Json.deserialize((String) rsp, TransactionAsyncSingleResponse.class);
     }
 
-    public Any getTransactions() throws HttpError, IOException, InterruptedException {
+    public TransactionsAsyncMultipleResponses getTransactions() throws HttpError, IOException, InterruptedException {
         var rsp = get(PATH_TRANSACTIONS);
-        return Json.deserialize(rsp);
+        return Json.deserialize((String) rsp,TransactionsAsyncMultipleResponses.class);
     }
 
-    public Any getTransactionResults(String id) throws HttpError, IOException, InterruptedException {
-        var rsp = get(String.format("%s/%s/results", PATH_TRANSACTIONS, id));
-        return Json.deserialize(rsp);
+    public List<ArrowRelation> getTransactionResults(String id) throws HttpError, IOException, InterruptedException {
+        var rsp = (List<TransactionAsyncFile>) get(String.format("%s/%s/results", PATH_TRANSACTIONS, id));
+        return readArrowFiles(rsp);
     }
 
-    public Any getTransactionMetadata(String id) throws HttpError, IOException, InterruptedException {
+    public List<TransactionAsyncMetadataResponse> getTransactionMetadata(String id) throws HttpError, IOException, InterruptedException {
         var rsp = get(String.format("%s/%s/metadata", PATH_TRANSACTIONS, id));
-        return Json.deserialize(rsp);
+        var results = Json.deserialize((String) rsp, TransactionAsyncMetadataResponse[].class);
+        return Arrays.asList(results);
     }
 
-    public Any getTransactionProblems(String id) throws HttpError, IOException, InterruptedException {
-        var rsp = get(String.format("%s/%s/problems", PATH_TRANSACTIONS, id));
-        return Json.deserialize(rsp);
+    public List<Object> getTransactionProblems(String id) throws HttpError, IOException, InterruptedException {
+        var rsp = (String) get(String.format("%s/%s/problems", PATH_TRANSACTIONS, id));
+        return parseProblemsResult(rsp);
     }
 
     // EDBs
@@ -824,7 +817,7 @@ public class Client {
         var action = DbAction.makeListEdbAction();
         var body = tx.payload(action);
         var rsp = post(PATH_TRANSACTION, tx.queryParams(), body);
-        var actions = Json.deserialize(rsp, ListEdbsResponse.class).actions;
+        var actions = Json.deserialize((String) rsp, ListEdbsResponse.class).actions;
         if (actions.length == 0)
             return new Edb[] {};
         return actions[0].result.rels;
@@ -839,7 +832,7 @@ public class Client {
         var action = DbAction.makeDeleteModelAction(name);
         var body = tx.payload(action);
         var rsp = post(PATH_TRANSACTION, tx.queryParams(), body);
-        return Json.deserialize(rsp, TransactionResult.class);
+        return Json.deserialize((String) rsp, TransactionResult.class);
     }
 
     // Delete the list of named models.
@@ -849,7 +842,7 @@ public class Client {
         var actions = DbAction.makeDeleteModelsAction(names);
         var body = tx.payload(actions);
         var rsp = post(PATH_TRANSACTION, tx.queryParams(), body);
-        return Json.deserialize(rsp, TransactionResult.class);
+        return Json.deserialize((String) rsp, TransactionResult.class);
     }
 
     // Return the named model.
@@ -878,7 +871,7 @@ public class Client {
         var action = DbAction.makeInstallAction(name, model);
         var data = tx.payload(action);
         var rsp = post(PATH_TRANSACTION, tx.queryParams(), data);
-        return Json.deserialize(rsp, TransactionResult.class);
+        return Json.deserialize((String) rsp, TransactionResult.class);
     }
 
     // Load multiple models into the given database.
@@ -889,7 +882,7 @@ public class Client {
         var actions = DbAction.makeInstallAction(models);
         var data = tx.payload(actions);
         var rsp = post(PATH_TRANSACTION, tx.queryParams(), data);
-        return Json.deserialize(rsp, TransactionResult.class);
+        return Json.deserialize((String) rsp, TransactionResult.class);
     }
 
     // Returns the list of names of models installed in the given database.
@@ -909,7 +902,7 @@ public class Client {
         var tx = new Transaction(this.region, database, engine, "OPEN", true);
         var body = tx.payload(DbAction.makeListModelsAction());
         var rsp = post(PATH_TRANSACTION, tx.queryParams(), body);
-        var actions = Json.deserialize(rsp, ListModelsResponse.class).actions;
+        var actions = Json.deserialize((String) rsp, ListModelsResponse.class).actions;
         if (actions.length == 0)
             return new Model[] {};
         return actions[0].result.models;

@@ -18,15 +18,12 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-public class TransactionResult extends Entity {
-    @JsonProperty(value = "aborted", required = true)
-    public boolean aborted;
+import java.util.List;
 
-    @JsonProperty(value = "output", required = true)
-    public Relation[] output;
+public class IntegrityConstraintViolation extends Entity {
+    @JsonProperty(value = "type", required = true)
+    public String type;
 
-    @JsonProperty(value = "problems", required = true)
-    public ClientProblem[] problems;
-
-    public TransactionResult() {}
+    @JsonProperty(value = "sources", required = true)
+    public List<Source> sources;
 }

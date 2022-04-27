@@ -21,7 +21,7 @@
     <description>The RelationalAI Software Development Kit (SDK) for Java</description>
     <groupId>com.relationalai</groupId>
     <artifactId>rai-sdk-pom</artifactId>
-    <version>0.1.0-alpha</version>
+    <version>0.2.0-alpha</version>
     <packaging>pom</packaging>
     <url></url>
 

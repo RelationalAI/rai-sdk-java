@@ -18,15 +18,13 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-public class TransactionResult extends Entity {
-    @JsonProperty(value = "aborted", required = true)
-    public boolean aborted;
+public class Source extends Entity {
+    @JsonProperty(value = "rel_key", required = true)
+    public RelKey relKey;
 
-    @JsonProperty(value = "output", required = true)
-    public Relation[] output;
+    @JsonProperty(value = "source", required = true)
+    public String src;
 
-    @JsonProperty(value = "problems", required = true)
-    public ClientProblem[] problems;
-
-    public TransactionResult() {}
+    @JsonProperty(value = "type", required = true)
+    public String type;
 }

@@ -1,5 +1,14 @@
-
 ## main
+* Added v2 predefined results formats:
+
+  - `getTransactions` returns `TransactionsAsyncMultipleResponses`.
+  - `getTransaction` returns `TransactionAsyncSingleResponse`.
+  - `getTransactionResults` returns `List<ArrowRelation>`.
+  - `getTransactionMetadata` returns `List<TransactionAsyncMetadataResponse>`.
+  - `getTransactionProblems` returns `List<ClientProblem|IntegrityConstraintViolation>`.
+  - `executeAsync` returns `TransactionAsyncResult`.
+
+## v0.1.0-alpha
 * Added support to the asynchronous protocol including:
     - `executeAsync`: runs an asynchronous request.
     - `executeAsyncWait`: runs an asynchronous request and wait of its completion.
@@ -9,6 +18,3 @@
     - `getTransactionMetadata`: gets transaction metadata.
     - `getTransactionProblems`: gets transaction execution problems.
 * Added `ExecuteAsyncTest` test class
-
-## v0.0.1
-* initial release
