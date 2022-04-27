@@ -26,7 +26,7 @@ public class TransactionResult extends Entity {
     public Relation[] output;
 
     @JsonProperty(value = "problems", required = true)
-    public Problem[] problems;
+    public ClientProblem[] problems;
 
     public TransactionResult() {}
 }

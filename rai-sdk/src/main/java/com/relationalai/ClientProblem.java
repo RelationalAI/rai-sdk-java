@@ -18,7 +18,7 @@ package com.relationalai;
 
 import com.jsoniter.annotation.JsonProperty;
 
-public class Problem extends Entity {
+public class ClientProblem extends Entity {
     @JsonProperty(value = "type", required = true)
     public String type;
 
@@ -37,5 +37,5 @@ public class Problem extends Entity {
     @JsonProperty(value = "report", required = true)
     public String report;
 
-    public Problem() {}
+    public ClientProblem() {}
 }

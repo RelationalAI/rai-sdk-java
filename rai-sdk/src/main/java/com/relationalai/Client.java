@@ -16,7 +16,6 @@
 
 package com.relationalai;
 
-import com.jsoniter.any.Any;
 import com.jsoniter.spi.JsonException;
 import org.apache.arrow.memory.RootAllocator;
 import org.apache.arrow.vector.FieldVector;
@@ -318,7 +317,7 @@ public class Client {
             try {
                 output.add(Json.deserialize(data, IntegrityConstraintViolation.class));
             } catch (JsonException e) {
-                output.add(Json.deserialize(data, Problem.class));
+                output.add(Json.deserialize(data, ClientProblem.class));
             }
         }
         return output;
