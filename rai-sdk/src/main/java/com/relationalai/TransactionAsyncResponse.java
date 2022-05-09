@@ -10,7 +10,10 @@ public class TransactionAsyncResponse extends TransactionAsyncCompactResponse {
     public String createdBy;
 
     @JsonProperty(value = "created_on", required = true)
-    public String createdOn;
+    public Long createdOn;
+
+    @JsonProperty(value = "finished_at", required = true)
+    public Long finishedAt;
 
     @JsonProperty(value = "database_name", required = true)
     public String databaseName;
@@ -22,7 +25,7 @@ public class TransactionAsyncResponse extends TransactionAsyncCompactResponse {
     public String query;
 
     @JsonProperty(value = "last_requested_interval", required = true)
-    public String lastRequestedInterval;
+    public Long lastRequestedInterval;
 
     public TransactionAsyncResponse() {}
     public TransactionAsyncResponse(
@@ -30,11 +33,12 @@ public class TransactionAsyncResponse extends TransactionAsyncCompactResponse {
             String state,
             String accountName,
             String createdBy,
-            String createdOn,
+            Long createdOn,
+            Long finishedAt,
             String databaseName,
             boolean readOnly,
             String query,
-            String lastRequestedInterval
+            Long lastRequestedInterval
     ) {
         super(id, state);
         this.accountName = accountName;

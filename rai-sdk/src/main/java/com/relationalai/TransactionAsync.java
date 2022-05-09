@@ -60,6 +60,8 @@ public class TransactionAsync extends Entity {
         var inputsList = new ArrayList<>();
         inputs.forEach((k, v) -> inputsList.add(DbAction.makeQueryActionInput(k, v)));
 
+        data.put("v1_inputs", inputsList);
+
         var output = new ByteArrayOutputStream();
         JsonStream.setIndentionStep(0);
         JsonStream.serialize(data, output);

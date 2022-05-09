@@ -3,8 +3,8 @@ package com.relationalai;
 import java.util.List;
 
 public class ArrowRelation extends Entity {
-    String relationId;
-    List<Object> table;
+    public String relationId;
+    public List<Object> table;
 
     public ArrowRelation(String relationId, List<Object> table) {
         this.relationId = relationId;

@@ -1,4 +1,7 @@
-## main
+## latest
+* Fixed `executeAsync` inputs issue.
+
+## v0.2.0-alpha
 * Added v2 predefined results formats:
 
   - `getTransactions` returns `TransactionsAsyncMultipleResponses`.
