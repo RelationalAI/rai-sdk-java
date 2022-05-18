@@ -124,7 +124,7 @@ The token needs at least the read:packages scope.
 
 ## Examples
 
-The SDK contain examples for every API, and various other SDK features. These
+The SDK contains examples for every API, and various other SDK features. These
 are located in the examples project under `./rai-sdk-examples`.
 
 The examples are packaged into a single JAR file, and can be run individually
@@ -160,3 +160,4 @@ to submit an issue or a PR here.
 The RelationalAI Software Development Kit for Java is licensed under the
 Apache License 2.0. See:
 https://github.com/RelationalAI/rai-sdk-java/blob/master/LICENSE
+G
