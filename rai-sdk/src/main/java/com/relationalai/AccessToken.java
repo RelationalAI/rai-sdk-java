@@ -43,6 +43,7 @@ public class AccessToken extends Entity {
     }
 
     // Answers if the token is expired.
+    // Anticipate access token expiration by 5 seconds
     public boolean isExpired() {
         return nowEpochSecs() > expiresOn() - 5;
     }

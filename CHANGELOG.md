@@ -1,4 +1,7 @@
-## latest
+## v0.2.2-alpha (latest)
+* Fixed `getTransaction` missing required properties: [finished_at]
+
+## v0.2.1-alpha
 * Fixed `executeAsync` inputs issue.
 
 ## v0.2.0-alpha
