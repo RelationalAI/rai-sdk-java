@@ -12,7 +12,7 @@ public class TransactionAsyncResponse extends TransactionAsyncCompactResponse {
     @JsonProperty(value = "created_on", required = true)
     public Long createdOn;
 
-    @JsonProperty(value = "finished_at", required = true)
+    @JsonProperty(value = "finished_at")
     public Long finishedAt;
 
     @JsonProperty(value = "database_name", required = true)
