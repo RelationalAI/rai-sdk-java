@@ -1,6 +1,9 @@
 name: build/test
 
-on: [push]
+on:
+  push:
+  schedule:
+    - cron: '30 5 * * *'
 
 jobs:
   build:
