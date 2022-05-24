@@ -809,6 +809,11 @@ public class Client {
         return parseProblemsResult(rsp);
     }
 
+    public TransactionAsyncDeleteResponse deleteTransaction(String id) throws HttpError, IOException, InterruptedException {
+        var rsp = (String) delete(String.format("%s/%s", PATH_TRANSACTIONS, id));
+        return Json.deserialize(rsp, TransactionAsyncDeleteResponse.class);
+    }
+
     // EDBs
 
     public Edb[] listEdbs(String database, String engine)
