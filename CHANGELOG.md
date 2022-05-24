@@ -1,5 +1,6 @@
 ## v0.2.2-alpha (latest)
-* Fixed `getTransaction` missing required properties: [finished_at]
+* Fixed `getTransaction` missing required properties: [finished_at].
+* Added `deleteTransaction`.
 
 ## v0.2.1-alpha
 * Fixed `executeAsync` inputs issue.
