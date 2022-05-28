@@ -33,10 +33,7 @@ public class UserTest extends UnitTest {
     static UUID uuid = UUID.randomUUID();
     static String userEmail = String.format("java-sdk-%s@example.com", uuid);
 
-    // Created users are deleted from the account
-    // but not deleted from the database.
-    // We should enable back this test when
-    // the behavior is addressed (delete also users from the database).
+    @Test
     void testUser() throws HttpError, InterruptedException, IOException {
         var client = createClient();
 
