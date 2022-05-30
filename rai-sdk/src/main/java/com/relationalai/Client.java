@@ -17,6 +17,7 @@
 package com.relationalai;
 
 import com.jsoniter.spi.JsonException;
+import com.relationalai.proto.Message;
 import org.apache.arrow.memory.RootAllocator;
 import org.apache.arrow.vector.FieldVector;
 import org.apache.arrow.vector.VectorSchemaRoot;
@@ -722,6 +723,7 @@ public class Client {
                 transaction,
                 results,
                 metadata,
+                null, // todo add getMetadataInfo (check if separate endpoint exists)
                 problems
         );
     }
@@ -740,7 +742,7 @@ public class Client {
         var rsp = post(PATH_TRANSACTIONS, tx.queryParams(), body);
         if (rsp instanceof String) {
             var txn = Json.deserialize((String) rsp, TransactionAsyncCompactResponse.class);
-            return new TransactionAsyncResult(txn, new ArrayList<ArrowRelation>(), new ArrayList<TransactionAsyncMetadataResponse>(), new ArrayList<Object>());
+            return new TransactionAsyncResult(txn, new ArrayList<ArrowRelation>(), new ArrayList<TransactionAsyncMetadataResponse>(), new ArrayList<Message.MetadataInfo>(), new ArrayList<Object>());
         }
         return readTransactionAsyncResults((List<TransactionAsyncFile>) rsp);
     }
@@ -753,6 +755,10 @@ public class Client {
         var metadata = files
                 .stream()
                 .filter(f -> f.name.equals("metadata"))
+                .collect(Collectors.toList());
+        var metadataInfo = files
+                .stream()
+                .filter(f -> f.name.equals("metadata_info"))
                 .collect(Collectors.toList());
         var problems = files
                 .stream()
@@ -769,6 +775,14 @@ public class Client {
         }
         var metadataResponse = Json.deserialize(new String(metadata.get(0).data, StandardCharsets.UTF_8), TransactionAsyncMetadataResponse[].class);
 
+        if (metadataInfo.isEmpty()) {
+            throw new HttpError(404, "metadata info part is missing");
+        }
+        List<Message.MetadataInfo> metadataInfoOutput = new ArrayList<>();
+        for (var info : metadataInfo) {
+            metadataInfoOutput.add(Message.MetadataInfo.parseFrom(info.data));
+            System.out.println(metadataInfoOutput);
+        }
         if (problems.isEmpty()) {
             throw new HttpError(404, "problems part is missing");
         }
@@ -779,6 +793,7 @@ public class Client {
                 transactionResponse,
                 results,
                 Arrays.asList(metadataResponse),
+                metadataInfoOutput,
                 problemsResult
         );
     }
