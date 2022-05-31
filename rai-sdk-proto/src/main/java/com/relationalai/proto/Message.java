@@ -49,7 +49,7 @@ public final class Message {
    *
    * Protobuf type {@code com.relationalai.proto.MetadataInfo}
    */
-  public  static final class MetadataInfo extends
+  public static final class MetadataInfo extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.MetadataInfo)
       MetadataInfoOrBuilder {
@@ -113,6 +113,8 @@ public final class Message {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -142,12 +144,14 @@ public final class Message {
     /**
      * <code>repeated .com.relationalai.proto.RelationMetadata relations = 1;</code>
      */
+    @java.lang.Override
     public java.util.List<com.relationalai.proto.Message.RelationMetadata> getRelationsList() {
       return relations_;
     }
     /**
      * <code>repeated .com.relationalai.proto.RelationMetadata relations = 1;</code>
      */
+    @java.lang.Override
     public java.util.List<? extends com.relationalai.proto.Message.RelationMetadataOrBuilder> 
         getRelationsOrBuilderList() {
       return relations_;
@@ -155,18 +159,21 @@ public final class Message {
     /**
      * <code>repeated .com.relationalai.proto.RelationMetadata relations = 1;</code>
      */
+    @java.lang.Override
     public int getRelationsCount() {
       return relations_.size();
     }
     /**
      * <code>repeated .com.relationalai.proto.RelationMetadata relations = 1;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Message.RelationMetadata getRelations(int index) {
       return relations_.get(index);
     }
     /**
      * <code>repeated .com.relationalai.proto.RelationMetadata relations = 1;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Message.RelationMetadataOrBuilder getRelationsOrBuilder(
         int index) {
       return relations_.get(index);
@@ -820,6 +827,7 @@ public final class Message {
      * </pre>
      *
      * <code>.com.relationalai.proto.RelationId relation_id = 1;</code>
+     * @return Whether the relationId field is set.
      */
     boolean hasRelationId();
     /**
@@ -828,6 +836,7 @@ public final class Message {
      * </pre>
      *
      * <code>.com.relationalai.proto.RelationId relation_id = 1;</code>
+     * @return The relationId.
      */
     com.relationalai.proto.Schema.RelationId getRelationId();
     /**
@@ -845,6 +854,7 @@ public final class Message {
      * </pre>
      *
      * <code>string file_name = 2;</code>
+     * @return The fileName.
      */
     java.lang.String getFileName();
     /**
@@ -853,6 +863,7 @@ public final class Message {
      * </pre>
      *
      * <code>string file_name = 2;</code>
+     * @return The bytes for fileName.
      */
     com.google.protobuf.ByteString
         getFileNameBytes();
@@ -864,7 +875,7 @@ public final class Message {
    *
    * Protobuf type {@code com.relationalai.proto.RelationMetadata}
    */
-  public  static final class RelationMetadata extends
+  public static final class RelationMetadata extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.RelationMetadata)
       RelationMetadataOrBuilder {
@@ -937,6 +948,8 @@ public final class Message {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -966,7 +979,9 @@ public final class Message {
      * </pre>
      *
      * <code>.com.relationalai.proto.RelationId relation_id = 1;</code>
+     * @return Whether the relationId field is set.
      */
+    @java.lang.Override
     public boolean hasRelationId() {
       return relationId_ != null;
     }
@@ -976,7 +991,9 @@ public final class Message {
      * </pre>
      *
      * <code>.com.relationalai.proto.RelationId relation_id = 1;</code>
+     * @return The relationId.
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.RelationId getRelationId() {
       return relationId_ == null ? com.relationalai.proto.Schema.RelationId.getDefaultInstance() : relationId_;
     }
@@ -987,6 +1004,7 @@ public final class Message {
      *
      * <code>.com.relationalai.proto.RelationId relation_id = 1;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.RelationIdOrBuilder getRelationIdOrBuilder() {
       return getRelationId();
     }
@@ -999,7 +1017,9 @@ public final class Message {
      * </pre>
      *
      * <code>string file_name = 2;</code>
+     * @return The fileName.
      */
+    @java.lang.Override
     public java.lang.String getFileName() {
       java.lang.Object ref = fileName_;
       if (ref instanceof java.lang.String) {
@@ -1018,7 +1038,9 @@ public final class Message {
      * </pre>
      *
      * <code>string file_name = 2;</code>
+     * @return The bytes for fileName.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getFileNameBytes() {
       java.lang.Object ref = fileName_;
@@ -1050,7 +1072,7 @@ public final class Message {
       if (relationId_ != null) {
         output.writeMessage(1, getRelationId());
       }
-      if (!getFileNameBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(fileName_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, fileName_);
       }
       unknownFields.writeTo(output);
@@ -1066,7 +1088,7 @@ public final class Message {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, getRelationId());
       }
-      if (!getFileNameBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(fileName_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, fileName_);
       }
       size += unknownFields.getSerializedSize();
@@ -1378,6 +1400,7 @@ public final class Message {
        * </pre>
        *
        * <code>.com.relationalai.proto.RelationId relation_id = 1;</code>
+       * @return Whether the relationId field is set.
        */
       public boolean hasRelationId() {
         return relationIdBuilder_ != null || relationId_ != null;
@@ -1388,6 +1411,7 @@ public final class Message {
        * </pre>
        *
        * <code>.com.relationalai.proto.RelationId relation_id = 1;</code>
+       * @return The relationId.
        */
       public com.relationalai.proto.Schema.RelationId getRelationId() {
         if (relationIdBuilder_ == null) {
@@ -1529,6 +1553,7 @@ public final class Message {
        * </pre>
        *
        * <code>string file_name = 2;</code>
+       * @return The fileName.
        */
       public java.lang.String getFileName() {
         java.lang.Object ref = fileName_;
@@ -1548,6 +1573,7 @@ public final class Message {
        * </pre>
        *
        * <code>string file_name = 2;</code>
+       * @return The bytes for fileName.
        */
       public com.google.protobuf.ByteString
           getFileNameBytes() {
@@ -1568,6 +1594,8 @@ public final class Message {
        * </pre>
        *
        * <code>string file_name = 2;</code>
+       * @param value The fileName to set.
+       * @return This builder for chaining.
        */
       public Builder setFileName(
           java.lang.String value) {
@@ -1585,6 +1613,7 @@ public final class Message {
        * </pre>
        *
        * <code>string file_name = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearFileName() {
         
@@ -1598,6 +1627,8 @@ public final class Message {
        * </pre>
        *
        * <code>string file_name = 2;</code>
+       * @param value The bytes for fileName to set.
+       * @return This builder for chaining.
        */
       public Builder setFileNameBytes(
           com.google.protobuf.ByteString value) {

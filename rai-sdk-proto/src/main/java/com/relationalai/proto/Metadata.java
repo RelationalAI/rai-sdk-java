@@ -24,6 +24,7 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.RAIDatabase db_root = 1;</code>
+     * @return Whether the dbRoot field is set.
      */
     boolean hasDbRoot();
     /**
@@ -32,6 +33,7 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.RAIDatabase db_root = 1;</code>
+     * @return The dbRoot.
      */
     com.relationalai.proto.Metadata.RAIDatabase getDbRoot();
     /**
@@ -45,10 +47,12 @@ public final class Metadata {
 
     /**
      * <code>.com.relationalai.proto.Diff diff = 2;</code>
+     * @return Whether the diff field is set.
      */
     boolean hasDiff();
     /**
      * <code>.com.relationalai.proto.Diff diff = 2;</code>
+     * @return The diff.
      */
     com.relationalai.proto.Metadata.Diff getDiff();
     /**
@@ -63,7 +67,7 @@ public final class Metadata {
    *
    * Protobuf type {@code com.relationalai.proto.MetadataPage}
    */
-  public  static final class MetadataPage extends
+  public static final class MetadataPage extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.MetadataPage)
       MetadataPageOrBuilder {
@@ -142,6 +146,8 @@ public final class Metadata {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -171,7 +177,9 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.RAIDatabase db_root = 1;</code>
+     * @return Whether the dbRoot field is set.
      */
+    @java.lang.Override
     public boolean hasDbRoot() {
       return dbRoot_ != null;
     }
@@ -181,7 +189,9 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.RAIDatabase db_root = 1;</code>
+     * @return The dbRoot.
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.RAIDatabase getDbRoot() {
       return dbRoot_ == null ? com.relationalai.proto.Metadata.RAIDatabase.getDefaultInstance() : dbRoot_;
     }
@@ -192,6 +202,7 @@ public final class Metadata {
      *
      * <code>.com.relationalai.proto.RAIDatabase db_root = 1;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.RAIDatabaseOrBuilder getDbRootOrBuilder() {
       return getDbRoot();
     }
@@ -200,19 +211,24 @@ public final class Metadata {
     private com.relationalai.proto.Metadata.Diff diff_;
     /**
      * <code>.com.relationalai.proto.Diff diff = 2;</code>
+     * @return Whether the diff field is set.
      */
+    @java.lang.Override
     public boolean hasDiff() {
       return diff_ != null;
     }
     /**
      * <code>.com.relationalai.proto.Diff diff = 2;</code>
+     * @return The diff.
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.Diff getDiff() {
       return diff_ == null ? com.relationalai.proto.Metadata.Diff.getDefaultInstance() : diff_;
     }
     /**
      * <code>.com.relationalai.proto.Diff diff = 2;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.DiffOrBuilder getDiffOrBuilder() {
       return getDiff();
     }
@@ -575,6 +591,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>.com.relationalai.proto.RAIDatabase db_root = 1;</code>
+       * @return Whether the dbRoot field is set.
        */
       public boolean hasDbRoot() {
         return dbRootBuilder_ != null || dbRoot_ != null;
@@ -585,6 +602,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>.com.relationalai.proto.RAIDatabase db_root = 1;</code>
+       * @return The dbRoot.
        */
       public com.relationalai.proto.Metadata.RAIDatabase getDbRoot() {
         if (dbRootBuilder_ == null) {
@@ -724,12 +742,14 @@ public final class Metadata {
           com.relationalai.proto.Metadata.Diff, com.relationalai.proto.Metadata.Diff.Builder, com.relationalai.proto.Metadata.DiffOrBuilder> diffBuilder_;
       /**
        * <code>.com.relationalai.proto.Diff diff = 2;</code>
+       * @return Whether the diff field is set.
        */
       public boolean hasDiff() {
         return diffBuilder_ != null || diff_ != null;
       }
       /**
        * <code>.com.relationalai.proto.Diff diff = 2;</code>
+       * @return The diff.
        */
       public com.relationalai.proto.Metadata.Diff getDiff() {
         if (diffBuilder_ == null) {
@@ -902,15 +922,18 @@ public final class Metadata {
      * </pre>
      *
      * <code>int64 metadata_format_version = 1;</code>
+     * @return The metadataFormatVersion.
      */
     long getMetadataFormatVersion();
 
     /**
      * <code>.com.relationalai.proto.MetadataNode root = 2;</code>
+     * @return Whether the root field is set.
      */
     boolean hasRoot();
     /**
      * <code>.com.relationalai.proto.MetadataNode root = 2;</code>
+     * @return The root.
      */
     com.relationalai.proto.Metadata.MetadataNode getRoot();
     /**
@@ -925,6 +948,7 @@ public final class Metadata {
      * </pre>
      *
      * <code>int64 entity_counter = 3;</code>
+     * @return The entityCounter.
      */
     long getEntityCounter();
   }
@@ -935,7 +959,7 @@ public final class Metadata {
    *
    * Protobuf type {@code com.relationalai.proto.RAIDatabase}
    */
-  public  static final class RAIDatabase extends
+  public static final class RAIDatabase extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.RAIDatabase)
       RAIDatabaseOrBuilder {
@@ -1011,6 +1035,8 @@ public final class Metadata {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -1044,7 +1070,9 @@ public final class Metadata {
      * </pre>
      *
      * <code>int64 metadata_format_version = 1;</code>
+     * @return The metadataFormatVersion.
      */
+    @java.lang.Override
     public long getMetadataFormatVersion() {
       return metadataFormatVersion_;
     }
@@ -1053,19 +1081,24 @@ public final class Metadata {
     private com.relationalai.proto.Metadata.MetadataNode root_;
     /**
      * <code>.com.relationalai.proto.MetadataNode root = 2;</code>
+     * @return Whether the root field is set.
      */
+    @java.lang.Override
     public boolean hasRoot() {
       return root_ != null;
     }
     /**
      * <code>.com.relationalai.proto.MetadataNode root = 2;</code>
+     * @return The root.
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.MetadataNode getRoot() {
       return root_ == null ? com.relationalai.proto.Metadata.MetadataNode.getDefaultInstance() : root_;
     }
     /**
      * <code>.com.relationalai.proto.MetadataNode root = 2;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.MetadataNodeOrBuilder getRootOrBuilder() {
       return getRoot();
     }
@@ -1079,7 +1112,9 @@ public final class Metadata {
      * </pre>
      *
      * <code>int64 entity_counter = 3;</code>
+     * @return The entityCounter.
      */
+    @java.lang.Override
     public long getEntityCounter() {
       return entityCounter_;
     }
@@ -1450,7 +1485,9 @@ public final class Metadata {
        * </pre>
        *
        * <code>int64 metadata_format_version = 1;</code>
+       * @return The metadataFormatVersion.
        */
+      @java.lang.Override
       public long getMetadataFormatVersion() {
         return metadataFormatVersion_;
       }
@@ -1464,6 +1501,8 @@ public final class Metadata {
        * </pre>
        *
        * <code>int64 metadata_format_version = 1;</code>
+       * @param value The metadataFormatVersion to set.
+       * @return This builder for chaining.
        */
       public Builder setMetadataFormatVersion(long value) {
         
@@ -1481,6 +1520,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>int64 metadata_format_version = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearMetadataFormatVersion() {
         
@@ -1494,12 +1534,14 @@ public final class Metadata {
           com.relationalai.proto.Metadata.MetadataNode, com.relationalai.proto.Metadata.MetadataNode.Builder, com.relationalai.proto.Metadata.MetadataNodeOrBuilder> rootBuilder_;
       /**
        * <code>.com.relationalai.proto.MetadataNode root = 2;</code>
+       * @return Whether the root field is set.
        */
       public boolean hasRoot() {
         return rootBuilder_ != null || root_ != null;
       }
       /**
        * <code>.com.relationalai.proto.MetadataNode root = 2;</code>
+       * @return The root.
        */
       public com.relationalai.proto.Metadata.MetadataNode getRoot() {
         if (rootBuilder_ == null) {
@@ -1614,7 +1656,9 @@ public final class Metadata {
        * </pre>
        *
        * <code>int64 entity_counter = 3;</code>
+       * @return The entityCounter.
        */
+      @java.lang.Override
       public long getEntityCounter() {
         return entityCounter_;
       }
@@ -1625,6 +1669,8 @@ public final class Metadata {
        * </pre>
        *
        * <code>int64 entity_counter = 3;</code>
+       * @param value The entityCounter to set.
+       * @return This builder for chaining.
        */
       public Builder setEntityCounter(long value) {
         
@@ -1639,6 +1685,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>int64 entity_counter = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearEntityCounter() {
         
@@ -1705,11 +1752,13 @@ public final class Metadata {
 
     /**
      * <code>int64 capacity = 1;</code>
+     * @return The capacity.
      */
     long getCapacity();
 
     /**
      * <code>int64 leafcount = 2;</code>
+     * @return The leafcount.
      */
     long getLeafcount();
 
@@ -1720,6 +1769,7 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.PageId consolidated = 3;</code>
+     * @return Whether the consolidated field is set.
      */
     boolean hasConsolidated();
     /**
@@ -1729,6 +1779,7 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.PageId consolidated = 3;</code>
+     * @return The consolidated.
      */
     com.relationalai.proto.Metadata.PageId getConsolidated();
     /**
@@ -1773,7 +1824,7 @@ public final class Metadata {
    *
    * Protobuf type {@code com.relationalai.proto.MetadataNode}
    */
-  public  static final class MetadataNode extends
+  public static final class MetadataNode extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.MetadataNode)
       MetadataNodeOrBuilder {
@@ -1860,6 +1911,8 @@ public final class Metadata {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -1888,7 +1941,9 @@ public final class Metadata {
     private long capacity_;
     /**
      * <code>int64 capacity = 1;</code>
+     * @return The capacity.
      */
+    @java.lang.Override
     public long getCapacity() {
       return capacity_;
     }
@@ -1897,7 +1952,9 @@ public final class Metadata {
     private long leafcount_;
     /**
      * <code>int64 leafcount = 2;</code>
+     * @return The leafcount.
      */
+    @java.lang.Override
     public long getLeafcount() {
       return leafcount_;
     }
@@ -1911,7 +1968,9 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.PageId consolidated = 3;</code>
+     * @return Whether the consolidated field is set.
      */
+    @java.lang.Override
     public boolean hasConsolidated() {
       return consolidated_ != null;
     }
@@ -1922,7 +1981,9 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.PageId consolidated = 3;</code>
+     * @return The consolidated.
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.PageId getConsolidated() {
       return consolidated_ == null ? com.relationalai.proto.Metadata.PageId.getDefaultInstance() : consolidated_;
     }
@@ -1934,6 +1995,7 @@ public final class Metadata {
      *
      * <code>.com.relationalai.proto.PageId consolidated = 3;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.PageIdOrBuilder getConsolidatedOrBuilder() {
       return getConsolidated();
     }
@@ -1943,12 +2005,14 @@ public final class Metadata {
     /**
      * <code>repeated .com.relationalai.proto.MetadataNode children = 4;</code>
      */
+    @java.lang.Override
     public java.util.List<com.relationalai.proto.Metadata.MetadataNode> getChildrenList() {
       return children_;
     }
     /**
      * <code>repeated .com.relationalai.proto.MetadataNode children = 4;</code>
      */
+    @java.lang.Override
     public java.util.List<? extends com.relationalai.proto.Metadata.MetadataNodeOrBuilder> 
         getChildrenOrBuilderList() {
       return children_;
@@ -1956,18 +2020,21 @@ public final class Metadata {
     /**
      * <code>repeated .com.relationalai.proto.MetadataNode children = 4;</code>
      */
+    @java.lang.Override
     public int getChildrenCount() {
       return children_.size();
     }
     /**
      * <code>repeated .com.relationalai.proto.MetadataNode children = 4;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.MetadataNode getChildren(int index) {
       return children_.get(index);
     }
     /**
      * <code>repeated .com.relationalai.proto.MetadataNode children = 4;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.MetadataNodeOrBuilder getChildrenOrBuilder(
         int index) {
       return children_.get(index);
@@ -2389,12 +2456,16 @@ public final class Metadata {
       private long capacity_ ;
       /**
        * <code>int64 capacity = 1;</code>
+       * @return The capacity.
        */
+      @java.lang.Override
       public long getCapacity() {
         return capacity_;
       }
       /**
        * <code>int64 capacity = 1;</code>
+       * @param value The capacity to set.
+       * @return This builder for chaining.
        */
       public Builder setCapacity(long value) {
         
@@ -2404,6 +2475,7 @@ public final class Metadata {
       }
       /**
        * <code>int64 capacity = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearCapacity() {
         
@@ -2415,12 +2487,16 @@ public final class Metadata {
       private long leafcount_ ;
       /**
        * <code>int64 leafcount = 2;</code>
+       * @return The leafcount.
        */
+      @java.lang.Override
       public long getLeafcount() {
         return leafcount_;
       }
       /**
        * <code>int64 leafcount = 2;</code>
+       * @param value The leafcount to set.
+       * @return This builder for chaining.
        */
       public Builder setLeafcount(long value) {
         
@@ -2430,6 +2506,7 @@ public final class Metadata {
       }
       /**
        * <code>int64 leafcount = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearLeafcount() {
         
@@ -2448,6 +2525,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>.com.relationalai.proto.PageId consolidated = 3;</code>
+       * @return Whether the consolidated field is set.
        */
       public boolean hasConsolidated() {
         return consolidatedBuilder_ != null || consolidated_ != null;
@@ -2459,6 +2537,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>.com.relationalai.proto.PageId consolidated = 3;</code>
+       * @return The consolidated.
        */
       public com.relationalai.proto.Metadata.PageId getConsolidated() {
         if (consolidatedBuilder_ == null) {
@@ -2898,10 +2977,12 @@ public final class Metadata {
 
     /**
      * <code>.com.relationalai.proto.RelUInt128 pid = 1;</code>
+     * @return Whether the pid field is set.
      */
     boolean hasPid();
     /**
      * <code>.com.relationalai.proto.RelUInt128 pid = 1;</code>
+     * @return The pid.
      */
     com.relationalai.proto.Schema.RelUInt128 getPid();
     /**
@@ -2916,7 +2997,7 @@ public final class Metadata {
    *
    * Protobuf type {@code com.relationalai.proto.PageId}
    */
-  public  static final class PageId extends
+  public static final class PageId extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.PageId)
       PageIdOrBuilder {
@@ -2982,6 +3063,8 @@ public final class Metadata {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -3007,19 +3090,24 @@ public final class Metadata {
     private com.relationalai.proto.Schema.RelUInt128 pid_;
     /**
      * <code>.com.relationalai.proto.RelUInt128 pid = 1;</code>
+     * @return Whether the pid field is set.
      */
+    @java.lang.Override
     public boolean hasPid() {
       return pid_ != null;
     }
     /**
      * <code>.com.relationalai.proto.RelUInt128 pid = 1;</code>
+     * @return The pid.
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.RelUInt128 getPid() {
       return pid_ == null ? com.relationalai.proto.Schema.RelUInt128.getDefaultInstance() : pid_;
     }
     /**
      * <code>.com.relationalai.proto.RelUInt128 pid = 1;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.RelUInt128OrBuilder getPidOrBuilder() {
       return getPid();
     }
@@ -3348,12 +3436,14 @@ public final class Metadata {
           com.relationalai.proto.Schema.RelUInt128, com.relationalai.proto.Schema.RelUInt128.Builder, com.relationalai.proto.Schema.RelUInt128OrBuilder> pidBuilder_;
       /**
        * <code>.com.relationalai.proto.RelUInt128 pid = 1;</code>
+       * @return Whether the pid field is set.
        */
       public boolean hasPid() {
         return pidBuilder_ != null || pid_ != null;
       }
       /**
        * <code>.com.relationalai.proto.RelUInt128 pid = 1;</code>
+       * @return The pid.
        */
       public com.relationalai.proto.Schema.RelUInt128 getPid() {
         if (pidBuilder_ == null) {
@@ -3522,6 +3612,7 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.BeTreeRelation betree = 3;</code>
+     * @return Whether the betree field is set.
      */
     boolean hasBetree();
     /**
@@ -3530,6 +3621,7 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.BeTreeRelation betree = 3;</code>
+     * @return The betree.
      */
     com.relationalai.proto.Metadata.BeTreeRelation getBetree();
     /**
@@ -3543,10 +3635,12 @@ public final class Metadata {
 
     /**
      * <code>.com.relationalai.proto.InlineRelation inline = 4;</code>
+     * @return Whether the inline field is set.
      */
     boolean hasInline();
     /**
      * <code>.com.relationalai.proto.InlineRelation inline = 4;</code>
+     * @return The inline.
      */
     com.relationalai.proto.Metadata.InlineRelation getInline();
     /**
@@ -3557,7 +3651,7 @@ public final class Metadata {
   /**
    * Protobuf type {@code com.relationalai.proto.RelationData}
    */
-  public  static final class RelationData extends
+  public static final class RelationData extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.RelationData)
       RelationDataOrBuilder {
@@ -3636,6 +3730,8 @@ public final class Metadata {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -3665,7 +3761,9 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.BeTreeRelation betree = 3;</code>
+     * @return Whether the betree field is set.
      */
+    @java.lang.Override
     public boolean hasBetree() {
       return betree_ != null;
     }
@@ -3675,7 +3773,9 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.BeTreeRelation betree = 3;</code>
+     * @return The betree.
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.BeTreeRelation getBetree() {
       return betree_ == null ? com.relationalai.proto.Metadata.BeTreeRelation.getDefaultInstance() : betree_;
     }
@@ -3686,6 +3786,7 @@ public final class Metadata {
      *
      * <code>.com.relationalai.proto.BeTreeRelation betree = 3;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.BeTreeRelationOrBuilder getBetreeOrBuilder() {
       return getBetree();
     }
@@ -3694,19 +3795,24 @@ public final class Metadata {
     private com.relationalai.proto.Metadata.InlineRelation inline_;
     /**
      * <code>.com.relationalai.proto.InlineRelation inline = 4;</code>
+     * @return Whether the inline field is set.
      */
+    @java.lang.Override
     public boolean hasInline() {
       return inline_ != null;
     }
     /**
      * <code>.com.relationalai.proto.InlineRelation inline = 4;</code>
+     * @return The inline.
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.InlineRelation getInline() {
       return inline_ == null ? com.relationalai.proto.Metadata.InlineRelation.getDefaultInstance() : inline_;
     }
     /**
      * <code>.com.relationalai.proto.InlineRelation inline = 4;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.InlineRelationOrBuilder getInlineOrBuilder() {
       return getInline();
     }
@@ -4065,6 +4171,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>.com.relationalai.proto.BeTreeRelation betree = 3;</code>
+       * @return Whether the betree field is set.
        */
       public boolean hasBetree() {
         return betreeBuilder_ != null || betree_ != null;
@@ -4075,6 +4182,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>.com.relationalai.proto.BeTreeRelation betree = 3;</code>
+       * @return The betree.
        */
       public com.relationalai.proto.Metadata.BeTreeRelation getBetree() {
         if (betreeBuilder_ == null) {
@@ -4214,12 +4322,14 @@ public final class Metadata {
           com.relationalai.proto.Metadata.InlineRelation, com.relationalai.proto.Metadata.InlineRelation.Builder, com.relationalai.proto.Metadata.InlineRelationOrBuilder> inlineBuilder_;
       /**
        * <code>.com.relationalai.proto.InlineRelation inline = 4;</code>
+       * @return Whether the inline field is set.
        */
       public boolean hasInline() {
         return inlineBuilder_ != null || inline_ != null;
       }
       /**
        * <code>.com.relationalai.proto.InlineRelation inline = 4;</code>
+       * @return The inline.
        */
       public com.relationalai.proto.Metadata.InlineRelation getInline() {
         if (inlineBuilder_ == null) {
@@ -4384,10 +4494,12 @@ public final class Metadata {
 
     /**
      * <code>.com.relationalai.proto.PageId root = 1;</code>
+     * @return Whether the root field is set.
      */
     boolean hasRoot();
     /**
      * <code>.com.relationalai.proto.PageId root = 1;</code>
+     * @return The root.
      */
     com.relationalai.proto.Metadata.PageId getRoot();
     /**
@@ -4397,18 +4509,20 @@ public final class Metadata {
 
     /**
      * <code>int64 element_count = 2;</code>
+     * @return The elementCount.
      */
     long getElementCount();
 
     /**
      * <code>int64 tree_height = 3;</code>
+     * @return The treeHeight.
      */
     long getTreeHeight();
   }
   /**
    * Protobuf type {@code com.relationalai.proto.BeTreeRelation}
    */
-  public  static final class BeTreeRelation extends
+  public static final class BeTreeRelation extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.BeTreeRelation)
       BeTreeRelationOrBuilder {
@@ -4484,6 +4598,8 @@ public final class Metadata {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -4509,19 +4625,24 @@ public final class Metadata {
     private com.relationalai.proto.Metadata.PageId root_;
     /**
      * <code>.com.relationalai.proto.PageId root = 1;</code>
+     * @return Whether the root field is set.
      */
+    @java.lang.Override
     public boolean hasRoot() {
       return root_ != null;
     }
     /**
      * <code>.com.relationalai.proto.PageId root = 1;</code>
+     * @return The root.
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.PageId getRoot() {
       return root_ == null ? com.relationalai.proto.Metadata.PageId.getDefaultInstance() : root_;
     }
     /**
      * <code>.com.relationalai.proto.PageId root = 1;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.PageIdOrBuilder getRootOrBuilder() {
       return getRoot();
     }
@@ -4530,7 +4651,9 @@ public final class Metadata {
     private long elementCount_;
     /**
      * <code>int64 element_count = 2;</code>
+     * @return The elementCount.
      */
+    @java.lang.Override
     public long getElementCount() {
       return elementCount_;
     }
@@ -4539,7 +4662,9 @@ public final class Metadata {
     private long treeHeight_;
     /**
      * <code>int64 tree_height = 3;</code>
+     * @return The treeHeight.
      */
+    @java.lang.Override
     public long getTreeHeight() {
       return treeHeight_;
     }
@@ -4900,12 +5025,14 @@ public final class Metadata {
           com.relationalai.proto.Metadata.PageId, com.relationalai.proto.Metadata.PageId.Builder, com.relationalai.proto.Metadata.PageIdOrBuilder> rootBuilder_;
       /**
        * <code>.com.relationalai.proto.PageId root = 1;</code>
+       * @return Whether the root field is set.
        */
       public boolean hasRoot() {
         return rootBuilder_ != null || root_ != null;
       }
       /**
        * <code>.com.relationalai.proto.PageId root = 1;</code>
+       * @return The root.
        */
       public com.relationalai.proto.Metadata.PageId getRoot() {
         if (rootBuilder_ == null) {
@@ -5015,12 +5142,16 @@ public final class Metadata {
       private long elementCount_ ;
       /**
        * <code>int64 element_count = 2;</code>
+       * @return The elementCount.
        */
+      @java.lang.Override
       public long getElementCount() {
         return elementCount_;
       }
       /**
        * <code>int64 element_count = 2;</code>
+       * @param value The elementCount to set.
+       * @return This builder for chaining.
        */
       public Builder setElementCount(long value) {
         
@@ -5030,6 +5161,7 @@ public final class Metadata {
       }
       /**
        * <code>int64 element_count = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearElementCount() {
         
@@ -5041,12 +5173,16 @@ public final class Metadata {
       private long treeHeight_ ;
       /**
        * <code>int64 tree_height = 3;</code>
+       * @return The treeHeight.
        */
+      @java.lang.Override
       public long getTreeHeight() {
         return treeHeight_;
       }
       /**
        * <code>int64 tree_height = 3;</code>
+       * @param value The treeHeight to set.
+       * @return This builder for chaining.
        */
       public Builder setTreeHeight(long value) {
         
@@ -5056,6 +5192,7 @@ public final class Metadata {
       }
       /**
        * <code>int64 tree_height = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearTreeHeight() {
         
@@ -5128,6 +5265,7 @@ public final class Metadata {
      * </pre>
      *
      * <code>string rai_server_version = 1;</code>
+     * @return The raiServerVersion.
      */
     java.lang.String getRaiServerVersion();
     /**
@@ -5138,6 +5276,7 @@ public final class Metadata {
      * </pre>
      *
      * <code>string rai_server_version = 1;</code>
+     * @return The bytes for raiServerVersion.
      */
     com.google.protobuf.ByteString
         getRaiServerVersionBytes();
@@ -5148,11 +5287,13 @@ public final class Metadata {
      * </pre>
      *
      * <code>int64 database_version_min = 2;</code>
+     * @return The databaseVersionMin.
      */
     long getDatabaseVersionMin();
 
     /**
      * <code>int64 database_version_max = 3;</code>
+     * @return The databaseVersionMax.
      */
     long getDatabaseVersionMax();
 
@@ -5162,6 +5303,7 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.InputDiff inputs = 4;</code>
+     * @return Whether the inputs field is set.
      */
     boolean hasInputs();
     /**
@@ -5170,6 +5312,7 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.InputDiff inputs = 4;</code>
+     * @return The inputs.
      */
     com.relationalai.proto.Metadata.InputDiff getInputs();
     /**
@@ -5183,10 +5326,12 @@ public final class Metadata {
 
     /**
      * <code>.com.relationalai.proto.SourceInputDiff source_inputs = 5;</code>
+     * @return Whether the sourceInputs field is set.
      */
     boolean hasSourceInputs();
     /**
      * <code>.com.relationalai.proto.SourceInputDiff source_inputs = 5;</code>
+     * @return The sourceInputs.
      */
     com.relationalai.proto.Metadata.SourceInputDiff getSourceInputs();
     /**
@@ -5200,6 +5345,7 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.DerivedDiff derived = 6;</code>
+     * @return Whether the derived field is set.
      */
     boolean hasDerived();
     /**
@@ -5208,6 +5354,7 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.DerivedDiff derived = 6;</code>
+     * @return The derived.
      */
     com.relationalai.proto.Metadata.DerivedDiff getDerived();
     /**
@@ -5227,7 +5374,7 @@ public final class Metadata {
    *
    * Protobuf type {@code com.relationalai.proto.Diff}
    */
-  public  static final class Diff extends
+  public static final class Diff extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.Diff)
       DiffOrBuilder {
@@ -5336,6 +5483,8 @@ public final class Metadata {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -5367,7 +5516,9 @@ public final class Metadata {
      * </pre>
      *
      * <code>string rai_server_version = 1;</code>
+     * @return The raiServerVersion.
      */
+    @java.lang.Override
     public java.lang.String getRaiServerVersion() {
       java.lang.Object ref = raiServerVersion_;
       if (ref instanceof java.lang.String) {
@@ -5388,7 +5539,9 @@ public final class Metadata {
      * </pre>
      *
      * <code>string rai_server_version = 1;</code>
+     * @return The bytes for raiServerVersion.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getRaiServerVersionBytes() {
       java.lang.Object ref = raiServerVersion_;
@@ -5411,7 +5564,9 @@ public final class Metadata {
      * </pre>
      *
      * <code>int64 database_version_min = 2;</code>
+     * @return The databaseVersionMin.
      */
+    @java.lang.Override
     public long getDatabaseVersionMin() {
       return databaseVersionMin_;
     }
@@ -5420,7 +5575,9 @@ public final class Metadata {
     private long databaseVersionMax_;
     /**
      * <code>int64 database_version_max = 3;</code>
+     * @return The databaseVersionMax.
      */
+    @java.lang.Override
     public long getDatabaseVersionMax() {
       return databaseVersionMax_;
     }
@@ -5433,7 +5590,9 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.InputDiff inputs = 4;</code>
+     * @return Whether the inputs field is set.
      */
+    @java.lang.Override
     public boolean hasInputs() {
       return inputs_ != null;
     }
@@ -5443,7 +5602,9 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.InputDiff inputs = 4;</code>
+     * @return The inputs.
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.InputDiff getInputs() {
       return inputs_ == null ? com.relationalai.proto.Metadata.InputDiff.getDefaultInstance() : inputs_;
     }
@@ -5454,6 +5615,7 @@ public final class Metadata {
      *
      * <code>.com.relationalai.proto.InputDiff inputs = 4;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.InputDiffOrBuilder getInputsOrBuilder() {
       return getInputs();
     }
@@ -5462,19 +5624,24 @@ public final class Metadata {
     private com.relationalai.proto.Metadata.SourceInputDiff sourceInputs_;
     /**
      * <code>.com.relationalai.proto.SourceInputDiff source_inputs = 5;</code>
+     * @return Whether the sourceInputs field is set.
      */
+    @java.lang.Override
     public boolean hasSourceInputs() {
       return sourceInputs_ != null;
     }
     /**
      * <code>.com.relationalai.proto.SourceInputDiff source_inputs = 5;</code>
+     * @return The sourceInputs.
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.SourceInputDiff getSourceInputs() {
       return sourceInputs_ == null ? com.relationalai.proto.Metadata.SourceInputDiff.getDefaultInstance() : sourceInputs_;
     }
     /**
      * <code>.com.relationalai.proto.SourceInputDiff source_inputs = 5;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.SourceInputDiffOrBuilder getSourceInputsOrBuilder() {
       return getSourceInputs();
     }
@@ -5487,7 +5654,9 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.DerivedDiff derived = 6;</code>
+     * @return Whether the derived field is set.
      */
+    @java.lang.Override
     public boolean hasDerived() {
       return derived_ != null;
     }
@@ -5497,7 +5666,9 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.DerivedDiff derived = 6;</code>
+     * @return The derived.
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.DerivedDiff getDerived() {
       return derived_ == null ? com.relationalai.proto.Metadata.DerivedDiff.getDefaultInstance() : derived_;
     }
@@ -5508,6 +5679,7 @@ public final class Metadata {
      *
      * <code>.com.relationalai.proto.DerivedDiff derived = 6;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.DerivedDiffOrBuilder getDerivedOrBuilder() {
       return getDerived();
     }
@@ -5526,7 +5698,7 @@ public final class Metadata {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!getRaiServerVersionBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(raiServerVersion_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, raiServerVersion_);
       }
       if (databaseVersionMin_ != 0L) {
@@ -5553,7 +5725,7 @@ public final class Metadata {
       if (size != -1) return size;
 
       size = 0;
-      if (!getRaiServerVersionBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(raiServerVersion_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, raiServerVersion_);
       }
       if (databaseVersionMin_ != 0L) {
@@ -5954,6 +6126,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>string rai_server_version = 1;</code>
+       * @return The raiServerVersion.
        */
       public java.lang.String getRaiServerVersion() {
         java.lang.Object ref = raiServerVersion_;
@@ -5975,6 +6148,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>string rai_server_version = 1;</code>
+       * @return The bytes for raiServerVersion.
        */
       public com.google.protobuf.ByteString
           getRaiServerVersionBytes() {
@@ -5997,6 +6171,8 @@ public final class Metadata {
        * </pre>
        *
        * <code>string rai_server_version = 1;</code>
+       * @param value The raiServerVersion to set.
+       * @return This builder for chaining.
        */
       public Builder setRaiServerVersion(
           java.lang.String value) {
@@ -6016,6 +6192,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>string rai_server_version = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearRaiServerVersion() {
         
@@ -6031,6 +6208,8 @@ public final class Metadata {
        * </pre>
        *
        * <code>string rai_server_version = 1;</code>
+       * @param value The bytes for raiServerVersion to set.
+       * @return This builder for chaining.
        */
       public Builder setRaiServerVersionBytes(
           com.google.protobuf.ByteString value) {
@@ -6051,7 +6230,9 @@ public final class Metadata {
        * </pre>
        *
        * <code>int64 database_version_min = 2;</code>
+       * @return The databaseVersionMin.
        */
+      @java.lang.Override
       public long getDatabaseVersionMin() {
         return databaseVersionMin_;
       }
@@ -6061,6 +6242,8 @@ public final class Metadata {
        * </pre>
        *
        * <code>int64 database_version_min = 2;</code>
+       * @param value The databaseVersionMin to set.
+       * @return This builder for chaining.
        */
       public Builder setDatabaseVersionMin(long value) {
         
@@ -6074,6 +6257,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>int64 database_version_min = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearDatabaseVersionMin() {
         
@@ -6085,12 +6269,16 @@ public final class Metadata {
       private long databaseVersionMax_ ;
       /**
        * <code>int64 database_version_max = 3;</code>
+       * @return The databaseVersionMax.
        */
+      @java.lang.Override
       public long getDatabaseVersionMax() {
         return databaseVersionMax_;
       }
       /**
        * <code>int64 database_version_max = 3;</code>
+       * @param value The databaseVersionMax to set.
+       * @return This builder for chaining.
        */
       public Builder setDatabaseVersionMax(long value) {
         
@@ -6100,6 +6288,7 @@ public final class Metadata {
       }
       /**
        * <code>int64 database_version_max = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearDatabaseVersionMax() {
         
@@ -6117,6 +6306,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>.com.relationalai.proto.InputDiff inputs = 4;</code>
+       * @return Whether the inputs field is set.
        */
       public boolean hasInputs() {
         return inputsBuilder_ != null || inputs_ != null;
@@ -6127,6 +6317,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>.com.relationalai.proto.InputDiff inputs = 4;</code>
+       * @return The inputs.
        */
       public com.relationalai.proto.Metadata.InputDiff getInputs() {
         if (inputsBuilder_ == null) {
@@ -6266,12 +6457,14 @@ public final class Metadata {
           com.relationalai.proto.Metadata.SourceInputDiff, com.relationalai.proto.Metadata.SourceInputDiff.Builder, com.relationalai.proto.Metadata.SourceInputDiffOrBuilder> sourceInputsBuilder_;
       /**
        * <code>.com.relationalai.proto.SourceInputDiff source_inputs = 5;</code>
+       * @return Whether the sourceInputs field is set.
        */
       public boolean hasSourceInputs() {
         return sourceInputsBuilder_ != null || sourceInputs_ != null;
       }
       /**
        * <code>.com.relationalai.proto.SourceInputDiff source_inputs = 5;</code>
+       * @return The sourceInputs.
        */
       public com.relationalai.proto.Metadata.SourceInputDiff getSourceInputs() {
         if (sourceInputsBuilder_ == null) {
@@ -6387,6 +6580,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>.com.relationalai.proto.DerivedDiff derived = 6;</code>
+       * @return Whether the derived field is set.
        */
       public boolean hasDerived() {
         return derivedBuilder_ != null || derived_ != null;
@@ -6397,6 +6591,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>.com.relationalai.proto.DerivedDiff derived = 6;</code>
+       * @return The derived.
        */
       public com.relationalai.proto.Metadata.DerivedDiff getDerived() {
         if (derivedBuilder_ == null) {
@@ -6617,6 +6812,7 @@ public final class Metadata {
      * </pre>
      *
      * <code>repeated string source_deletes = 2;</code>
+     * @return A list containing the sourceDeletes.
      */
     java.util.List<java.lang.String>
         getSourceDeletesList();
@@ -6626,6 +6822,7 @@ public final class Metadata {
      * </pre>
      *
      * <code>repeated string source_deletes = 2;</code>
+     * @return The count of sourceDeletes.
      */
     int getSourceDeletesCount();
     /**
@@ -6634,6 +6831,8 @@ public final class Metadata {
      * </pre>
      *
      * <code>repeated string source_deletes = 2;</code>
+     * @param index The index of the element to return.
+     * @return The sourceDeletes at the given index.
      */
     java.lang.String getSourceDeletes(int index);
     /**
@@ -6642,6 +6841,8 @@ public final class Metadata {
      * </pre>
      *
      * <code>repeated string source_deletes = 2;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the sourceDeletes at the given index.
      */
     com.google.protobuf.ByteString
         getSourceDeletesBytes(int index);
@@ -6654,7 +6855,7 @@ public final class Metadata {
    *
    * Protobuf type {@code com.relationalai.proto.SourceInputDiff}
    */
-  public  static final class SourceInputDiff extends
+  public static final class SourceInputDiff extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.SourceInputDiff)
       SourceInputDiffOrBuilder {
@@ -6728,6 +6929,8 @@ public final class Metadata {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -6760,12 +6963,14 @@ public final class Metadata {
     /**
      * <code>repeated .com.relationalai.proto.Source source_updates = 1;</code>
      */
+    @java.lang.Override
     public java.util.List<com.relationalai.proto.Metadata.Source> getSourceUpdatesList() {
       return sourceUpdates_;
     }
     /**
      * <code>repeated .com.relationalai.proto.Source source_updates = 1;</code>
      */
+    @java.lang.Override
     public java.util.List<? extends com.relationalai.proto.Metadata.SourceOrBuilder> 
         getSourceUpdatesOrBuilderList() {
       return sourceUpdates_;
@@ -6773,18 +6978,21 @@ public final class Metadata {
     /**
      * <code>repeated .com.relationalai.proto.Source source_updates = 1;</code>
      */
+    @java.lang.Override
     public int getSourceUpdatesCount() {
       return sourceUpdates_.size();
     }
     /**
      * <code>repeated .com.relationalai.proto.Source source_updates = 1;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.Source getSourceUpdates(int index) {
       return sourceUpdates_.get(index);
     }
     /**
      * <code>repeated .com.relationalai.proto.Source source_updates = 1;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.SourceOrBuilder getSourceUpdatesOrBuilder(
         int index) {
       return sourceUpdates_.get(index);
@@ -6798,6 +7006,7 @@ public final class Metadata {
      * </pre>
      *
      * <code>repeated string source_deletes = 2;</code>
+     * @return A list containing the sourceDeletes.
      */
     public com.google.protobuf.ProtocolStringList
         getSourceDeletesList() {
@@ -6809,6 +7018,7 @@ public final class Metadata {
      * </pre>
      *
      * <code>repeated string source_deletes = 2;</code>
+     * @return The count of sourceDeletes.
      */
     public int getSourceDeletesCount() {
       return sourceDeletes_.size();
@@ -6819,6 +7029,8 @@ public final class Metadata {
      * </pre>
      *
      * <code>repeated string source_deletes = 2;</code>
+     * @param index The index of the element to return.
+     * @return The sourceDeletes at the given index.
      */
     public java.lang.String getSourceDeletes(int index) {
       return sourceDeletes_.get(index);
@@ -6829,6 +7041,8 @@ public final class Metadata {
      * </pre>
      *
      * <code>repeated string source_deletes = 2;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the sourceDeletes at the given index.
      */
     public com.google.protobuf.ByteString
         getSourceDeletesBytes(int index) {
@@ -7469,6 +7683,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>repeated string source_deletes = 2;</code>
+       * @return A list containing the sourceDeletes.
        */
       public com.google.protobuf.ProtocolStringList
           getSourceDeletesList() {
@@ -7480,6 +7695,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>repeated string source_deletes = 2;</code>
+       * @return The count of sourceDeletes.
        */
       public int getSourceDeletesCount() {
         return sourceDeletes_.size();
@@ -7490,6 +7706,8 @@ public final class Metadata {
        * </pre>
        *
        * <code>repeated string source_deletes = 2;</code>
+       * @param index The index of the element to return.
+       * @return The sourceDeletes at the given index.
        */
       public java.lang.String getSourceDeletes(int index) {
         return sourceDeletes_.get(index);
@@ -7500,6 +7718,8 @@ public final class Metadata {
        * </pre>
        *
        * <code>repeated string source_deletes = 2;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the sourceDeletes at the given index.
        */
       public com.google.protobuf.ByteString
           getSourceDeletesBytes(int index) {
@@ -7511,6 +7731,9 @@ public final class Metadata {
        * </pre>
        *
        * <code>repeated string source_deletes = 2;</code>
+       * @param index The index to set the value at.
+       * @param value The sourceDeletes to set.
+       * @return This builder for chaining.
        */
       public Builder setSourceDeletes(
           int index, java.lang.String value) {
@@ -7528,6 +7751,8 @@ public final class Metadata {
        * </pre>
        *
        * <code>repeated string source_deletes = 2;</code>
+       * @param value The sourceDeletes to add.
+       * @return This builder for chaining.
        */
       public Builder addSourceDeletes(
           java.lang.String value) {
@@ -7545,6 +7770,8 @@ public final class Metadata {
        * </pre>
        *
        * <code>repeated string source_deletes = 2;</code>
+       * @param values The sourceDeletes to add.
+       * @return This builder for chaining.
        */
       public Builder addAllSourceDeletes(
           java.lang.Iterable<java.lang.String> values) {
@@ -7560,6 +7787,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>repeated string source_deletes = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearSourceDeletes() {
         sourceDeletes_ = com.google.protobuf.LazyStringArrayList.EMPTY;
@@ -7573,6 +7801,8 @@ public final class Metadata {
        * </pre>
        *
        * <code>repeated string source_deletes = 2;</code>
+       * @param value The bytes of the sourceDeletes to add.
+       * @return This builder for chaining.
        */
       public Builder addSourceDeletesBytes(
           com.google.protobuf.ByteString value) {
@@ -7644,20 +7874,24 @@ public final class Metadata {
 
     /**
      * <code>string name = 1;</code>
+     * @return The name.
      */
     java.lang.String getName();
     /**
      * <code>string name = 1;</code>
+     * @return The bytes for name.
      */
     com.google.protobuf.ByteString
         getNameBytes();
 
     /**
      * <code>string value = 2;</code>
+     * @return The value.
      */
     java.lang.String getValue();
     /**
      * <code>string value = 2;</code>
+     * @return The bytes for value.
      */
     com.google.protobuf.ByteString
         getValueBytes();
@@ -7665,7 +7899,7 @@ public final class Metadata {
   /**
    * Protobuf type {@code com.relationalai.proto.Source}
    */
-  public  static final class Source extends
+  public static final class Source extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.Source)
       SourceOrBuilder {
@@ -7732,6 +7966,8 @@ public final class Metadata {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -7757,7 +7993,9 @@ public final class Metadata {
     private volatile java.lang.Object name_;
     /**
      * <code>string name = 1;</code>
+     * @return The name.
      */
+    @java.lang.Override
     public java.lang.String getName() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
@@ -7772,7 +8010,9 @@ public final class Metadata {
     }
     /**
      * <code>string name = 1;</code>
+     * @return The bytes for name.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getNameBytes() {
       java.lang.Object ref = name_;
@@ -7791,7 +8031,9 @@ public final class Metadata {
     private volatile java.lang.Object value_;
     /**
      * <code>string value = 2;</code>
+     * @return The value.
      */
+    @java.lang.Override
     public java.lang.String getValue() {
       java.lang.Object ref = value_;
       if (ref instanceof java.lang.String) {
@@ -7806,7 +8048,9 @@ public final class Metadata {
     }
     /**
      * <code>string value = 2;</code>
+     * @return The bytes for value.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getValueBytes() {
       java.lang.Object ref = value_;
@@ -7835,10 +8079,10 @@ public final class Metadata {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!getNameBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
       }
-      if (!getValueBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(value_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, value_);
       }
       unknownFields.writeTo(output);
@@ -7850,10 +8094,10 @@ public final class Metadata {
       if (size != -1) return size;
 
       size = 0;
-      if (!getNameBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
       }
-      if (!getValueBytes().isEmpty()) {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(value_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, value_);
       }
       size += unknownFields.getSerializedSize();
@@ -8143,6 +8387,7 @@ public final class Metadata {
       private java.lang.Object name_ = "";
       /**
        * <code>string name = 1;</code>
+       * @return The name.
        */
       public java.lang.String getName() {
         java.lang.Object ref = name_;
@@ -8158,6 +8403,7 @@ public final class Metadata {
       }
       /**
        * <code>string name = 1;</code>
+       * @return The bytes for name.
        */
       public com.google.protobuf.ByteString
           getNameBytes() {
@@ -8174,6 +8420,8 @@ public final class Metadata {
       }
       /**
        * <code>string name = 1;</code>
+       * @param value The name to set.
+       * @return This builder for chaining.
        */
       public Builder setName(
           java.lang.String value) {
@@ -8187,6 +8435,7 @@ public final class Metadata {
       }
       /**
        * <code>string name = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearName() {
         
@@ -8196,6 +8445,8 @@ public final class Metadata {
       }
       /**
        * <code>string name = 1;</code>
+       * @param value The bytes for name to set.
+       * @return This builder for chaining.
        */
       public Builder setNameBytes(
           com.google.protobuf.ByteString value) {
@@ -8212,6 +8463,7 @@ public final class Metadata {
       private java.lang.Object value_ = "";
       /**
        * <code>string value = 2;</code>
+       * @return The value.
        */
       public java.lang.String getValue() {
         java.lang.Object ref = value_;
@@ -8227,6 +8479,7 @@ public final class Metadata {
       }
       /**
        * <code>string value = 2;</code>
+       * @return The bytes for value.
        */
       public com.google.protobuf.ByteString
           getValueBytes() {
@@ -8243,6 +8496,8 @@ public final class Metadata {
       }
       /**
        * <code>string value = 2;</code>
+       * @param value The value to set.
+       * @return This builder for chaining.
        */
       public Builder setValue(
           java.lang.String value) {
@@ -8256,6 +8511,7 @@ public final class Metadata {
       }
       /**
        * <code>string value = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearValue() {
         
@@ -8265,6 +8521,8 @@ public final class Metadata {
       }
       /**
        * <code>string value = 2;</code>
+       * @param value The bytes for value to set.
+       * @return This builder for chaining.
        */
       public Builder setValueBytes(
           com.google.protobuf.ByteString value) {
@@ -8409,7 +8667,7 @@ public final class Metadata {
    *
    * Protobuf type {@code com.relationalai.proto.InputDiff}
    */
-  public  static final class InputDiff extends
+  public static final class InputDiff extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.InputDiff)
       InputDiffOrBuilder {
@@ -8483,6 +8741,8 @@ public final class Metadata {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -8519,6 +8779,7 @@ public final class Metadata {
      *
      * <code>repeated .com.relationalai.proto.Relation edb_updates = 1;</code>
      */
+    @java.lang.Override
     public java.util.List<com.relationalai.proto.Metadata.Relation> getEdbUpdatesList() {
       return edbUpdates_;
     }
@@ -8529,6 +8790,7 @@ public final class Metadata {
      *
      * <code>repeated .com.relationalai.proto.Relation edb_updates = 1;</code>
      */
+    @java.lang.Override
     public java.util.List<? extends com.relationalai.proto.Metadata.RelationOrBuilder> 
         getEdbUpdatesOrBuilderList() {
       return edbUpdates_;
@@ -8540,6 +8802,7 @@ public final class Metadata {
      *
      * <code>repeated .com.relationalai.proto.Relation edb_updates = 1;</code>
      */
+    @java.lang.Override
     public int getEdbUpdatesCount() {
       return edbUpdates_.size();
     }
@@ -8550,6 +8813,7 @@ public final class Metadata {
      *
      * <code>repeated .com.relationalai.proto.Relation edb_updates = 1;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.Relation getEdbUpdates(int index) {
       return edbUpdates_.get(index);
     }
@@ -8560,6 +8824,7 @@ public final class Metadata {
      *
      * <code>repeated .com.relationalai.proto.Relation edb_updates = 1;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.RelationOrBuilder getEdbUpdatesOrBuilder(
         int index) {
       return edbUpdates_.get(index);
@@ -8570,12 +8835,14 @@ public final class Metadata {
     /**
      * <code>repeated .com.relationalai.proto.RelationId edb_deletes = 2;</code>
      */
+    @java.lang.Override
     public java.util.List<com.relationalai.proto.Schema.RelationId> getEdbDeletesList() {
       return edbDeletes_;
     }
     /**
      * <code>repeated .com.relationalai.proto.RelationId edb_deletes = 2;</code>
      */
+    @java.lang.Override
     public java.util.List<? extends com.relationalai.proto.Schema.RelationIdOrBuilder> 
         getEdbDeletesOrBuilderList() {
       return edbDeletes_;
@@ -8583,18 +8850,21 @@ public final class Metadata {
     /**
      * <code>repeated .com.relationalai.proto.RelationId edb_deletes = 2;</code>
      */
+    @java.lang.Override
     public int getEdbDeletesCount() {
       return edbDeletes_.size();
     }
     /**
      * <code>repeated .com.relationalai.proto.RelationId edb_deletes = 2;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.RelationId getEdbDeletes(int index) {
       return edbDeletes_.get(index);
     }
     /**
      * <code>repeated .com.relationalai.proto.RelationId edb_deletes = 2;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.RelationIdOrBuilder getEdbDeletesOrBuilder(
         int index) {
       return edbDeletes_.get(index);
@@ -9611,6 +9881,7 @@ public final class Metadata {
 
     /**
      * <code>bytes serialization = 1;</code>
+     * @return The serialization.
      */
     com.google.protobuf.ByteString getSerialization();
   }
@@ -9622,7 +9893,7 @@ public final class Metadata {
    *
    * Protobuf type {@code com.relationalai.proto.DerivedDiff}
    */
-  public  static final class DerivedDiff extends
+  public static final class DerivedDiff extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.DerivedDiff)
       DerivedDiffOrBuilder {
@@ -9681,6 +9952,8 @@ public final class Metadata {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -9706,7 +9979,9 @@ public final class Metadata {
     private com.google.protobuf.ByteString serialization_;
     /**
      * <code>bytes serialization = 1;</code>
+     * @return The serialization.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString getSerialization() {
       return serialization_;
     }
@@ -10021,12 +10296,16 @@ public final class Metadata {
       private com.google.protobuf.ByteString serialization_ = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>bytes serialization = 1;</code>
+       * @return The serialization.
        */
+      @java.lang.Override
       public com.google.protobuf.ByteString getSerialization() {
         return serialization_;
       }
       /**
        * <code>bytes serialization = 1;</code>
+       * @param value The serialization to set.
+       * @return This builder for chaining.
        */
       public Builder setSerialization(com.google.protobuf.ByteString value) {
         if (value == null) {
@@ -10039,6 +10318,7 @@ public final class Metadata {
       }
       /**
        * <code>bytes serialization = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearSerialization() {
         
@@ -10105,10 +10385,12 @@ public final class Metadata {
 
     /**
      * <code>.com.relationalai.proto.RelationId id = 1;</code>
+     * @return Whether the id field is set.
      */
     boolean hasId();
     /**
      * <code>.com.relationalai.proto.RelationId id = 1;</code>
+     * @return The id.
      */
     com.relationalai.proto.Schema.RelationId getId();
     /**
@@ -10162,10 +10444,12 @@ public final class Metadata {
 
     /**
      * <code>.com.relationalai.proto.RelationData relation_data = 3;</code>
+     * @return Whether the relationData field is set.
      */
     boolean hasRelationData();
     /**
      * <code>.com.relationalai.proto.RelationData relation_data = 3;</code>
+     * @return The relationData.
      */
     com.relationalai.proto.Metadata.RelationData getRelationData();
     /**
@@ -10175,10 +10459,12 @@ public final class Metadata {
 
     /**
      * <code>.com.relationalai.proto.StorageConfig storage_config = 4;</code>
+     * @return Whether the storageConfig field is set.
      */
     boolean hasStorageConfig();
     /**
      * <code>.com.relationalai.proto.StorageConfig storage_config = 4;</code>
+     * @return The storageConfig.
      */
     com.relationalai.proto.Metadata.StorageConfig getStorageConfig();
     /**
@@ -10193,7 +10479,7 @@ public final class Metadata {
    *
    * Protobuf type {@code com.relationalai.proto.Relation}
    */
-  public  static final class Relation extends
+  public static final class Relation extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.Relation)
       RelationOrBuilder {
@@ -10296,6 +10582,8 @@ public final class Metadata {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -10324,19 +10612,24 @@ public final class Metadata {
     private com.relationalai.proto.Schema.RelationId id_;
     /**
      * <code>.com.relationalai.proto.RelationId id = 1;</code>
+     * @return Whether the id field is set.
      */
+    @java.lang.Override
     public boolean hasId() {
       return id_ != null;
     }
     /**
      * <code>.com.relationalai.proto.RelationId id = 1;</code>
+     * @return The id.
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.RelationId getId() {
       return id_ == null ? com.relationalai.proto.Schema.RelationId.getDefaultInstance() : id_;
     }
     /**
      * <code>.com.relationalai.proto.RelationId id = 1;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.RelationIdOrBuilder getIdOrBuilder() {
       return getId();
     }
@@ -10350,6 +10643,7 @@ public final class Metadata {
      *
      * <code>repeated .com.relationalai.proto.FunctionalDependency functional_dependencies = 2;</code>
      */
+    @java.lang.Override
     public java.util.List<com.relationalai.proto.Metadata.FunctionalDependency> getFunctionalDependenciesList() {
       return functionalDependencies_;
     }
@@ -10360,6 +10654,7 @@ public final class Metadata {
      *
      * <code>repeated .com.relationalai.proto.FunctionalDependency functional_dependencies = 2;</code>
      */
+    @java.lang.Override
     public java.util.List<? extends com.relationalai.proto.Metadata.FunctionalDependencyOrBuilder> 
         getFunctionalDependenciesOrBuilderList() {
       return functionalDependencies_;
@@ -10371,6 +10666,7 @@ public final class Metadata {
      *
      * <code>repeated .com.relationalai.proto.FunctionalDependency functional_dependencies = 2;</code>
      */
+    @java.lang.Override
     public int getFunctionalDependenciesCount() {
       return functionalDependencies_.size();
     }
@@ -10381,6 +10677,7 @@ public final class Metadata {
      *
      * <code>repeated .com.relationalai.proto.FunctionalDependency functional_dependencies = 2;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.FunctionalDependency getFunctionalDependencies(int index) {
       return functionalDependencies_.get(index);
     }
@@ -10391,6 +10688,7 @@ public final class Metadata {
      *
      * <code>repeated .com.relationalai.proto.FunctionalDependency functional_dependencies = 2;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.FunctionalDependencyOrBuilder getFunctionalDependenciesOrBuilder(
         int index) {
       return functionalDependencies_.get(index);
@@ -10400,19 +10698,24 @@ public final class Metadata {
     private com.relationalai.proto.Metadata.RelationData relationData_;
     /**
      * <code>.com.relationalai.proto.RelationData relation_data = 3;</code>
+     * @return Whether the relationData field is set.
      */
+    @java.lang.Override
     public boolean hasRelationData() {
       return relationData_ != null;
     }
     /**
      * <code>.com.relationalai.proto.RelationData relation_data = 3;</code>
+     * @return The relationData.
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.RelationData getRelationData() {
       return relationData_ == null ? com.relationalai.proto.Metadata.RelationData.getDefaultInstance() : relationData_;
     }
     /**
      * <code>.com.relationalai.proto.RelationData relation_data = 3;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.RelationDataOrBuilder getRelationDataOrBuilder() {
       return getRelationData();
     }
@@ -10421,19 +10724,24 @@ public final class Metadata {
     private com.relationalai.proto.Metadata.StorageConfig storageConfig_;
     /**
      * <code>.com.relationalai.proto.StorageConfig storage_config = 4;</code>
+     * @return Whether the storageConfig field is set.
      */
+    @java.lang.Override
     public boolean hasStorageConfig() {
       return storageConfig_ != null;
     }
     /**
      * <code>.com.relationalai.proto.StorageConfig storage_config = 4;</code>
+     * @return The storageConfig.
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.StorageConfig getStorageConfig() {
       return storageConfig_ == null ? com.relationalai.proto.Metadata.StorageConfig.getDefaultInstance() : storageConfig_;
     }
     /**
      * <code>.com.relationalai.proto.StorageConfig storage_config = 4;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.StorageConfigOrBuilder getStorageConfigOrBuilder() {
       return getStorageConfig();
     }
@@ -10879,12 +11187,14 @@ public final class Metadata {
           com.relationalai.proto.Schema.RelationId, com.relationalai.proto.Schema.RelationId.Builder, com.relationalai.proto.Schema.RelationIdOrBuilder> idBuilder_;
       /**
        * <code>.com.relationalai.proto.RelationId id = 1;</code>
+       * @return Whether the id field is set.
        */
       public boolean hasId() {
         return idBuilder_ != null || id_ != null;
       }
       /**
        * <code>.com.relationalai.proto.RelationId id = 1;</code>
+       * @return The id.
        */
       public com.relationalai.proto.Schema.RelationId getId() {
         if (idBuilder_ == null) {
@@ -11308,12 +11618,14 @@ public final class Metadata {
           com.relationalai.proto.Metadata.RelationData, com.relationalai.proto.Metadata.RelationData.Builder, com.relationalai.proto.Metadata.RelationDataOrBuilder> relationDataBuilder_;
       /**
        * <code>.com.relationalai.proto.RelationData relation_data = 3;</code>
+       * @return Whether the relationData field is set.
        */
       public boolean hasRelationData() {
         return relationDataBuilder_ != null || relationData_ != null;
       }
       /**
        * <code>.com.relationalai.proto.RelationData relation_data = 3;</code>
+       * @return The relationData.
        */
       public com.relationalai.proto.Metadata.RelationData getRelationData() {
         if (relationDataBuilder_ == null) {
@@ -11425,12 +11737,14 @@ public final class Metadata {
           com.relationalai.proto.Metadata.StorageConfig, com.relationalai.proto.Metadata.StorageConfig.Builder, com.relationalai.proto.Metadata.StorageConfigOrBuilder> storageConfigBuilder_;
       /**
        * <code>.com.relationalai.proto.StorageConfig storage_config = 4;</code>
+       * @return Whether the storageConfig field is set.
        */
       public boolean hasStorageConfig() {
         return storageConfigBuilder_ != null || storageConfig_ != null;
       }
       /**
        * <code>.com.relationalai.proto.StorageConfig storage_config = 4;</code>
+       * @return The storageConfig.
        */
       public com.relationalai.proto.Metadata.StorageConfig getStorageConfig() {
         if (storageConfigBuilder_ == null) {
@@ -11599,6 +11913,7 @@ public final class Metadata {
      * </pre>
      *
      * <code>bool is_empty = 1;</code>
+     * @return The isEmpty.
      */
     boolean getIsEmpty();
 
@@ -11608,6 +11923,7 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.BeTreeConfig be_tree_config = 2;</code>
+     * @return Whether the beTreeConfig field is set.
      */
     boolean hasBeTreeConfig();
     /**
@@ -11616,6 +11932,7 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.BeTreeConfig be_tree_config = 2;</code>
+     * @return The beTreeConfig.
      */
     com.relationalai.proto.Metadata.BeTreeConfig getBeTreeConfig();
     /**
@@ -11630,7 +11947,7 @@ public final class Metadata {
   /**
    * Protobuf type {@code com.relationalai.proto.StorageConfig}
    */
-  public  static final class StorageConfig extends
+  public static final class StorageConfig extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.StorageConfig)
       StorageConfigOrBuilder {
@@ -11701,6 +12018,8 @@ public final class Metadata {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -11730,7 +12049,9 @@ public final class Metadata {
      * </pre>
      *
      * <code>bool is_empty = 1;</code>
+     * @return The isEmpty.
      */
+    @java.lang.Override
     public boolean getIsEmpty() {
       return isEmpty_;
     }
@@ -11743,7 +12064,9 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.BeTreeConfig be_tree_config = 2;</code>
+     * @return Whether the beTreeConfig field is set.
      */
+    @java.lang.Override
     public boolean hasBeTreeConfig() {
       return beTreeConfig_ != null;
     }
@@ -11753,7 +12076,9 @@ public final class Metadata {
      * </pre>
      *
      * <code>.com.relationalai.proto.BeTreeConfig be_tree_config = 2;</code>
+     * @return The beTreeConfig.
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.BeTreeConfig getBeTreeConfig() {
       return beTreeConfig_ == null ? com.relationalai.proto.Metadata.BeTreeConfig.getDefaultInstance() : beTreeConfig_;
     }
@@ -11764,6 +12089,7 @@ public final class Metadata {
      *
      * <code>.com.relationalai.proto.BeTreeConfig be_tree_config = 2;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Metadata.BeTreeConfigOrBuilder getBeTreeConfigOrBuilder() {
       return getBeTreeConfig();
     }
@@ -12108,7 +12434,9 @@ public final class Metadata {
        * </pre>
        *
        * <code>bool is_empty = 1;</code>
+       * @return The isEmpty.
        */
+      @java.lang.Override
       public boolean getIsEmpty() {
         return isEmpty_;
       }
@@ -12118,6 +12446,8 @@ public final class Metadata {
        * </pre>
        *
        * <code>bool is_empty = 1;</code>
+       * @param value The isEmpty to set.
+       * @return This builder for chaining.
        */
       public Builder setIsEmpty(boolean value) {
         
@@ -12131,6 +12461,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>bool is_empty = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearIsEmpty() {
         
@@ -12148,6 +12479,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>.com.relationalai.proto.BeTreeConfig be_tree_config = 2;</code>
+       * @return Whether the beTreeConfig field is set.
        */
       public boolean hasBeTreeConfig() {
         return beTreeConfigBuilder_ != null || beTreeConfig_ != null;
@@ -12158,6 +12490,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>.com.relationalai.proto.BeTreeConfig be_tree_config = 2;</code>
+       * @return The beTreeConfig.
        */
       public com.relationalai.proto.Metadata.BeTreeConfig getBeTreeConfig() {
         if (beTreeConfigBuilder_ == null) {
@@ -12350,28 +12683,32 @@ public final class Metadata {
 
     /**
      * <code>double epsilon = 1;</code>
+     * @return The epsilon.
      */
     double getEpsilon();
 
     /**
      * <code>int64 max_pivots = 2;</code>
+     * @return The maxPivots.
      */
     long getMaxPivots();
 
     /**
      * <code>int64 max_deltas = 3;</code>
+     * @return The maxDeltas.
      */
     long getMaxDeltas();
 
     /**
      * <code>int64 max_leaf = 4;</code>
+     * @return The maxLeaf.
      */
     long getMaxLeaf();
   }
   /**
    * Protobuf type {@code com.relationalai.proto.BeTreeConfig}
    */
-  public  static final class BeTreeConfig extends
+  public static final class BeTreeConfig extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.BeTreeConfig)
       BeTreeConfigOrBuilder {
@@ -12444,6 +12781,8 @@ public final class Metadata {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -12469,7 +12808,9 @@ public final class Metadata {
     private double epsilon_;
     /**
      * <code>double epsilon = 1;</code>
+     * @return The epsilon.
      */
+    @java.lang.Override
     public double getEpsilon() {
       return epsilon_;
     }
@@ -12478,7 +12819,9 @@ public final class Metadata {
     private long maxPivots_;
     /**
      * <code>int64 max_pivots = 2;</code>
+     * @return The maxPivots.
      */
+    @java.lang.Override
     public long getMaxPivots() {
       return maxPivots_;
     }
@@ -12487,7 +12830,9 @@ public final class Metadata {
     private long maxDeltas_;
     /**
      * <code>int64 max_deltas = 3;</code>
+     * @return The maxDeltas.
      */
+    @java.lang.Override
     public long getMaxDeltas() {
       return maxDeltas_;
     }
@@ -12496,7 +12841,9 @@ public final class Metadata {
     private long maxLeaf_;
     /**
      * <code>int64 max_leaf = 4;</code>
+     * @return The maxLeaf.
      */
+    @java.lang.Override
     public long getMaxLeaf() {
       return maxLeaf_;
     }
@@ -12515,7 +12862,7 @@ public final class Metadata {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (epsilon_ != 0D) {
+      if (java.lang.Double.doubleToRawLongBits(epsilon_) != 0) {
         output.writeDouble(1, epsilon_);
       }
       if (maxPivots_ != 0L) {
@@ -12536,7 +12883,7 @@ public final class Metadata {
       if (size != -1) return size;
 
       size = 0;
-      if (epsilon_ != 0D) {
+      if (java.lang.Double.doubleToRawLongBits(epsilon_) != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(1, epsilon_);
       }
@@ -12862,12 +13209,16 @@ public final class Metadata {
       private double epsilon_ ;
       /**
        * <code>double epsilon = 1;</code>
+       * @return The epsilon.
        */
+      @java.lang.Override
       public double getEpsilon() {
         return epsilon_;
       }
       /**
        * <code>double epsilon = 1;</code>
+       * @param value The epsilon to set.
+       * @return This builder for chaining.
        */
       public Builder setEpsilon(double value) {
         
@@ -12877,6 +13228,7 @@ public final class Metadata {
       }
       /**
        * <code>double epsilon = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearEpsilon() {
         
@@ -12888,12 +13240,16 @@ public final class Metadata {
       private long maxPivots_ ;
       /**
        * <code>int64 max_pivots = 2;</code>
+       * @return The maxPivots.
        */
+      @java.lang.Override
       public long getMaxPivots() {
         return maxPivots_;
       }
       /**
        * <code>int64 max_pivots = 2;</code>
+       * @param value The maxPivots to set.
+       * @return This builder for chaining.
        */
       public Builder setMaxPivots(long value) {
         
@@ -12903,6 +13259,7 @@ public final class Metadata {
       }
       /**
        * <code>int64 max_pivots = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearMaxPivots() {
         
@@ -12914,12 +13271,16 @@ public final class Metadata {
       private long maxDeltas_ ;
       /**
        * <code>int64 max_deltas = 3;</code>
+       * @return The maxDeltas.
        */
+      @java.lang.Override
       public long getMaxDeltas() {
         return maxDeltas_;
       }
       /**
        * <code>int64 max_deltas = 3;</code>
+       * @param value The maxDeltas to set.
+       * @return This builder for chaining.
        */
       public Builder setMaxDeltas(long value) {
         
@@ -12929,6 +13290,7 @@ public final class Metadata {
       }
       /**
        * <code>int64 max_deltas = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearMaxDeltas() {
         
@@ -12940,12 +13302,16 @@ public final class Metadata {
       private long maxLeaf_ ;
       /**
        * <code>int64 max_leaf = 4;</code>
+       * @return The maxLeaf.
        */
+      @java.lang.Override
       public long getMaxLeaf() {
         return maxLeaf_;
       }
       /**
        * <code>int64 max_leaf = 4;</code>
+       * @param value The maxLeaf to set.
+       * @return This builder for chaining.
        */
       public Builder setMaxLeaf(long value) {
         
@@ -12955,6 +13321,7 @@ public final class Metadata {
       }
       /**
        * <code>int64 max_leaf = 4;</code>
+       * @return This builder for chaining.
        */
       public Builder clearMaxLeaf() {
         
@@ -13021,34 +13388,42 @@ public final class Metadata {
 
     /**
      * <code>repeated int32 key_indexes = 1;</code>
+     * @return A list containing the keyIndexes.
      */
     java.util.List<java.lang.Integer> getKeyIndexesList();
     /**
      * <code>repeated int32 key_indexes = 1;</code>
+     * @return The count of keyIndexes.
      */
     int getKeyIndexesCount();
     /**
      * <code>repeated int32 key_indexes = 1;</code>
+     * @param index The index of the element to return.
+     * @return The keyIndexes at the given index.
      */
     int getKeyIndexes(int index);
 
     /**
      * <code>repeated int32 value_indexes = 2;</code>
+     * @return A list containing the valueIndexes.
      */
     java.util.List<java.lang.Integer> getValueIndexesList();
     /**
      * <code>repeated int32 value_indexes = 2;</code>
+     * @return The count of valueIndexes.
      */
     int getValueIndexesCount();
     /**
      * <code>repeated int32 value_indexes = 2;</code>
+     * @param index The index of the element to return.
+     * @return The valueIndexes at the given index.
      */
     int getValueIndexes(int index);
   }
   /**
    * Protobuf type {@code com.relationalai.proto.FunctionalDependency}
    */
-  public  static final class FunctionalDependency extends
+  public static final class FunctionalDependency extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.FunctionalDependency)
       FunctionalDependencyOrBuilder {
@@ -13146,6 +13521,8 @@ public final class Metadata {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -13177,19 +13554,24 @@ public final class Metadata {
     private com.google.protobuf.Internal.IntList keyIndexes_;
     /**
      * <code>repeated int32 key_indexes = 1;</code>
+     * @return A list containing the keyIndexes.
      */
+    @java.lang.Override
     public java.util.List<java.lang.Integer>
         getKeyIndexesList() {
       return keyIndexes_;
     }
     /**
      * <code>repeated int32 key_indexes = 1;</code>
+     * @return The count of keyIndexes.
      */
     public int getKeyIndexesCount() {
       return keyIndexes_.size();
     }
     /**
      * <code>repeated int32 key_indexes = 1;</code>
+     * @param index The index of the element to return.
+     * @return The keyIndexes at the given index.
      */
     public int getKeyIndexes(int index) {
       return keyIndexes_.getInt(index);
@@ -13200,19 +13582,24 @@ public final class Metadata {
     private com.google.protobuf.Internal.IntList valueIndexes_;
     /**
      * <code>repeated int32 value_indexes = 2;</code>
+     * @return A list containing the valueIndexes.
      */
+    @java.lang.Override
     public java.util.List<java.lang.Integer>
         getValueIndexesList() {
       return valueIndexes_;
     }
     /**
      * <code>repeated int32 value_indexes = 2;</code>
+     * @return The count of valueIndexes.
      */
     public int getValueIndexesCount() {
       return valueIndexes_.size();
     }
     /**
      * <code>repeated int32 value_indexes = 2;</code>
+     * @param index The index of the element to return.
+     * @return The valueIndexes at the given index.
      */
     public int getValueIndexes(int index) {
       return valueIndexes_.getInt(index);
@@ -13604,6 +13991,7 @@ public final class Metadata {
       }
       /**
        * <code>repeated int32 key_indexes = 1;</code>
+       * @return A list containing the keyIndexes.
        */
       public java.util.List<java.lang.Integer>
           getKeyIndexesList() {
@@ -13612,18 +14000,24 @@ public final class Metadata {
       }
       /**
        * <code>repeated int32 key_indexes = 1;</code>
+       * @return The count of keyIndexes.
        */
       public int getKeyIndexesCount() {
         return keyIndexes_.size();
       }
       /**
        * <code>repeated int32 key_indexes = 1;</code>
+       * @param index The index of the element to return.
+       * @return The keyIndexes at the given index.
        */
       public int getKeyIndexes(int index) {
         return keyIndexes_.getInt(index);
       }
       /**
        * <code>repeated int32 key_indexes = 1;</code>
+       * @param index The index to set the value at.
+       * @param value The keyIndexes to set.
+       * @return This builder for chaining.
        */
       public Builder setKeyIndexes(
           int index, int value) {
@@ -13634,6 +14028,8 @@ public final class Metadata {
       }
       /**
        * <code>repeated int32 key_indexes = 1;</code>
+       * @param value The keyIndexes to add.
+       * @return This builder for chaining.
        */
       public Builder addKeyIndexes(int value) {
         ensureKeyIndexesIsMutable();
@@ -13643,6 +14039,8 @@ public final class Metadata {
       }
       /**
        * <code>repeated int32 key_indexes = 1;</code>
+       * @param values The keyIndexes to add.
+       * @return This builder for chaining.
        */
       public Builder addAllKeyIndexes(
           java.lang.Iterable<? extends java.lang.Integer> values) {
@@ -13654,6 +14052,7 @@ public final class Metadata {
       }
       /**
        * <code>repeated int32 key_indexes = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearKeyIndexes() {
         keyIndexes_ = emptyIntList();
@@ -13671,6 +14070,7 @@ public final class Metadata {
       }
       /**
        * <code>repeated int32 value_indexes = 2;</code>
+       * @return A list containing the valueIndexes.
        */
       public java.util.List<java.lang.Integer>
           getValueIndexesList() {
@@ -13679,18 +14079,24 @@ public final class Metadata {
       }
       /**
        * <code>repeated int32 value_indexes = 2;</code>
+       * @return The count of valueIndexes.
        */
       public int getValueIndexesCount() {
         return valueIndexes_.size();
       }
       /**
        * <code>repeated int32 value_indexes = 2;</code>
+       * @param index The index of the element to return.
+       * @return The valueIndexes at the given index.
        */
       public int getValueIndexes(int index) {
         return valueIndexes_.getInt(index);
       }
       /**
        * <code>repeated int32 value_indexes = 2;</code>
+       * @param index The index to set the value at.
+       * @param value The valueIndexes to set.
+       * @return This builder for chaining.
        */
       public Builder setValueIndexes(
           int index, int value) {
@@ -13701,6 +14107,8 @@ public final class Metadata {
       }
       /**
        * <code>repeated int32 value_indexes = 2;</code>
+       * @param value The valueIndexes to add.
+       * @return This builder for chaining.
        */
       public Builder addValueIndexes(int value) {
         ensureValueIndexesIsMutable();
@@ -13710,6 +14118,8 @@ public final class Metadata {
       }
       /**
        * <code>repeated int32 value_indexes = 2;</code>
+       * @param values The valueIndexes to add.
+       * @return This builder for chaining.
        */
       public Builder addAllValueIndexes(
           java.lang.Iterable<? extends java.lang.Integer> values) {
@@ -13721,6 +14131,7 @@ public final class Metadata {
       }
       /**
        * <code>repeated int32 value_indexes = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearValueIndexes() {
         valueIndexes_ = emptyIntList();
@@ -13842,13 +14253,14 @@ public final class Metadata {
      * </pre>
      *
      * <code>uint64 hash = 2;</code>
+     * @return The hash.
      */
     long getHash();
   }
   /**
    * Protobuf type {@code com.relationalai.proto.InlineRelation}
    */
-  public  static final class InlineRelation extends
+  public static final class InlineRelation extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.InlineRelation)
       InlineRelationOrBuilder {
@@ -13917,6 +14329,8 @@ public final class Metadata {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -13951,6 +14365,7 @@ public final class Metadata {
      *
      * <code>repeated .com.relationalai.proto.RelTuple tuples = 1;</code>
      */
+    @java.lang.Override
     public java.util.List<com.relationalai.proto.Schema.RelTuple> getTuplesList() {
       return tuples_;
     }
@@ -13962,6 +14377,7 @@ public final class Metadata {
      *
      * <code>repeated .com.relationalai.proto.RelTuple tuples = 1;</code>
      */
+    @java.lang.Override
     public java.util.List<? extends com.relationalai.proto.Schema.RelTupleOrBuilder> 
         getTuplesOrBuilderList() {
       return tuples_;
@@ -13974,6 +14390,7 @@ public final class Metadata {
      *
      * <code>repeated .com.relationalai.proto.RelTuple tuples = 1;</code>
      */
+    @java.lang.Override
     public int getTuplesCount() {
       return tuples_.size();
     }
@@ -13985,6 +14402,7 @@ public final class Metadata {
      *
      * <code>repeated .com.relationalai.proto.RelTuple tuples = 1;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.RelTuple getTuples(int index) {
       return tuples_.get(index);
     }
@@ -13996,6 +14414,7 @@ public final class Metadata {
      *
      * <code>repeated .com.relationalai.proto.RelTuple tuples = 1;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.RelTupleOrBuilder getTuplesOrBuilder(
         int index) {
       return tuples_.get(index);
@@ -14011,7 +14430,9 @@ public final class Metadata {
      * </pre>
      *
      * <code>uint64 hash = 2;</code>
+     * @return The hash.
      */
+    @java.lang.Override
     public long getHash() {
       return hash_;
     }
@@ -14715,7 +15136,9 @@ public final class Metadata {
        * </pre>
        *
        * <code>uint64 hash = 2;</code>
+       * @return The hash.
        */
+      @java.lang.Override
       public long getHash() {
         return hash_;
       }
@@ -14727,6 +15150,8 @@ public final class Metadata {
        * </pre>
        *
        * <code>uint64 hash = 2;</code>
+       * @param value The hash to set.
+       * @return This builder for chaining.
        */
       public Builder setHash(long value) {
         
@@ -14742,6 +15167,7 @@ public final class Metadata {
        * </pre>
        *
        * <code>uint64 hash = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearHash() {
         

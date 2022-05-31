@@ -279,6 +279,8 @@ public final class Schema {
     }
 
     /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
      * @deprecated Use {@link #forNumber(int)} instead.
      */
     @java.lang.Deprecated
@@ -286,6 +288,10 @@ public final class Schema {
       return forNumber(value);
     }
 
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
     public static PrimitiveType forNumber(int value) {
       switch (value) {
         case 0: return UNSPECIFIED_TYPE;
@@ -325,6 +331,10 @@ public final class Schema {
 
     public final com.google.protobuf.Descriptors.EnumValueDescriptor
         getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
       return getDescriptor().getValues().get(ordinal());
     }
     public final com.google.protobuf.Descriptors.EnumDescriptor
@@ -418,6 +428,8 @@ public final class Schema {
     }
 
     /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
      * @deprecated Use {@link #forNumber(int)} instead.
      */
     @java.lang.Deprecated
@@ -425,6 +437,10 @@ public final class Schema {
       return forNumber(value);
     }
 
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
     public static Kind forNumber(int value) {
       switch (value) {
         case 0: return UNSPECIFIED_KIND;
@@ -449,6 +465,10 @@ public final class Schema {
 
     public final com.google.protobuf.Descriptors.EnumValueDescriptor
         getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
       return getDescriptor().getValues().get(ordinal());
     }
     public final com.google.protobuf.Descriptors.EnumDescriptor
@@ -518,7 +538,7 @@ public final class Schema {
    *
    * Protobuf type {@code com.relationalai.proto.RelationId}
    */
-  public  static final class RelationId extends
+  public static final class RelationId extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.RelationId)
       RelationIdOrBuilder {
@@ -582,6 +602,8 @@ public final class Schema {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -611,12 +633,14 @@ public final class Schema {
     /**
      * <code>repeated .com.relationalai.proto.RelType arguments = 1;</code>
      */
+    @java.lang.Override
     public java.util.List<com.relationalai.proto.Schema.RelType> getArgumentsList() {
       return arguments_;
     }
     /**
      * <code>repeated .com.relationalai.proto.RelType arguments = 1;</code>
      */
+    @java.lang.Override
     public java.util.List<? extends com.relationalai.proto.Schema.RelTypeOrBuilder> 
         getArgumentsOrBuilderList() {
       return arguments_;
@@ -624,18 +648,21 @@ public final class Schema {
     /**
      * <code>repeated .com.relationalai.proto.RelType arguments = 1;</code>
      */
+    @java.lang.Override
     public int getArgumentsCount() {
       return arguments_.size();
     }
     /**
      * <code>repeated .com.relationalai.proto.RelType arguments = 1;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.RelType getArguments(int index) {
       return arguments_.get(index);
     }
     /**
      * <code>repeated .com.relationalai.proto.RelType arguments = 1;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.RelTypeOrBuilder getArgumentsOrBuilder(
         int index) {
       return arguments_.get(index);
@@ -1315,7 +1342,7 @@ public final class Schema {
    *
    * Protobuf type {@code com.relationalai.proto.RelTuple}
    */
-  public  static final class RelTuple extends
+  public static final class RelTuple extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.RelTuple)
       RelTupleOrBuilder {
@@ -1379,6 +1406,8 @@ public final class Schema {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -1408,12 +1437,14 @@ public final class Schema {
     /**
      * <code>repeated .com.relationalai.proto.PrimitiveValue arguments = 1;</code>
      */
+    @java.lang.Override
     public java.util.List<com.relationalai.proto.Schema.PrimitiveValue> getArgumentsList() {
       return arguments_;
     }
     /**
      * <code>repeated .com.relationalai.proto.PrimitiveValue arguments = 1;</code>
      */
+    @java.lang.Override
     public java.util.List<? extends com.relationalai.proto.Schema.PrimitiveValueOrBuilder> 
         getArgumentsOrBuilderList() {
       return arguments_;
@@ -1421,18 +1452,21 @@ public final class Schema {
     /**
      * <code>repeated .com.relationalai.proto.PrimitiveValue arguments = 1;</code>
      */
+    @java.lang.Override
     public int getArgumentsCount() {
       return arguments_.size();
     }
     /**
      * <code>repeated .com.relationalai.proto.PrimitiveValue arguments = 1;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.PrimitiveValue getArguments(int index) {
       return arguments_.get(index);
     }
     /**
      * <code>repeated .com.relationalai.proto.PrimitiveValue arguments = 1;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.PrimitiveValueOrBuilder getArgumentsOrBuilder(
         int index) {
       return arguments_.get(index);
@@ -2083,11 +2117,13 @@ public final class Schema {
 
     /**
      * <code>uint64 highbits = 1;</code>
+     * @return The highbits.
      */
     long getHighbits();
 
     /**
      * <code>uint64 lowbits = 2;</code>
+     * @return The lowbits.
      */
     long getLowbits();
   }
@@ -2098,7 +2134,7 @@ public final class Schema {
    *
    * Protobuf type {@code com.relationalai.proto.RelInt128}
    */
-  public  static final class RelInt128 extends
+  public static final class RelInt128 extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.RelInt128)
       RelInt128OrBuilder {
@@ -2161,6 +2197,8 @@ public final class Schema {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -2186,7 +2224,9 @@ public final class Schema {
     private long highbits_;
     /**
      * <code>uint64 highbits = 1;</code>
+     * @return The highbits.
      */
+    @java.lang.Override
     public long getHighbits() {
       return highbits_;
     }
@@ -2195,7 +2235,9 @@ public final class Schema {
     private long lowbits_;
     /**
      * <code>uint64 lowbits = 2;</code>
+     * @return The lowbits.
      */
+    @java.lang.Override
     public long getLowbits() {
       return lowbits_;
     }
@@ -2528,12 +2570,16 @@ public final class Schema {
       private long highbits_ ;
       /**
        * <code>uint64 highbits = 1;</code>
+       * @return The highbits.
        */
+      @java.lang.Override
       public long getHighbits() {
         return highbits_;
       }
       /**
        * <code>uint64 highbits = 1;</code>
+       * @param value The highbits to set.
+       * @return This builder for chaining.
        */
       public Builder setHighbits(long value) {
         
@@ -2543,6 +2589,7 @@ public final class Schema {
       }
       /**
        * <code>uint64 highbits = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearHighbits() {
         
@@ -2554,12 +2601,16 @@ public final class Schema {
       private long lowbits_ ;
       /**
        * <code>uint64 lowbits = 2;</code>
+       * @return The lowbits.
        */
+      @java.lang.Override
       public long getLowbits() {
         return lowbits_;
       }
       /**
        * <code>uint64 lowbits = 2;</code>
+       * @param value The lowbits to set.
+       * @return This builder for chaining.
        */
       public Builder setLowbits(long value) {
         
@@ -2569,6 +2620,7 @@ public final class Schema {
       }
       /**
        * <code>uint64 lowbits = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearLowbits() {
         
@@ -2635,18 +2687,20 @@ public final class Schema {
 
     /**
      * <code>uint64 highbits = 1;</code>
+     * @return The highbits.
      */
     long getHighbits();
 
     /**
      * <code>uint64 lowbits = 2;</code>
+     * @return The lowbits.
      */
     long getLowbits();
   }
   /**
    * Protobuf type {@code com.relationalai.proto.RelUInt128}
    */
-  public  static final class RelUInt128 extends
+  public static final class RelUInt128 extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.RelUInt128)
       RelUInt128OrBuilder {
@@ -2709,6 +2763,8 @@ public final class Schema {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -2734,7 +2790,9 @@ public final class Schema {
     private long highbits_;
     /**
      * <code>uint64 highbits = 1;</code>
+     * @return The highbits.
      */
+    @java.lang.Override
     public long getHighbits() {
       return highbits_;
     }
@@ -2743,7 +2801,9 @@ public final class Schema {
     private long lowbits_;
     /**
      * <code>uint64 lowbits = 2;</code>
+     * @return The lowbits.
      */
+    @java.lang.Override
     public long getLowbits() {
       return lowbits_;
     }
@@ -3072,12 +3132,16 @@ public final class Schema {
       private long highbits_ ;
       /**
        * <code>uint64 highbits = 1;</code>
+       * @return The highbits.
        */
+      @java.lang.Override
       public long getHighbits() {
         return highbits_;
       }
       /**
        * <code>uint64 highbits = 1;</code>
+       * @param value The highbits to set.
+       * @return This builder for chaining.
        */
       public Builder setHighbits(long value) {
         
@@ -3087,6 +3151,7 @@ public final class Schema {
       }
       /**
        * <code>uint64 highbits = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearHighbits() {
         
@@ -3098,12 +3163,16 @@ public final class Schema {
       private long lowbits_ ;
       /**
        * <code>uint64 lowbits = 2;</code>
+       * @return The lowbits.
        */
+      @java.lang.Override
       public long getLowbits() {
         return lowbits_;
       }
       /**
        * <code>uint64 lowbits = 2;</code>
+       * @param value The lowbits to set.
+       * @return This builder for chaining.
        */
       public Builder setLowbits(long value) {
         
@@ -3113,6 +3182,7 @@ public final class Schema {
       }
       /**
        * <code>uint64 lowbits = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearLowbits() {
         
@@ -3183,6 +3253,7 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.PrimitiveType tag = 1;</code>
+     * @return The enum numeric value on the wire for tag.
      */
     int getTagValue();
     /**
@@ -3191,6 +3262,7 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.PrimitiveType tag = 1;</code>
+     * @return The tag.
      */
     com.relationalai.proto.Schema.PrimitiveType getTag();
 
@@ -3200,6 +3272,7 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.RelInt128 int128_val = 2;</code>
+     * @return Whether the int128Val field is set.
      */
     boolean hasInt128Val();
     /**
@@ -3208,6 +3281,7 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.RelInt128 int128_val = 2;</code>
+     * @return The int128Val.
      */
     com.relationalai.proto.Schema.RelInt128 getInt128Val();
     /**
@@ -3221,11 +3295,23 @@ public final class Schema {
 
     /**
      * <code>int64 int64_val = 3;</code>
+     * @return Whether the int64Val field is set.
+     */
+    boolean hasInt64Val();
+    /**
+     * <code>int64 int64_val = 3;</code>
+     * @return The int64Val.
      */
     long getInt64Val();
 
     /**
      * <code>int32 int32_val = 4;</code>
+     * @return Whether the int32Val field is set.
+     */
+    boolean hasInt32Val();
+    /**
+     * <code>int32 int32_val = 4;</code>
+     * @return The int32Val.
      */
     int getInt32Val();
 
@@ -3235,6 +3321,16 @@ public final class Schema {
      * </pre>
      *
      * <code>int32 int16_val = 5;</code>
+     * @return Whether the int16Val field is set.
+     */
+    boolean hasInt16Val();
+    /**
+     * <pre>
+     * Not present in protobuf; int32
+     * </pre>
+     *
+     * <code>int32 int16_val = 5;</code>
+     * @return The int16Val.
      */
     int getInt16Val();
 
@@ -3244,6 +3340,16 @@ public final class Schema {
      * </pre>
      *
      * <code>int32 int8_val = 6;</code>
+     * @return Whether the int8Val field is set.
+     */
+    boolean hasInt8Val();
+    /**
+     * <pre>
+     * Not present in protobuf; int32
+     * </pre>
+     *
+     * <code>int32 int8_val = 6;</code>
+     * @return The int8Val.
      */
     int getInt8Val();
 
@@ -3253,6 +3359,7 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.RelUInt128 uint128_val = 7;</code>
+     * @return Whether the uint128Val field is set.
      */
     boolean hasUint128Val();
     /**
@@ -3261,6 +3368,7 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.RelUInt128 uint128_val = 7;</code>
+     * @return The uint128Val.
      */
     com.relationalai.proto.Schema.RelUInt128 getUint128Val();
     /**
@@ -3274,11 +3382,23 @@ public final class Schema {
 
     /**
      * <code>uint64 uint64_val = 8;</code>
+     * @return Whether the uint64Val field is set.
+     */
+    boolean hasUint64Val();
+    /**
+     * <code>uint64 uint64_val = 8;</code>
+     * @return The uint64Val.
      */
     long getUint64Val();
 
     /**
      * <code>uint32 uint32_val = 9;</code>
+     * @return Whether the uint32Val field is set.
+     */
+    boolean hasUint32Val();
+    /**
+     * <code>uint32 uint32_val = 9;</code>
+     * @return The uint32Val.
      */
     int getUint32Val();
 
@@ -3288,6 +3408,16 @@ public final class Schema {
      * </pre>
      *
      * <code>uint32 uint16_val = 10;</code>
+     * @return Whether the uint16Val field is set.
+     */
+    boolean hasUint16Val();
+    /**
+     * <pre>
+     * Not present in protobuf; uint32
+     * </pre>
+     *
+     * <code>uint32 uint16_val = 10;</code>
+     * @return The uint16Val.
      */
     int getUint16Val();
 
@@ -3297,16 +3427,38 @@ public final class Schema {
      * </pre>
      *
      * <code>uint32 uint8_val = 11;</code>
+     * @return Whether the uint8Val field is set.
+     */
+    boolean hasUint8Val();
+    /**
+     * <pre>
+     * Not present in protobuf; uint32
+     * </pre>
+     *
+     * <code>uint32 uint8_val = 11;</code>
+     * @return The uint8Val.
      */
     int getUint8Val();
 
     /**
      * <code>double float64_val = 12;</code>
+     * @return Whether the float64Val field is set.
+     */
+    boolean hasFloat64Val();
+    /**
+     * <code>double float64_val = 12;</code>
+     * @return The float64Val.
      */
     double getFloat64Val();
 
     /**
      * <code>float float32_val = 13;</code>
+     * @return Whether the float32Val field is set.
+     */
+    boolean hasFloat32Val();
+    /**
+     * <code>float float32_val = 13;</code>
+     * @return The float32Val.
      */
     float getFloat32Val();
 
@@ -3316,16 +3468,38 @@ public final class Schema {
      * </pre>
      *
      * <code>float float16_val = 14;</code>
+     * @return Whether the float16Val field is set.
+     */
+    boolean hasFloat16Val();
+    /**
+     * <pre>
+     * Not present in protobuf
+     * </pre>
+     *
+     * <code>float float16_val = 14;</code>
+     * @return The float16Val.
      */
     float getFloat16Val();
 
     /**
      * <code>uint32 char_val = 15;</code>
+     * @return Whether the charVal field is set.
+     */
+    boolean hasCharVal();
+    /**
+     * <code>uint32 char_val = 15;</code>
+     * @return The charVal.
      */
     int getCharVal();
 
     /**
      * <code>bool bool_val = 16;</code>
+     * @return Whether the boolVal field is set.
+     */
+    boolean hasBoolVal();
+    /**
+     * <code>bool bool_val = 16;</code>
+     * @return The boolVal.
      */
     boolean getBoolVal();
 
@@ -3336,6 +3510,17 @@ public final class Schema {
      * </pre>
      *
      * <code>bytes string_val = 17;</code>
+     * @return Whether the stringVal field is set.
+     */
+    boolean hasStringVal();
+    /**
+     * <pre>
+     * We use bytes for strings because proto has an encoding
+     * requirement for the proto3::string type.
+     * </pre>
+     *
+     * <code>bytes string_val = 17;</code>
+     * @return The stringVal.
      */
     com.google.protobuf.ByteString getStringVal();
 
@@ -3348,7 +3533,7 @@ public final class Schema {
    *
    * Protobuf type {@code com.relationalai.proto.PrimitiveValue}
    */
-  public  static final class PrimitiveValue extends
+  public static final class PrimitiveValue extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.PrimitiveValue)
       PrimitiveValueOrBuilder {
@@ -3412,23 +3597,23 @@ public final class Schema {
               break;
             }
             case 24: {
-              valueCase_ = 3;
               value_ = input.readInt64();
+              valueCase_ = 3;
               break;
             }
             case 32: {
-              valueCase_ = 4;
               value_ = input.readInt32();
+              valueCase_ = 4;
               break;
             }
             case 40: {
-              valueCase_ = 5;
               value_ = input.readInt32();
+              valueCase_ = 5;
               break;
             }
             case 48: {
-              valueCase_ = 6;
               value_ = input.readInt32();
+              valueCase_ = 6;
               break;
             }
             case 58: {
@@ -3446,53 +3631,53 @@ public final class Schema {
               break;
             }
             case 64: {
-              valueCase_ = 8;
               value_ = input.readUInt64();
+              valueCase_ = 8;
               break;
             }
             case 72: {
-              valueCase_ = 9;
               value_ = input.readUInt32();
+              valueCase_ = 9;
               break;
             }
             case 80: {
-              valueCase_ = 10;
               value_ = input.readUInt32();
+              valueCase_ = 10;
               break;
             }
             case 88: {
-              valueCase_ = 11;
               value_ = input.readUInt32();
+              valueCase_ = 11;
               break;
             }
             case 97: {
-              valueCase_ = 12;
               value_ = input.readDouble();
+              valueCase_ = 12;
               break;
             }
             case 109: {
-              valueCase_ = 13;
               value_ = input.readFloat();
+              valueCase_ = 13;
               break;
             }
             case 117: {
-              valueCase_ = 14;
               value_ = input.readFloat();
+              valueCase_ = 14;
               break;
             }
             case 120: {
-              valueCase_ = 15;
               value_ = input.readUInt32();
+              valueCase_ = 15;
               break;
             }
             case 128: {
-              valueCase_ = 16;
               value_ = input.readBool();
+              valueCase_ = 16;
               break;
             }
             case 138: {
-              valueCase_ = 17;
               value_ = input.readBytes();
+              valueCase_ = 17;
               break;
             }
             default: {
@@ -3506,6 +3691,8 @@ public final class Schema {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -3530,7 +3717,8 @@ public final class Schema {
     private int valueCase_ = 0;
     private java.lang.Object value_;
     public enum ValueCase
-        implements com.google.protobuf.Internal.EnumLite {
+        implements com.google.protobuf.Internal.EnumLite,
+            com.google.protobuf.AbstractMessage.InternalOneOfEnum {
       INT128_VAL(2),
       INT64_VAL(3),
       INT32_VAL(4),
@@ -3553,6 +3741,8 @@ public final class Schema {
         this.value = value;
       }
       /**
+       * @param value The number of the enum to look for.
+       * @return The enum associated with the given number.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
@@ -3601,8 +3791,9 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.PrimitiveType tag = 1;</code>
+     * @return The enum numeric value on the wire for tag.
      */
-    public int getTagValue() {
+    @java.lang.Override public int getTagValue() {
       return tag_;
     }
     /**
@@ -3611,8 +3802,9 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.PrimitiveType tag = 1;</code>
+     * @return The tag.
      */
-    public com.relationalai.proto.Schema.PrimitiveType getTag() {
+    @java.lang.Override public com.relationalai.proto.Schema.PrimitiveType getTag() {
       @SuppressWarnings("deprecation")
       com.relationalai.proto.Schema.PrimitiveType result = com.relationalai.proto.Schema.PrimitiveType.valueOf(tag_);
       return result == null ? com.relationalai.proto.Schema.PrimitiveType.UNRECOGNIZED : result;
@@ -3625,7 +3817,9 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.RelInt128 int128_val = 2;</code>
+     * @return Whether the int128Val field is set.
      */
+    @java.lang.Override
     public boolean hasInt128Val() {
       return valueCase_ == 2;
     }
@@ -3635,7 +3829,9 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.RelInt128 int128_val = 2;</code>
+     * @return The int128Val.
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.RelInt128 getInt128Val() {
       if (valueCase_ == 2) {
          return (com.relationalai.proto.Schema.RelInt128) value_;
@@ -3649,6 +3845,7 @@ public final class Schema {
      *
      * <code>.com.relationalai.proto.RelInt128 int128_val = 2;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.RelInt128OrBuilder getInt128ValOrBuilder() {
       if (valueCase_ == 2) {
          return (com.relationalai.proto.Schema.RelInt128) value_;
@@ -3659,7 +3856,17 @@ public final class Schema {
     public static final int INT64_VAL_FIELD_NUMBER = 3;
     /**
      * <code>int64 int64_val = 3;</code>
+     * @return Whether the int64Val field is set.
      */
+    @java.lang.Override
+    public boolean hasInt64Val() {
+      return valueCase_ == 3;
+    }
+    /**
+     * <code>int64 int64_val = 3;</code>
+     * @return The int64Val.
+     */
+    @java.lang.Override
     public long getInt64Val() {
       if (valueCase_ == 3) {
         return (java.lang.Long) value_;
@@ -3670,7 +3877,17 @@ public final class Schema {
     public static final int INT32_VAL_FIELD_NUMBER = 4;
     /**
      * <code>int32 int32_val = 4;</code>
+     * @return Whether the int32Val field is set.
      */
+    @java.lang.Override
+    public boolean hasInt32Val() {
+      return valueCase_ == 4;
+    }
+    /**
+     * <code>int32 int32_val = 4;</code>
+     * @return The int32Val.
+     */
+    @java.lang.Override
     public int getInt32Val() {
       if (valueCase_ == 4) {
         return (java.lang.Integer) value_;
@@ -3685,7 +3902,21 @@ public final class Schema {
      * </pre>
      *
      * <code>int32 int16_val = 5;</code>
+     * @return Whether the int16Val field is set.
      */
+    @java.lang.Override
+    public boolean hasInt16Val() {
+      return valueCase_ == 5;
+    }
+    /**
+     * <pre>
+     * Not present in protobuf; int32
+     * </pre>
+     *
+     * <code>int32 int16_val = 5;</code>
+     * @return The int16Val.
+     */
+    @java.lang.Override
     public int getInt16Val() {
       if (valueCase_ == 5) {
         return (java.lang.Integer) value_;
@@ -3700,7 +3931,21 @@ public final class Schema {
      * </pre>
      *
      * <code>int32 int8_val = 6;</code>
+     * @return Whether the int8Val field is set.
      */
+    @java.lang.Override
+    public boolean hasInt8Val() {
+      return valueCase_ == 6;
+    }
+    /**
+     * <pre>
+     * Not present in protobuf; int32
+     * </pre>
+     *
+     * <code>int32 int8_val = 6;</code>
+     * @return The int8Val.
+     */
+    @java.lang.Override
     public int getInt8Val() {
       if (valueCase_ == 6) {
         return (java.lang.Integer) value_;
@@ -3715,7 +3960,9 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.RelUInt128 uint128_val = 7;</code>
+     * @return Whether the uint128Val field is set.
      */
+    @java.lang.Override
     public boolean hasUint128Val() {
       return valueCase_ == 7;
     }
@@ -3725,7 +3972,9 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.RelUInt128 uint128_val = 7;</code>
+     * @return The uint128Val.
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.RelUInt128 getUint128Val() {
       if (valueCase_ == 7) {
          return (com.relationalai.proto.Schema.RelUInt128) value_;
@@ -3739,6 +3988,7 @@ public final class Schema {
      *
      * <code>.com.relationalai.proto.RelUInt128 uint128_val = 7;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.RelUInt128OrBuilder getUint128ValOrBuilder() {
       if (valueCase_ == 7) {
          return (com.relationalai.proto.Schema.RelUInt128) value_;
@@ -3749,7 +3999,17 @@ public final class Schema {
     public static final int UINT64_VAL_FIELD_NUMBER = 8;
     /**
      * <code>uint64 uint64_val = 8;</code>
+     * @return Whether the uint64Val field is set.
      */
+    @java.lang.Override
+    public boolean hasUint64Val() {
+      return valueCase_ == 8;
+    }
+    /**
+     * <code>uint64 uint64_val = 8;</code>
+     * @return The uint64Val.
+     */
+    @java.lang.Override
     public long getUint64Val() {
       if (valueCase_ == 8) {
         return (java.lang.Long) value_;
@@ -3760,7 +4020,17 @@ public final class Schema {
     public static final int UINT32_VAL_FIELD_NUMBER = 9;
     /**
      * <code>uint32 uint32_val = 9;</code>
+     * @return Whether the uint32Val field is set.
      */
+    @java.lang.Override
+    public boolean hasUint32Val() {
+      return valueCase_ == 9;
+    }
+    /**
+     * <code>uint32 uint32_val = 9;</code>
+     * @return The uint32Val.
+     */
+    @java.lang.Override
     public int getUint32Val() {
       if (valueCase_ == 9) {
         return (java.lang.Integer) value_;
@@ -3775,7 +4045,21 @@ public final class Schema {
      * </pre>
      *
      * <code>uint32 uint16_val = 10;</code>
+     * @return Whether the uint16Val field is set.
      */
+    @java.lang.Override
+    public boolean hasUint16Val() {
+      return valueCase_ == 10;
+    }
+    /**
+     * <pre>
+     * Not present in protobuf; uint32
+     * </pre>
+     *
+     * <code>uint32 uint16_val = 10;</code>
+     * @return The uint16Val.
+     */
+    @java.lang.Override
     public int getUint16Val() {
       if (valueCase_ == 10) {
         return (java.lang.Integer) value_;
@@ -3790,7 +4074,21 @@ public final class Schema {
      * </pre>
      *
      * <code>uint32 uint8_val = 11;</code>
+     * @return Whether the uint8Val field is set.
      */
+    @java.lang.Override
+    public boolean hasUint8Val() {
+      return valueCase_ == 11;
+    }
+    /**
+     * <pre>
+     * Not present in protobuf; uint32
+     * </pre>
+     *
+     * <code>uint32 uint8_val = 11;</code>
+     * @return The uint8Val.
+     */
+    @java.lang.Override
     public int getUint8Val() {
       if (valueCase_ == 11) {
         return (java.lang.Integer) value_;
@@ -3801,7 +4099,17 @@ public final class Schema {
     public static final int FLOAT64_VAL_FIELD_NUMBER = 12;
     /**
      * <code>double float64_val = 12;</code>
+     * @return Whether the float64Val field is set.
      */
+    @java.lang.Override
+    public boolean hasFloat64Val() {
+      return valueCase_ == 12;
+    }
+    /**
+     * <code>double float64_val = 12;</code>
+     * @return The float64Val.
+     */
+    @java.lang.Override
     public double getFloat64Val() {
       if (valueCase_ == 12) {
         return (java.lang.Double) value_;
@@ -3812,7 +4120,17 @@ public final class Schema {
     public static final int FLOAT32_VAL_FIELD_NUMBER = 13;
     /**
      * <code>float float32_val = 13;</code>
+     * @return Whether the float32Val field is set.
      */
+    @java.lang.Override
+    public boolean hasFloat32Val() {
+      return valueCase_ == 13;
+    }
+    /**
+     * <code>float float32_val = 13;</code>
+     * @return The float32Val.
+     */
+    @java.lang.Override
     public float getFloat32Val() {
       if (valueCase_ == 13) {
         return (java.lang.Float) value_;
@@ -3827,7 +4145,21 @@ public final class Schema {
      * </pre>
      *
      * <code>float float16_val = 14;</code>
+     * @return Whether the float16Val field is set.
      */
+    @java.lang.Override
+    public boolean hasFloat16Val() {
+      return valueCase_ == 14;
+    }
+    /**
+     * <pre>
+     * Not present in protobuf
+     * </pre>
+     *
+     * <code>float float16_val = 14;</code>
+     * @return The float16Val.
+     */
+    @java.lang.Override
     public float getFloat16Val() {
       if (valueCase_ == 14) {
         return (java.lang.Float) value_;
@@ -3838,7 +4170,17 @@ public final class Schema {
     public static final int CHAR_VAL_FIELD_NUMBER = 15;
     /**
      * <code>uint32 char_val = 15;</code>
+     * @return Whether the charVal field is set.
      */
+    @java.lang.Override
+    public boolean hasCharVal() {
+      return valueCase_ == 15;
+    }
+    /**
+     * <code>uint32 char_val = 15;</code>
+     * @return The charVal.
+     */
+    @java.lang.Override
     public int getCharVal() {
       if (valueCase_ == 15) {
         return (java.lang.Integer) value_;
@@ -3849,7 +4191,17 @@ public final class Schema {
     public static final int BOOL_VAL_FIELD_NUMBER = 16;
     /**
      * <code>bool bool_val = 16;</code>
+     * @return Whether the boolVal field is set.
      */
+    @java.lang.Override
+    public boolean hasBoolVal() {
+      return valueCase_ == 16;
+    }
+    /**
+     * <code>bool bool_val = 16;</code>
+     * @return The boolVal.
+     */
+    @java.lang.Override
     public boolean getBoolVal() {
       if (valueCase_ == 16) {
         return (java.lang.Boolean) value_;
@@ -3865,7 +4217,22 @@ public final class Schema {
      * </pre>
      *
      * <code>bytes string_val = 17;</code>
+     * @return Whether the stringVal field is set.
      */
+    @java.lang.Override
+    public boolean hasStringVal() {
+      return valueCase_ == 17;
+    }
+    /**
+     * <pre>
+     * We use bytes for strings because proto has an encoding
+     * requirement for the proto3::string type.
+     * </pre>
+     *
+     * <code>bytes string_val = 17;</code>
+     * @return The stringVal.
+     */
+    @java.lang.Override
     public com.google.protobuf.ByteString getStringVal() {
       if (valueCase_ == 17) {
         return (com.google.protobuf.ByteString) value_;
@@ -4614,8 +4981,9 @@ public final class Schema {
        * </pre>
        *
        * <code>.com.relationalai.proto.PrimitiveType tag = 1;</code>
+       * @return The enum numeric value on the wire for tag.
        */
-      public int getTagValue() {
+      @java.lang.Override public int getTagValue() {
         return tag_;
       }
       /**
@@ -4624,8 +4992,11 @@ public final class Schema {
        * </pre>
        *
        * <code>.com.relationalai.proto.PrimitiveType tag = 1;</code>
+       * @param value The enum numeric value on the wire for tag to set.
+       * @return This builder for chaining.
        */
       public Builder setTagValue(int value) {
+        
         tag_ = value;
         onChanged();
         return this;
@@ -4636,7 +5007,9 @@ public final class Schema {
        * </pre>
        *
        * <code>.com.relationalai.proto.PrimitiveType tag = 1;</code>
+       * @return The tag.
        */
+      @java.lang.Override
       public com.relationalai.proto.Schema.PrimitiveType getTag() {
         @SuppressWarnings("deprecation")
         com.relationalai.proto.Schema.PrimitiveType result = com.relationalai.proto.Schema.PrimitiveType.valueOf(tag_);
@@ -4648,6 +5021,8 @@ public final class Schema {
        * </pre>
        *
        * <code>.com.relationalai.proto.PrimitiveType tag = 1;</code>
+       * @param value The tag to set.
+       * @return This builder for chaining.
        */
       public Builder setTag(com.relationalai.proto.Schema.PrimitiveType value) {
         if (value == null) {
@@ -4664,6 +5039,7 @@ public final class Schema {
        * </pre>
        *
        * <code>.com.relationalai.proto.PrimitiveType tag = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearTag() {
         
@@ -4680,7 +5056,9 @@ public final class Schema {
        * </pre>
        *
        * <code>.com.relationalai.proto.RelInt128 int128_val = 2;</code>
+       * @return Whether the int128Val field is set.
        */
+      @java.lang.Override
       public boolean hasInt128Val() {
         return valueCase_ == 2;
       }
@@ -4690,7 +5068,9 @@ public final class Schema {
        * </pre>
        *
        * <code>.com.relationalai.proto.RelInt128 int128_val = 2;</code>
+       * @return The int128Val.
        */
+      @java.lang.Override
       public com.relationalai.proto.Schema.RelInt128 getInt128Val() {
         if (int128ValBuilder_ == null) {
           if (valueCase_ == 2) {
@@ -4762,8 +5142,9 @@ public final class Schema {
         } else {
           if (valueCase_ == 2) {
             int128ValBuilder_.mergeFrom(value);
+          } else {
+            int128ValBuilder_.setMessage(value);
           }
-          int128ValBuilder_.setMessage(value);
         }
         valueCase_ = 2;
         return this;
@@ -4808,6 +5189,7 @@ public final class Schema {
        *
        * <code>.com.relationalai.proto.RelInt128 int128_val = 2;</code>
        */
+      @java.lang.Override
       public com.relationalai.proto.Schema.RelInt128OrBuilder getInt128ValOrBuilder() {
         if ((valueCase_ == 2) && (int128ValBuilder_ != null)) {
           return int128ValBuilder_.getMessageOrBuilder();
@@ -4846,6 +5228,14 @@ public final class Schema {
 
       /**
        * <code>int64 int64_val = 3;</code>
+       * @return Whether the int64Val field is set.
+       */
+      public boolean hasInt64Val() {
+        return valueCase_ == 3;
+      }
+      /**
+       * <code>int64 int64_val = 3;</code>
+       * @return The int64Val.
        */
       public long getInt64Val() {
         if (valueCase_ == 3) {
@@ -4855,6 +5245,8 @@ public final class Schema {
       }
       /**
        * <code>int64 int64_val = 3;</code>
+       * @param value The int64Val to set.
+       * @return This builder for chaining.
        */
       public Builder setInt64Val(long value) {
         valueCase_ = 3;
@@ -4864,6 +5256,7 @@ public final class Schema {
       }
       /**
        * <code>int64 int64_val = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearInt64Val() {
         if (valueCase_ == 3) {
@@ -4876,6 +5269,14 @@ public final class Schema {
 
       /**
        * <code>int32 int32_val = 4;</code>
+       * @return Whether the int32Val field is set.
+       */
+      public boolean hasInt32Val() {
+        return valueCase_ == 4;
+      }
+      /**
+       * <code>int32 int32_val = 4;</code>
+       * @return The int32Val.
        */
       public int getInt32Val() {
         if (valueCase_ == 4) {
@@ -4885,6 +5286,8 @@ public final class Schema {
       }
       /**
        * <code>int32 int32_val = 4;</code>
+       * @param value The int32Val to set.
+       * @return This builder for chaining.
        */
       public Builder setInt32Val(int value) {
         valueCase_ = 4;
@@ -4894,6 +5297,7 @@ public final class Schema {
       }
       /**
        * <code>int32 int32_val = 4;</code>
+       * @return This builder for chaining.
        */
       public Builder clearInt32Val() {
         if (valueCase_ == 4) {
@@ -4910,6 +5314,18 @@ public final class Schema {
        * </pre>
        *
        * <code>int32 int16_val = 5;</code>
+       * @return Whether the int16Val field is set.
+       */
+      public boolean hasInt16Val() {
+        return valueCase_ == 5;
+      }
+      /**
+       * <pre>
+       * Not present in protobuf; int32
+       * </pre>
+       *
+       * <code>int32 int16_val = 5;</code>
+       * @return The int16Val.
        */
       public int getInt16Val() {
         if (valueCase_ == 5) {
@@ -4923,6 +5339,8 @@ public final class Schema {
        * </pre>
        *
        * <code>int32 int16_val = 5;</code>
+       * @param value The int16Val to set.
+       * @return This builder for chaining.
        */
       public Builder setInt16Val(int value) {
         valueCase_ = 5;
@@ -4936,6 +5354,7 @@ public final class Schema {
        * </pre>
        *
        * <code>int32 int16_val = 5;</code>
+       * @return This builder for chaining.
        */
       public Builder clearInt16Val() {
         if (valueCase_ == 5) {
@@ -4952,6 +5371,18 @@ public final class Schema {
        * </pre>
        *
        * <code>int32 int8_val = 6;</code>
+       * @return Whether the int8Val field is set.
+       */
+      public boolean hasInt8Val() {
+        return valueCase_ == 6;
+      }
+      /**
+       * <pre>
+       * Not present in protobuf; int32
+       * </pre>
+       *
+       * <code>int32 int8_val = 6;</code>
+       * @return The int8Val.
        */
       public int getInt8Val() {
         if (valueCase_ == 6) {
@@ -4965,6 +5396,8 @@ public final class Schema {
        * </pre>
        *
        * <code>int32 int8_val = 6;</code>
+       * @param value The int8Val to set.
+       * @return This builder for chaining.
        */
       public Builder setInt8Val(int value) {
         valueCase_ = 6;
@@ -4978,6 +5411,7 @@ public final class Schema {
        * </pre>
        *
        * <code>int32 int8_val = 6;</code>
+       * @return This builder for chaining.
        */
       public Builder clearInt8Val() {
         if (valueCase_ == 6) {
@@ -4996,7 +5430,9 @@ public final class Schema {
        * </pre>
        *
        * <code>.com.relationalai.proto.RelUInt128 uint128_val = 7;</code>
+       * @return Whether the uint128Val field is set.
        */
+      @java.lang.Override
       public boolean hasUint128Val() {
         return valueCase_ == 7;
       }
@@ -5006,7 +5442,9 @@ public final class Schema {
        * </pre>
        *
        * <code>.com.relationalai.proto.RelUInt128 uint128_val = 7;</code>
+       * @return The uint128Val.
        */
+      @java.lang.Override
       public com.relationalai.proto.Schema.RelUInt128 getUint128Val() {
         if (uint128ValBuilder_ == null) {
           if (valueCase_ == 7) {
@@ -5078,8 +5516,9 @@ public final class Schema {
         } else {
           if (valueCase_ == 7) {
             uint128ValBuilder_.mergeFrom(value);
+          } else {
+            uint128ValBuilder_.setMessage(value);
           }
-          uint128ValBuilder_.setMessage(value);
         }
         valueCase_ = 7;
         return this;
@@ -5124,6 +5563,7 @@ public final class Schema {
        *
        * <code>.com.relationalai.proto.RelUInt128 uint128_val = 7;</code>
        */
+      @java.lang.Override
       public com.relationalai.proto.Schema.RelUInt128OrBuilder getUint128ValOrBuilder() {
         if ((valueCase_ == 7) && (uint128ValBuilder_ != null)) {
           return uint128ValBuilder_.getMessageOrBuilder();
@@ -5162,6 +5602,14 @@ public final class Schema {
 
       /**
        * <code>uint64 uint64_val = 8;</code>
+       * @return Whether the uint64Val field is set.
+       */
+      public boolean hasUint64Val() {
+        return valueCase_ == 8;
+      }
+      /**
+       * <code>uint64 uint64_val = 8;</code>
+       * @return The uint64Val.
        */
       public long getUint64Val() {
         if (valueCase_ == 8) {
@@ -5171,6 +5619,8 @@ public final class Schema {
       }
       /**
        * <code>uint64 uint64_val = 8;</code>
+       * @param value The uint64Val to set.
+       * @return This builder for chaining.
        */
       public Builder setUint64Val(long value) {
         valueCase_ = 8;
@@ -5180,6 +5630,7 @@ public final class Schema {
       }
       /**
        * <code>uint64 uint64_val = 8;</code>
+       * @return This builder for chaining.
        */
       public Builder clearUint64Val() {
         if (valueCase_ == 8) {
@@ -5192,6 +5643,14 @@ public final class Schema {
 
       /**
        * <code>uint32 uint32_val = 9;</code>
+       * @return Whether the uint32Val field is set.
+       */
+      public boolean hasUint32Val() {
+        return valueCase_ == 9;
+      }
+      /**
+       * <code>uint32 uint32_val = 9;</code>
+       * @return The uint32Val.
        */
       public int getUint32Val() {
         if (valueCase_ == 9) {
@@ -5201,6 +5660,8 @@ public final class Schema {
       }
       /**
        * <code>uint32 uint32_val = 9;</code>
+       * @param value The uint32Val to set.
+       * @return This builder for chaining.
        */
       public Builder setUint32Val(int value) {
         valueCase_ = 9;
@@ -5210,6 +5671,7 @@ public final class Schema {
       }
       /**
        * <code>uint32 uint32_val = 9;</code>
+       * @return This builder for chaining.
        */
       public Builder clearUint32Val() {
         if (valueCase_ == 9) {
@@ -5226,6 +5688,18 @@ public final class Schema {
        * </pre>
        *
        * <code>uint32 uint16_val = 10;</code>
+       * @return Whether the uint16Val field is set.
+       */
+      public boolean hasUint16Val() {
+        return valueCase_ == 10;
+      }
+      /**
+       * <pre>
+       * Not present in protobuf; uint32
+       * </pre>
+       *
+       * <code>uint32 uint16_val = 10;</code>
+       * @return The uint16Val.
        */
       public int getUint16Val() {
         if (valueCase_ == 10) {
@@ -5239,6 +5713,8 @@ public final class Schema {
        * </pre>
        *
        * <code>uint32 uint16_val = 10;</code>
+       * @param value The uint16Val to set.
+       * @return This builder for chaining.
        */
       public Builder setUint16Val(int value) {
         valueCase_ = 10;
@@ -5252,6 +5728,7 @@ public final class Schema {
        * </pre>
        *
        * <code>uint32 uint16_val = 10;</code>
+       * @return This builder for chaining.
        */
       public Builder clearUint16Val() {
         if (valueCase_ == 10) {
@@ -5268,6 +5745,18 @@ public final class Schema {
        * </pre>
        *
        * <code>uint32 uint8_val = 11;</code>
+       * @return Whether the uint8Val field is set.
+       */
+      public boolean hasUint8Val() {
+        return valueCase_ == 11;
+      }
+      /**
+       * <pre>
+       * Not present in protobuf; uint32
+       * </pre>
+       *
+       * <code>uint32 uint8_val = 11;</code>
+       * @return The uint8Val.
        */
       public int getUint8Val() {
         if (valueCase_ == 11) {
@@ -5281,6 +5770,8 @@ public final class Schema {
        * </pre>
        *
        * <code>uint32 uint8_val = 11;</code>
+       * @param value The uint8Val to set.
+       * @return This builder for chaining.
        */
       public Builder setUint8Val(int value) {
         valueCase_ = 11;
@@ -5294,6 +5785,7 @@ public final class Schema {
        * </pre>
        *
        * <code>uint32 uint8_val = 11;</code>
+       * @return This builder for chaining.
        */
       public Builder clearUint8Val() {
         if (valueCase_ == 11) {
@@ -5306,6 +5798,14 @@ public final class Schema {
 
       /**
        * <code>double float64_val = 12;</code>
+       * @return Whether the float64Val field is set.
+       */
+      public boolean hasFloat64Val() {
+        return valueCase_ == 12;
+      }
+      /**
+       * <code>double float64_val = 12;</code>
+       * @return The float64Val.
        */
       public double getFloat64Val() {
         if (valueCase_ == 12) {
@@ -5315,6 +5815,8 @@ public final class Schema {
       }
       /**
        * <code>double float64_val = 12;</code>
+       * @param value The float64Val to set.
+       * @return This builder for chaining.
        */
       public Builder setFloat64Val(double value) {
         valueCase_ = 12;
@@ -5324,6 +5826,7 @@ public final class Schema {
       }
       /**
        * <code>double float64_val = 12;</code>
+       * @return This builder for chaining.
        */
       public Builder clearFloat64Val() {
         if (valueCase_ == 12) {
@@ -5336,6 +5839,14 @@ public final class Schema {
 
       /**
        * <code>float float32_val = 13;</code>
+       * @return Whether the float32Val field is set.
+       */
+      public boolean hasFloat32Val() {
+        return valueCase_ == 13;
+      }
+      /**
+       * <code>float float32_val = 13;</code>
+       * @return The float32Val.
        */
       public float getFloat32Val() {
         if (valueCase_ == 13) {
@@ -5345,6 +5856,8 @@ public final class Schema {
       }
       /**
        * <code>float float32_val = 13;</code>
+       * @param value The float32Val to set.
+       * @return This builder for chaining.
        */
       public Builder setFloat32Val(float value) {
         valueCase_ = 13;
@@ -5354,6 +5867,7 @@ public final class Schema {
       }
       /**
        * <code>float float32_val = 13;</code>
+       * @return This builder for chaining.
        */
       public Builder clearFloat32Val() {
         if (valueCase_ == 13) {
@@ -5370,6 +5884,18 @@ public final class Schema {
        * </pre>
        *
        * <code>float float16_val = 14;</code>
+       * @return Whether the float16Val field is set.
+       */
+      public boolean hasFloat16Val() {
+        return valueCase_ == 14;
+      }
+      /**
+       * <pre>
+       * Not present in protobuf
+       * </pre>
+       *
+       * <code>float float16_val = 14;</code>
+       * @return The float16Val.
        */
       public float getFloat16Val() {
         if (valueCase_ == 14) {
@@ -5383,6 +5909,8 @@ public final class Schema {
        * </pre>
        *
        * <code>float float16_val = 14;</code>
+       * @param value The float16Val to set.
+       * @return This builder for chaining.
        */
       public Builder setFloat16Val(float value) {
         valueCase_ = 14;
@@ -5396,6 +5924,7 @@ public final class Schema {
        * </pre>
        *
        * <code>float float16_val = 14;</code>
+       * @return This builder for chaining.
        */
       public Builder clearFloat16Val() {
         if (valueCase_ == 14) {
@@ -5408,6 +5937,14 @@ public final class Schema {
 
       /**
        * <code>uint32 char_val = 15;</code>
+       * @return Whether the charVal field is set.
+       */
+      public boolean hasCharVal() {
+        return valueCase_ == 15;
+      }
+      /**
+       * <code>uint32 char_val = 15;</code>
+       * @return The charVal.
        */
       public int getCharVal() {
         if (valueCase_ == 15) {
@@ -5417,6 +5954,8 @@ public final class Schema {
       }
       /**
        * <code>uint32 char_val = 15;</code>
+       * @param value The charVal to set.
+       * @return This builder for chaining.
        */
       public Builder setCharVal(int value) {
         valueCase_ = 15;
@@ -5426,6 +5965,7 @@ public final class Schema {
       }
       /**
        * <code>uint32 char_val = 15;</code>
+       * @return This builder for chaining.
        */
       public Builder clearCharVal() {
         if (valueCase_ == 15) {
@@ -5438,6 +5978,14 @@ public final class Schema {
 
       /**
        * <code>bool bool_val = 16;</code>
+       * @return Whether the boolVal field is set.
+       */
+      public boolean hasBoolVal() {
+        return valueCase_ == 16;
+      }
+      /**
+       * <code>bool bool_val = 16;</code>
+       * @return The boolVal.
        */
       public boolean getBoolVal() {
         if (valueCase_ == 16) {
@@ -5447,6 +5995,8 @@ public final class Schema {
       }
       /**
        * <code>bool bool_val = 16;</code>
+       * @param value The boolVal to set.
+       * @return This builder for chaining.
        */
       public Builder setBoolVal(boolean value) {
         valueCase_ = 16;
@@ -5456,6 +6006,7 @@ public final class Schema {
       }
       /**
        * <code>bool bool_val = 16;</code>
+       * @return This builder for chaining.
        */
       public Builder clearBoolVal() {
         if (valueCase_ == 16) {
@@ -5473,6 +6024,19 @@ public final class Schema {
        * </pre>
        *
        * <code>bytes string_val = 17;</code>
+       * @return Whether the stringVal field is set.
+       */
+      public boolean hasStringVal() {
+        return valueCase_ == 17;
+      }
+      /**
+       * <pre>
+       * We use bytes for strings because proto has an encoding
+       * requirement for the proto3::string type.
+       * </pre>
+       *
+       * <code>bytes string_val = 17;</code>
+       * @return The stringVal.
        */
       public com.google.protobuf.ByteString getStringVal() {
         if (valueCase_ == 17) {
@@ -5487,6 +6051,8 @@ public final class Schema {
        * </pre>
        *
        * <code>bytes string_val = 17;</code>
+       * @param value The stringVal to set.
+       * @return This builder for chaining.
        */
       public Builder setStringVal(com.google.protobuf.ByteString value) {
         if (value == null) {
@@ -5504,6 +6070,7 @@ public final class Schema {
        * </pre>
        *
        * <code>bytes string_val = 17;</code>
+       * @return This builder for chaining.
        */
       public Builder clearStringVal() {
         if (valueCase_ == 17) {
@@ -5622,7 +6189,7 @@ public final class Schema {
   /**
    * Protobuf type {@code com.relationalai.proto.ValueType}
    */
-  public  static final class ValueType extends
+  public static final class ValueType extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.ValueType)
       ValueTypeOrBuilder {
@@ -5686,6 +6253,8 @@ public final class Schema {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -5720,6 +6289,7 @@ public final class Schema {
      *
      * <code>repeated .com.relationalai.proto.RelType argument_types = 1;</code>
      */
+    @java.lang.Override
     public java.util.List<com.relationalai.proto.Schema.RelType> getArgumentTypesList() {
       return argumentTypes_;
     }
@@ -5731,6 +6301,7 @@ public final class Schema {
      *
      * <code>repeated .com.relationalai.proto.RelType argument_types = 1;</code>
      */
+    @java.lang.Override
     public java.util.List<? extends com.relationalai.proto.Schema.RelTypeOrBuilder> 
         getArgumentTypesOrBuilderList() {
       return argumentTypes_;
@@ -5743,6 +6314,7 @@ public final class Schema {
      *
      * <code>repeated .com.relationalai.proto.RelType argument_types = 1;</code>
      */
+    @java.lang.Override
     public int getArgumentTypesCount() {
       return argumentTypes_.size();
     }
@@ -5754,6 +6326,7 @@ public final class Schema {
      *
      * <code>repeated .com.relationalai.proto.RelType argument_types = 1;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.RelType getArgumentTypes(int index) {
       return argumentTypes_.get(index);
     }
@@ -5765,6 +6338,7 @@ public final class Schema {
      *
      * <code>repeated .com.relationalai.proto.RelType argument_types = 1;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.RelTypeOrBuilder getArgumentTypesOrBuilder(
         int index) {
       return argumentTypes_.get(index);
@@ -6505,6 +7079,7 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.RelType rel_type = 1;</code>
+     * @return Whether the relType field is set.
      */
     boolean hasRelType();
     /**
@@ -6514,6 +7089,7 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.RelType rel_type = 1;</code>
+     * @return The relType.
      */
     com.relationalai.proto.Schema.RelType getRelType();
     /**
@@ -6536,6 +7112,7 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.RelTuple value = 2;</code>
+     * @return Whether the value field is set.
      */
     boolean hasValue();
     /**
@@ -6548,6 +7125,7 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.RelTuple value = 2;</code>
+     * @return The value.
      */
     com.relationalai.proto.Schema.RelTuple getValue();
     /**
@@ -6570,7 +7148,7 @@ public final class Schema {
    *
    * Protobuf type {@code com.relationalai.proto.ConstantType}
    */
-  public  static final class ConstantType extends
+  public static final class ConstantType extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.ConstantType)
       ConstantTypeOrBuilder {
@@ -6649,6 +7227,8 @@ public final class Schema {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -6679,7 +7259,9 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.RelType rel_type = 1;</code>
+     * @return Whether the relType field is set.
      */
+    @java.lang.Override
     public boolean hasRelType() {
       return relType_ != null;
     }
@@ -6690,7 +7272,9 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.RelType rel_type = 1;</code>
+     * @return The relType.
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.RelType getRelType() {
       return relType_ == null ? com.relationalai.proto.Schema.RelType.getDefaultInstance() : relType_;
     }
@@ -6702,6 +7286,7 @@ public final class Schema {
      *
      * <code>.com.relationalai.proto.RelType rel_type = 1;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.RelTypeOrBuilder getRelTypeOrBuilder() {
       return getRelType();
     }
@@ -6718,7 +7303,9 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.RelTuple value = 2;</code>
+     * @return Whether the value field is set.
      */
+    @java.lang.Override
     public boolean hasValue() {
       return value_ != null;
     }
@@ -6732,7 +7319,9 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.RelTuple value = 2;</code>
+     * @return The value.
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.RelTuple getValue() {
       return value_ == null ? com.relationalai.proto.Schema.RelTuple.getDefaultInstance() : value_;
     }
@@ -6747,6 +7336,7 @@ public final class Schema {
      *
      * <code>.com.relationalai.proto.RelTuple value = 2;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.RelTupleOrBuilder getValueOrBuilder() {
       return getValue();
     }
@@ -7110,6 +7700,7 @@ public final class Schema {
        * </pre>
        *
        * <code>.com.relationalai.proto.RelType rel_type = 1;</code>
+       * @return Whether the relType field is set.
        */
       public boolean hasRelType() {
         return relTypeBuilder_ != null || relType_ != null;
@@ -7121,6 +7712,7 @@ public final class Schema {
        * </pre>
        *
        * <code>.com.relationalai.proto.RelType rel_type = 1;</code>
+       * @return The relType.
        */
       public com.relationalai.proto.Schema.RelType getRelType() {
         if (relTypeBuilder_ == null) {
@@ -7275,6 +7867,7 @@ public final class Schema {
        * </pre>
        *
        * <code>.com.relationalai.proto.RelTuple value = 2;</code>
+       * @return Whether the value field is set.
        */
       public boolean hasValue() {
         return valueBuilder_ != null || value_ != null;
@@ -7289,6 +7882,7 @@ public final class Schema {
        * </pre>
        *
        * <code>.com.relationalai.proto.RelTuple value = 2;</code>
+       * @return The value.
        */
       public com.relationalai.proto.Schema.RelTuple getValue() {
         if (valueBuilder_ == null) {
@@ -7509,10 +8103,12 @@ public final class Schema {
 
     /**
      * <code>.com.relationalai.proto.Kind tag = 1;</code>
+     * @return The enum numeric value on the wire for tag.
      */
     int getTagValue();
     /**
      * <code>.com.relationalai.proto.Kind tag = 1;</code>
+     * @return The tag.
      */
     com.relationalai.proto.Schema.Kind getTag();
 
@@ -7522,6 +8118,7 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.PrimitiveType primitive_type = 2;</code>
+     * @return The enum numeric value on the wire for primitiveType.
      */
     int getPrimitiveTypeValue();
     /**
@@ -7530,15 +8127,18 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.PrimitiveType primitive_type = 2;</code>
+     * @return The primitiveType.
      */
     com.relationalai.proto.Schema.PrimitiveType getPrimitiveType();
 
     /**
      * <code>.com.relationalai.proto.ValueType value_type = 3;</code>
+     * @return Whether the valueType field is set.
      */
     boolean hasValueType();
     /**
      * <code>.com.relationalai.proto.ValueType value_type = 3;</code>
+     * @return The valueType.
      */
     com.relationalai.proto.Schema.ValueType getValueType();
     /**
@@ -7548,10 +8148,12 @@ public final class Schema {
 
     /**
      * <code>.com.relationalai.proto.ConstantType constant_type = 4;</code>
+     * @return Whether the constantType field is set.
      */
     boolean hasConstantType();
     /**
      * <code>.com.relationalai.proto.ConstantType constant_type = 4;</code>
+     * @return The constantType.
      */
     com.relationalai.proto.Schema.ConstantType getConstantType();
     /**
@@ -7566,7 +8168,7 @@ public final class Schema {
    *
    * Protobuf type {@code com.relationalai.proto.RelType}
    */
-  public  static final class RelType extends
+  public static final class RelType extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:com.relationalai.proto.RelType)
       RelTypeOrBuilder {
@@ -7659,6 +8261,8 @@ public final class Schema {
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
@@ -7684,14 +8288,16 @@ public final class Schema {
     private int tag_;
     /**
      * <code>.com.relationalai.proto.Kind tag = 1;</code>
+     * @return The enum numeric value on the wire for tag.
      */
-    public int getTagValue() {
+    @java.lang.Override public int getTagValue() {
       return tag_;
     }
     /**
      * <code>.com.relationalai.proto.Kind tag = 1;</code>
+     * @return The tag.
      */
-    public com.relationalai.proto.Schema.Kind getTag() {
+    @java.lang.Override public com.relationalai.proto.Schema.Kind getTag() {
       @SuppressWarnings("deprecation")
       com.relationalai.proto.Schema.Kind result = com.relationalai.proto.Schema.Kind.valueOf(tag_);
       return result == null ? com.relationalai.proto.Schema.Kind.UNRECOGNIZED : result;
@@ -7705,8 +8311,9 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.PrimitiveType primitive_type = 2;</code>
+     * @return The enum numeric value on the wire for primitiveType.
      */
-    public int getPrimitiveTypeValue() {
+    @java.lang.Override public int getPrimitiveTypeValue() {
       return primitiveType_;
     }
     /**
@@ -7715,8 +8322,9 @@ public final class Schema {
      * </pre>
      *
      * <code>.com.relationalai.proto.PrimitiveType primitive_type = 2;</code>
+     * @return The primitiveType.
      */
-    public com.relationalai.proto.Schema.PrimitiveType getPrimitiveType() {
+    @java.lang.Override public com.relationalai.proto.Schema.PrimitiveType getPrimitiveType() {
       @SuppressWarnings("deprecation")
       com.relationalai.proto.Schema.PrimitiveType result = com.relationalai.proto.Schema.PrimitiveType.valueOf(primitiveType_);
       return result == null ? com.relationalai.proto.Schema.PrimitiveType.UNRECOGNIZED : result;
@@ -7726,19 +8334,24 @@ public final class Schema {
     private com.relationalai.proto.Schema.ValueType valueType_;
     /**
      * <code>.com.relationalai.proto.ValueType value_type = 3;</code>
+     * @return Whether the valueType field is set.
      */
+    @java.lang.Override
     public boolean hasValueType() {
       return valueType_ != null;
     }
     /**
      * <code>.com.relationalai.proto.ValueType value_type = 3;</code>
+     * @return The valueType.
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.ValueType getValueType() {
       return valueType_ == null ? com.relationalai.proto.Schema.ValueType.getDefaultInstance() : valueType_;
     }
     /**
      * <code>.com.relationalai.proto.ValueType value_type = 3;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.ValueTypeOrBuilder getValueTypeOrBuilder() {
       return getValueType();
     }
@@ -7747,19 +8360,24 @@ public final class Schema {
     private com.relationalai.proto.Schema.ConstantType constantType_;
     /**
      * <code>.com.relationalai.proto.ConstantType constant_type = 4;</code>
+     * @return Whether the constantType field is set.
      */
+    @java.lang.Override
     public boolean hasConstantType() {
       return constantType_ != null;
     }
     /**
      * <code>.com.relationalai.proto.ConstantType constant_type = 4;</code>
+     * @return The constantType.
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.ConstantType getConstantType() {
       return constantType_ == null ? com.relationalai.proto.Schema.ConstantType.getDefaultInstance() : constantType_;
     }
     /**
      * <code>.com.relationalai.proto.ConstantType constant_type = 4;</code>
      */
+    @java.lang.Override
     public com.relationalai.proto.Schema.ConstantTypeOrBuilder getConstantTypeOrBuilder() {
       return getConstantType();
     }
@@ -8148,21 +8766,27 @@ public final class Schema {
       private int tag_ = 0;
       /**
        * <code>.com.relationalai.proto.Kind tag = 1;</code>
+       * @return The enum numeric value on the wire for tag.
        */
-      public int getTagValue() {
+      @java.lang.Override public int getTagValue() {
         return tag_;
       }
       /**
        * <code>.com.relationalai.proto.Kind tag = 1;</code>
+       * @param value The enum numeric value on the wire for tag to set.
+       * @return This builder for chaining.
        */
       public Builder setTagValue(int value) {
+        
         tag_ = value;
         onChanged();
         return this;
       }
       /**
        * <code>.com.relationalai.proto.Kind tag = 1;</code>
+       * @return The tag.
        */
+      @java.lang.Override
       public com.relationalai.proto.Schema.Kind getTag() {
         @SuppressWarnings("deprecation")
         com.relationalai.proto.Schema.Kind result = com.relationalai.proto.Schema.Kind.valueOf(tag_);
@@ -8170,6 +8794,8 @@ public final class Schema {
       }
       /**
        * <code>.com.relationalai.proto.Kind tag = 1;</code>
+       * @param value The tag to set.
+       * @return This builder for chaining.
        */
       public Builder setTag(com.relationalai.proto.Schema.Kind value) {
         if (value == null) {
@@ -8182,6 +8808,7 @@ public final class Schema {
       }
       /**
        * <code>.com.relationalai.proto.Kind tag = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearTag() {
         
@@ -8197,8 +8824,9 @@ public final class Schema {
        * </pre>
        *
        * <code>.com.relationalai.proto.PrimitiveType primitive_type = 2;</code>
+       * @return The enum numeric value on the wire for primitiveType.
        */
-      public int getPrimitiveTypeValue() {
+      @java.lang.Override public int getPrimitiveTypeValue() {
         return primitiveType_;
       }
       /**
@@ -8207,8 +8835,11 @@ public final class Schema {
        * </pre>
        *
        * <code>.com.relationalai.proto.PrimitiveType primitive_type = 2;</code>
+       * @param value The enum numeric value on the wire for primitiveType to set.
+       * @return This builder for chaining.
        */
       public Builder setPrimitiveTypeValue(int value) {
+        
         primitiveType_ = value;
         onChanged();
         return this;
@@ -8219,7 +8850,9 @@ public final class Schema {
        * </pre>
        *
        * <code>.com.relationalai.proto.PrimitiveType primitive_type = 2;</code>
+       * @return The primitiveType.
        */
+      @java.lang.Override
       public com.relationalai.proto.Schema.PrimitiveType getPrimitiveType() {
         @SuppressWarnings("deprecation")
         com.relationalai.proto.Schema.PrimitiveType result = com.relationalai.proto.Schema.PrimitiveType.valueOf(primitiveType_);
@@ -8231,6 +8864,8 @@ public final class Schema {
        * </pre>
        *
        * <code>.com.relationalai.proto.PrimitiveType primitive_type = 2;</code>
+       * @param value The primitiveType to set.
+       * @return This builder for chaining.
        */
       public Builder setPrimitiveType(com.relationalai.proto.Schema.PrimitiveType value) {
         if (value == null) {
@@ -8247,6 +8882,7 @@ public final class Schema {
        * </pre>
        *
        * <code>.com.relationalai.proto.PrimitiveType primitive_type = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearPrimitiveType() {
         
@@ -8260,12 +8896,14 @@ public final class Schema {
           com.relationalai.proto.Schema.ValueType, com.relationalai.proto.Schema.ValueType.Builder, com.relationalai.proto.Schema.ValueTypeOrBuilder> valueTypeBuilder_;
       /**
        * <code>.com.relationalai.proto.ValueType value_type = 3;</code>
+       * @return Whether the valueType field is set.
        */
       public boolean hasValueType() {
         return valueTypeBuilder_ != null || valueType_ != null;
       }
       /**
        * <code>.com.relationalai.proto.ValueType value_type = 3;</code>
+       * @return The valueType.
        */
       public com.relationalai.proto.Schema.ValueType getValueType() {
         if (valueTypeBuilder_ == null) {
@@ -8377,12 +9015,14 @@ public final class Schema {
           com.relationalai.proto.Schema.ConstantType, com.relationalai.proto.Schema.ConstantType.Builder, com.relationalai.proto.Schema.ConstantTypeOrBuilder> constantTypeBuilder_;
       /**
        * <code>.com.relationalai.proto.ConstantType constant_type = 4;</code>
+       * @return Whether the constantType field is set.
        */
       public boolean hasConstantType() {
         return constantTypeBuilder_ != null || constantType_ != null;
       }
       /**
        * <code>.com.relationalai.proto.ConstantType constant_type = 4;</code>
+       * @return The constantType.
        */
       public com.relationalai.proto.Schema.ConstantType getConstantType() {
         if (constantTypeBuilder_ == null) {
