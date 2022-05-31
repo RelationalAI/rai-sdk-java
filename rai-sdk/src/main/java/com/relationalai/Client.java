@@ -16,6 +16,7 @@
 
 package com.relationalai;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.jsoniter.spi.JsonException;
 import com.relationalai.proto.Message;
 import org.apache.arrow.memory.RootAllocator;
@@ -322,6 +323,17 @@ public class Client {
             }
         }
         return output;
+    }
+
+    private List<Message.RelationMetadata> parseMetadataInfo(List<TransactionAsyncFile> metadataInfo) throws InvalidProtocolBufferException {
+        List<Message.RelationMetadata> out = new ArrayList<>();
+        for (var item : metadataInfo) {
+            var infos = Message.MetadataInfo.parseFrom(item.data).getRelationsList();
+            for (var info : infos) {
+                out.add(info);
+            }
+        }
+        return out;
     }
     static void printRequest(HttpRequest request) {
         System.out.printf("%s %s\n", request.method(), request.uri());
@@ -778,11 +790,9 @@ public class Client {
         if (metadataInfo.isEmpty()) {
             throw new HttpError(404, "metadata info part is missing");
         }
-        List<Message.MetadataInfo> metadataInfoOutput = new ArrayList<>();
-        for (var info : metadataInfo) {
-            metadataInfoOutput.add(Message.MetadataInfo.parseFrom(info.data));
-            System.out.println(metadataInfoOutput);
-        }
+        var metadataInfos = parseMetadataInfo(metadataInfo);
+        System.out.println(metadataInfos);
+
         if (problems.isEmpty()) {
             throw new HttpError(404, "problems part is missing");
         }
@@ -793,7 +803,7 @@ public class Client {
                 transactionResponse,
                 results,
                 Arrays.asList(metadataResponse),
-                metadataInfoOutput,
+                null,
                 problemsResult
         );
     }
