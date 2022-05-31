@@ -17,7 +17,9 @@
 package com.relationalai;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.util.JsonFormat;
 import com.jsoniter.spi.JsonException;
+import com.relationalai.models.MetadataInfo;
 import com.relationalai.proto.Message;
 import org.apache.arrow.memory.RootAllocator;
 import org.apache.arrow.vector.FieldVector;
@@ -325,15 +327,18 @@ public class Client {
         return output;
     }
 
-    private List<Message.RelationMetadata> parseMetadataInfo(List<TransactionAsyncFile> metadataInfo) throws InvalidProtocolBufferException {
-        List<Message.RelationMetadata> out = new ArrayList<>();
+    private MetadataInfo parseMetadataInfo(List<TransactionAsyncFile> metadataInfo) throws InvalidProtocolBufferException {
+        Message.MetadataInfo.Builder out = Message.MetadataInfo.newBuilder();
         for (var item : metadataInfo) {
-            var infos = Message.MetadataInfo.parseFrom(item.data).getRelationsList();
-            for (var info : infos) {
-                out.add(info);
-            }
+            var relationMetadataList = Message.MetadataInfo.parseFrom(item.data).getRelationsList();
+            out.addAllRelations(relationMetadataList);
         }
-        return out;
+        JsonFormat.Printer printer = JsonFormat.printer();
+        var str = printer.print(out.build());
+        System.out.println(str);
+        var x = Json.deserialize(str, MetadataInfo.class);
+        System.out.println(x);
+        return x;
     }
     static void printRequest(HttpRequest request) {
         System.out.printf("%s %s\n", request.method(), request.uri());
@@ -754,7 +759,7 @@ public class Client {
         var rsp = post(PATH_TRANSACTIONS, tx.queryParams(), body);
         if (rsp instanceof String) {
             var txn = Json.deserialize((String) rsp, TransactionAsyncCompactResponse.class);
-            return new TransactionAsyncResult(txn, new ArrayList<ArrowRelation>(), new ArrayList<TransactionAsyncMetadataResponse>(), new ArrayList<Message.MetadataInfo>(), new ArrayList<Object>());
+            return new TransactionAsyncResult(txn, new ArrayList<ArrowRelation>(), new ArrayList<TransactionAsyncMetadataResponse>(), null, new ArrayList<Object>());
         }
         return readTransactionAsyncResults((List<TransactionAsyncFile>) rsp);
     }
@@ -790,8 +795,7 @@ public class Client {
         if (metadataInfo.isEmpty()) {
             throw new HttpError(404, "metadata info part is missing");
         }
-        var metadataInfos = parseMetadataInfo(metadataInfo);
-        System.out.println(metadataInfos);
+        var relationMetadataList = parseMetadataInfo(metadataInfo);
 
         if (problems.isEmpty()) {
             throw new HttpError(404, "problems part is missing");
@@ -803,7 +807,7 @@ public class Client {
                 transactionResponse,
                 results,
                 Arrays.asList(metadataResponse),
-                null,
+                relationMetadataList,
                 problemsResult
         );
     }
@@ -827,6 +831,12 @@ public class Client {
         var rsp = get(String.format("%s/%s/metadata", PATH_TRANSACTIONS, id));
         var results = Json.deserialize((String) rsp, TransactionAsyncMetadataResponse[].class);
         return Arrays.asList(results);
+    }
+
+    public MetadataInfo getTransactionMetadataInfo(String id) throws HttpError, IOException, InterruptedException {
+        var rsp = get(String.format("%s/%s/metadata_info", PATH_TRANSACTIONS, id));
+        System.out.println(rsp);
+        return null;
     }
 
     public List<Object> getTransactionProblems(String id) throws HttpError, IOException, InterruptedException {

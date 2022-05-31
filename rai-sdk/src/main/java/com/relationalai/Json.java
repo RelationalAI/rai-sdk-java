@@ -18,9 +18,13 @@ package com.relationalai;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.util.JsonFormat;
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
 import com.jsoniter.output.JsonStream;
+import com.relationalai.proto.Message;
 
 public class Json {
     public static Any deserialize(String s) {
@@ -47,9 +51,7 @@ public class Json {
         return Json.serialize(obj, indent);
     }
 
-    public static String serialize(Object obj) {
-        return Json.serialize(obj, 0);
-    }
+    public static String serialize(Object obj) { return Json.serialize(obj, 0);}
 
     public static String serialize(Object obj, int indent) {
         var output = new ByteArrayOutputStream();
