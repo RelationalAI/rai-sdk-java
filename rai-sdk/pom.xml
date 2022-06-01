@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.relationalai</groupId>
         <artifactId>rai-sdk-pom</artifactId>
-        <version>0.2.2-alpha</version>
+        <version>${revision}</version>
     </parent>
 
     <name>RelationalAI SDK for Java Package</name>
@@ -32,7 +32,7 @@
         <dependency>
             <groupId>com.relationalai</groupId>
             <artifactId>rai-sdk-proto</artifactId>
-            <version>0.2.2-alpha</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>com.jsoniter</groupId>
