@@ -1,7 +1,6 @@
 package com.relationalai;
 
-import com.relationalai.models.MetadataInfo;
-import com.relationalai.proto.Message;
+import com.relationalai.protos.models.MetadataInfoResult;
 
 import java.util.List;
 
@@ -10,19 +9,19 @@ public class TransactionAsyncResult extends Entity {
     public TransactionAsyncCompactResponse transaction;
     public List<ArrowRelation> results;
     public List<TransactionAsyncMetadataResponse> metadata;
-    public MetadataInfo metadataInfo;
+    public MetadataInfoResult metadataInfoResult;
     public List<Object> problems;
 
     public TransactionAsyncResult(
             TransactionAsyncCompactResponse transaction,
             List<ArrowRelation> results,
             List<TransactionAsyncMetadataResponse> metadata,
-            MetadataInfo metadataInfo,
+            MetadataInfoResult metadataInfoResult,
             List<Object> problems) {
         this.transaction = transaction;
         this.results = results;
         this.metadata = metadata;
-        this.metadataInfo = metadataInfo;
+        this.metadataInfoResult = metadataInfoResult;
         this.problems = problems;
     }
 }

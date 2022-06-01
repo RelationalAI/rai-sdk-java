@@ -19,12 +19,9 @@ package com.relationalai;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.util.JsonFormat;
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
 import com.jsoniter.output.JsonStream;
-import com.relationalai.proto.Message;
 
 public class Json {
     public static Any deserialize(String s) {

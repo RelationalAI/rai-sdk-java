@@ -1,4 +1,4 @@
-package com.relationalai.models;
+package com.relationalai.protos.models;
 
 import com.jsoniter.annotation.JsonProperty;
 

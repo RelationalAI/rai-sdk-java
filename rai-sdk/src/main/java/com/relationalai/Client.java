@@ -19,8 +19,8 @@ package com.relationalai;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
 import com.jsoniter.spi.JsonException;
-import com.relationalai.models.MetadataInfo;
-import com.relationalai.proto.Message;
+import com.relationalai.protos.models.MetadataInfoResult;
+import com.relationalai.protos.Message;
 import org.apache.arrow.memory.RootAllocator;
 import org.apache.arrow.vector.FieldVector;
 import org.apache.arrow.vector.VectorSchemaRoot;
@@ -327,18 +327,13 @@ public class Client {
         return output;
     }
 
-    private MetadataInfo parseMetadataInfo(List<TransactionAsyncFile> metadataInfo) throws InvalidProtocolBufferException {
+    private MetadataInfoResult parseMetadataInfo(List<TransactionAsyncFile> metadataInfo) throws InvalidProtocolBufferException {
         Message.MetadataInfo.Builder out = Message.MetadataInfo.newBuilder();
         for (var item : metadataInfo) {
             var relationMetadataList = Message.MetadataInfo.parseFrom(item.data).getRelationsList();
             out.addAllRelations(relationMetadataList);
         }
-        JsonFormat.Printer printer = JsonFormat.printer();
-        var str = printer.print(out.build());
-        System.out.println(str);
-        var x = Json.deserialize(str, MetadataInfo.class);
-        System.out.println(x);
-        return x;
+        return Json.deserialize(JsonFormat.printer().print(out.build()), MetadataInfoResult.class);
     }
     static void printRequest(HttpRequest request) {
         System.out.printf("%s %s\n", request.method(), request.uri());
@@ -795,7 +790,7 @@ public class Client {
         if (metadataInfo.isEmpty()) {
             throw new HttpError(404, "metadata info part is missing");
         }
-        var relationMetadataList = parseMetadataInfo(metadataInfo);
+        var metadataInfoResult = parseMetadataInfo(metadataInfo);
 
         if (problems.isEmpty()) {
             throw new HttpError(404, "problems part is missing");
@@ -807,7 +802,7 @@ public class Client {
                 transactionResponse,
                 results,
                 Arrays.asList(metadataResponse),
-                relationMetadataList,
+                metadataInfoResult,
                 problemsResult
         );
     }
@@ -833,7 +828,7 @@ public class Client {
         return Arrays.asList(results);
     }
 
-    public MetadataInfo getTransactionMetadataInfo(String id) throws HttpError, IOException, InterruptedException {
+    public MetadataInfoResult getTransactionMetadataInfo(String id) throws HttpError, IOException, InterruptedException {
         var rsp = get(String.format("%s/%s/metadata_info", PATH_TRANSACTIONS, id));
         System.out.println(rsp);
         return null;

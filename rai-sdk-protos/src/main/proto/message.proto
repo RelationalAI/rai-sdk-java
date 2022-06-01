@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package com.relationalai.proto;
+package com.relationalai.protos;
 // Protocol definitions to transport metadata information.
 
 // Type definitions.
