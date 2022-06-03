@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package com.relationalai.protos;
+package relationalai.protocol;
 // If these pages ever get too big for the protobuf library, we may want to consider
 // some of the suggestions here: https://developers.google.com/protocol-buffers/docs/techniques
 

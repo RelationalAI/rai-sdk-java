@@ -20,11 +20,11 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
 import com.jsoniter.spi.JsonException;
 import com.relationalai.protos.models.MetadataInfoResult;
-import com.relationalai.protos.Message;
 import org.apache.arrow.memory.RootAllocator;
 import org.apache.arrow.vector.FieldVector;
 import org.apache.arrow.vector.VectorSchemaRoot;
 import org.apache.arrow.vector.ipc.ArrowStreamReader;
+import relationalai.protocol.Message;
 
 import java.io.*;
 import java.net.URI;

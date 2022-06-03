@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package com.relationalai.protos;
+package relationalai.protocol;
 // Rel type definitions (primitive, constant and value) and schema.
 
 // Relations are currently identified by their type signature.
