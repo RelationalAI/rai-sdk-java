@@ -809,9 +809,9 @@ public class Client {
         return parseProblemsResult(rsp);
     }
 
-    public TransactionAsyncDeleteResponse deleteTransaction(String id) throws HttpError, IOException, InterruptedException {
-        var rsp = (String) delete(String.format("%s/%s", PATH_TRANSACTIONS, id));
-        return Json.deserialize(rsp, TransactionAsyncDeleteResponse.class);
+    public TransactionAsyncCancelResponse cancelTransaction(String id) throws HttpError, IOException, InterruptedException {
+        var rsp = (String) post(String.format("%s/%s/cancel", PATH_TRANSACTIONS, id), null, null);
+        return Json.deserialize(rsp, TransactionAsyncCancelResponse.class);
     }
 
     // EDBs
