@@ -55,7 +55,7 @@ public class LoadCsvTest extends UnitTest {
         assertNotNull(rel);
         assertEquals(2, rel.columns.length);
         assertArrayEquals(new Object[][] {
-                {29., 60., 91., 127.},
+                {2., 3., 4., 5.},
                 {"2020-01-01", "2020-02-02", "2020-03-03", "2020-04-04"}
         }, rel.columns);
 
@@ -63,7 +63,7 @@ public class LoadCsvTest extends UnitTest {
         assertNotNull(rel);
         assertEquals(2, rel.columns.length);
         assertArrayEquals(new Object[][] {
-                {29., 60., 91., 127.},
+                {2., 3., 4., 5.},
                 {"12.50", "14.25", "11.00", "12.25"}
         }, rel.columns);
 
@@ -71,7 +71,7 @@ public class LoadCsvTest extends UnitTest {
         assertNotNull(rel);
         assertEquals(2, rel.columns.length);
         assertArrayEquals(new Object[][] {
-                {29., 60., 91., 127.},
+                {2., 3., 4., 5.},
                 {"2", "4", "4", "3"}
         }, rel.columns);
 
@@ -79,7 +79,7 @@ public class LoadCsvTest extends UnitTest {
         assertNotNull(rel);
         assertEquals(2, rel.columns.length);
         assertArrayEquals(new Object[][] {
-                {29., 60., 91., 127.},
+                {2., 3., 4., 5.},
                 {"martini", "sazerac", "cosmopolitan", "bellini"}
         }, rel.columns);
     }
@@ -111,7 +111,7 @@ public class LoadCsvTest extends UnitTest {
         assertNotNull(rel);
         assertEquals(2, rel.columns.length);
         assertArrayEquals(new Object[][] {
-                {0., 31., 62., 98.},
+                {1., 2., 3., 4.},
                 {"martini", "sazerac", "cosmopolitan", "bellini"}
         }, rel.columns);
 
@@ -120,7 +120,7 @@ public class LoadCsvTest extends UnitTest {
         assertNotNull(rel);
         assertEquals(2, rel.columns.length);
         assertArrayEquals(new Object[][] {
-                {0., 31., 62., 98.},
+                {1., 2., 3., 4.},
                 {"2", "4", "4", "3"}
         }, rel.columns);
 
@@ -128,7 +128,7 @@ public class LoadCsvTest extends UnitTest {
         assertNotNull(rel);
         assertEquals(2, rel.columns.length);
         assertArrayEquals(new Object[][] {
-                {0., 31., 62., 98.},
+                {1., 2., 3., 4.},
                 {"12.50", "14.25", "11.00", "12.25"}
         }, rel.columns);
 
@@ -136,7 +136,7 @@ public class LoadCsvTest extends UnitTest {
         assertNotNull(rel);
         assertEquals(2, rel.columns.length);
         assertArrayEquals(new Object[][] {
-                {0., 31., 62., 98.},
+                {1., 2., 3., 4.},
                 {"2020-01-01", "2020-02-02", "2020-03-03", "2020-04-04"}
         }, rel.columns);
     }
@@ -168,7 +168,7 @@ public class LoadCsvTest extends UnitTest {
         assertNotNull(rel);
         assertEquals(2, rel.columns.length);
         assertArrayEquals(new Object[][] {
-                {29., 60., 91., 127.},
+                {2., 3., 4., 5.},
                 {"2020-01-01", "2020-02-02", "2020-03-03", "2020-04-04"}
         }, rel.columns);
 
@@ -176,7 +176,7 @@ public class LoadCsvTest extends UnitTest {
         assertNotNull(rel);
         assertEquals(2, rel.columns.length);
         assertArrayEquals(new Object[][] {
-                {29., 60., 91., 127.},
+                {2., 3., 4., 5.},
                 {"12.50", "14.25", "11.00", "12.25"}
         }, rel.columns);
 
@@ -184,7 +184,7 @@ public class LoadCsvTest extends UnitTest {
         assertNotNull(rel);
         assertEquals(2, rel.columns.length);
         assertArrayEquals(new Object[][] {
-                {29., 60., 91., 127.},
+                {2., 3., 4., 5.},
                 {"2", "4", "4", "3"}
         }, rel.columns);
 
@@ -192,7 +192,7 @@ public class LoadCsvTest extends UnitTest {
         assertNotNull(rel);
         assertEquals(2, rel.columns.length);
         assertArrayEquals(new Object[][] {
-                {29., 60., 91., 127.},
+                {2., 3., 4., 5.},
                 {"martini", "sazerac", "cosmopolitan", "bellini"}
         }, rel.columns);
     }
@@ -222,7 +222,7 @@ public class LoadCsvTest extends UnitTest {
         assertNotNull(rel);
         assertEquals(2, rel.columns.length);
         assertArrayEquals(new Object[][] {
-                {29., 60., 91., 127.},
+                {2., 3., 4., 5.},
                 {"2020-01-01", "2020-02-02", "2020-03-03", "2020-04-04"}
         }, rel.columns);
         assertEquals(1, rel.relKey.values.length);
@@ -232,7 +232,7 @@ public class LoadCsvTest extends UnitTest {
         assertNotNull(rel);
         assertEquals(2, rel.columns.length);
         assertArrayEquals(new Object[][] {
-                {29., 60., 91., 127.},
+                {2., 3., 4., 5.},
                 {12.5, 14.25, 11.00, 12.25}
         }, rel.columns);
         assertEquals(1, rel.relKey.values.length);
@@ -242,7 +242,7 @@ public class LoadCsvTest extends UnitTest {
         assertNotNull(rel);
         assertEquals(2, rel.columns.length);
         assertArrayEquals(new Object[][] {
-                {29., 60., 91., 127.},
+                {2., 3., 4., 5.},
                 {2., 4., 4., 3.}
         }, rel.columns);
         assertEquals(1, rel.relKey.values.length);
@@ -252,7 +252,7 @@ public class LoadCsvTest extends UnitTest {
         assertNotNull(rel);
         assertEquals(2, rel.columns.length);
         assertArrayEquals(new Object[][] {
-                {29., 60., 91., 127.},
+                {2., 3., 4., 5.},
                 {"martini", "sazerac", "cosmopolitan", "bellini"}
         }, rel.columns);
         assertEquals(1, rel.relKey.values.length);
