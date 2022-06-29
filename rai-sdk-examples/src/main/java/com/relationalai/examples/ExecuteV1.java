@@ -24,7 +24,7 @@ import com.relationalai.Config;
 import com.relationalai.HttpError;
 import com.relationalai.Json;
 
-public class Execute implements Runnable {
+public class ExecuteV1 implements Runnable {
     boolean readonly;
     String database, engine, command, filename, profile;
 
@@ -64,7 +64,7 @@ public class Execute implements Runnable {
         String source = getCommand();
         if (source == null)
             return; // nothing to execute
-        var rsp = client.execute(database, engine, source, readonly);
+        var rsp = client.executeV1(database, engine, source, readonly);
         Json.print(rsp, 4);
     }
 }
