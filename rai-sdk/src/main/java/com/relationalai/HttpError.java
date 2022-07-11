@@ -53,6 +53,10 @@ public class HttpError extends Exception {
         this.statusCode = statusCode;
         this.message = message;
     }
+    
+    public String getMessage() {
+        return this.message;
+    }
 
     public String toString() {
         String result = Integer.toString(statusCode);
