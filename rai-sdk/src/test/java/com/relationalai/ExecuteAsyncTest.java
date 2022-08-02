@@ -40,28 +40,16 @@ public class ExecuteAsyncTest extends UnitTest {
 
         var results = new ArrayList<ArrowRelation> () {
             {
-                add(new ArrowRelation("v1", Arrays.asList(new Object[] {1L, 2L, 3L, 4L, 5L}) ));
-                add(new ArrowRelation("v2", Arrays.asList(new Object[] {1L, 4L, 9L, 16L, 25L}) ));
-                add(new ArrowRelation("v3", Arrays.asList(new Object[] {1L, 8L, 27L, 64L, 125L}) ));
-                add(new ArrowRelation("v4", Arrays.asList(new Object[] {1L, 16L, 81L, 256L, 625L}) ));
-            }
-        };
-
-        var metadata = new ArrayList<TransactionAsyncMetadataResponse>() {
-            {
-                add(
-                        new TransactionAsyncMetadataResponse(
-                                "/:output/Int64/Int64/Int64/Int64",
-                                Arrays.asList(new String[] {":output", "Int64", "Int64", "Int64", "Int64"})
-                        )
-                );
+                add(new ArrowRelation("/:output/Int64/Int64/Int64/Int64", Arrays.asList(new Object[] {1L, 2L, 3L, 4L, 5L}) ));
+                add(new ArrowRelation("/:output/Int64/Int64/Int64/Int64", Arrays.asList(new Object[] {1L, 4L, 9L, 16L, 25L}) ));
+                add(new ArrowRelation("/:output/Int64/Int64/Int64/Int64", Arrays.asList(new Object[] {1L, 8L, 27L, 64L, 125L}) ));
+                add(new ArrowRelation("/:output/Int64/Int64/Int64/Int64", Arrays.asList(new Object[] {1L, 16L, 81L, 256L, 625L}) ));
             }
         };
 
         var problems = new ArrayList<Object>();
 
         assertEquals(rsp.results, results);
-        assertEquals(rsp.metadata, metadata);
         assertEquals(rsp.problems, problems);
     }
 
