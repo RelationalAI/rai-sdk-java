@@ -1,6 +1,5 @@
 package com.relationalai;
 
-import com.relationalai.protos.models.MetadataInfoResult;
 import relationalai.protocol.Message;
 
 import java.util.List;

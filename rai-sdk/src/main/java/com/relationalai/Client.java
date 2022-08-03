@@ -17,9 +17,7 @@
 package com.relationalai;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.util.JsonFormat;
 import com.jsoniter.spi.JsonException;
-import com.relationalai.protos.models.MetadataInfoResult;
 import org.apache.arrow.memory.RootAllocator;
 import org.apache.arrow.vector.FieldVector;
 import org.apache.arrow.vector.VectorSchemaRoot;
