@@ -22,7 +22,9 @@ import org.junit.jupiter.api.TestInstance;
 import relationalai.protocol.Message;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ExecuteAsyncTest extends UnitTest {
     @Test
-    void testExecuteAsync() throws HttpError, InterruptedException, IOException {
+    void testExecuteAsync() throws HttpError, InterruptedException, IOException, URISyntaxException {
         var client = createClient();
 
         ensureDatabase(client);
@@ -54,7 +56,7 @@ public class ExecuteAsyncTest extends UnitTest {
 
         var metadata = Message.MetadataInfo.parseFrom(
                 Files.readAllBytes(
-                        Paths.get("src/test/resources/metadata.pb ")
+                        Path.of(Paths.get(getClass().getResource("/metadata.pb").toURI()).toString())
                 )
         );
 
