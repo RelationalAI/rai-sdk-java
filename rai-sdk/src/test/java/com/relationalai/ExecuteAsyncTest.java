@@ -19,8 +19,11 @@ package com.relationalai;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import relationalai.protocol.Message;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -49,6 +52,13 @@ public class ExecuteAsyncTest extends UnitTest {
 
         var problems = new ArrayList<Object>();
 
+        var metadata = Message.MetadataInfo.parseFrom(
+                Files.readAllBytes(
+                        Paths.get("../../../resources/metadata.pb ")
+                )
+        );
+
+        assertEquals(rsp.metadata.toString(), metadata.toString());
         assertEquals(rsp.results, results);
         assertEquals(rsp.problems, problems);
     }
