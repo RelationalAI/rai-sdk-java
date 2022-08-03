@@ -699,18 +699,18 @@ public class Client {
             return overwrite ? "CREATE_OVERWRITE" : "CREATE";
     }
 
-    public TransactionResult execute(String database, String engine, String source)
+    public TransactionResult executeV1(String database, String engine, String source)
             throws HttpError, InterruptedException, IOException {
-        return execute(database, engine, source, false, null);
+        return executeV1(database, engine, source, false, null);
     }
 
-    public TransactionResult execute(
+    public TransactionResult executeV1(
             String database, String engine, String source, boolean readonly)
             throws HttpError, InterruptedException, IOException {
-        return execute(database, engine, source, readonly, null);
+        return executeV1(database, engine, source, readonly, null);
     }
 
-    public TransactionResult execute(
+    public TransactionResult executeV1(
             String database, String engine,
             String source, boolean readonly,
             Map<String, String> inputs)
@@ -722,12 +722,12 @@ public class Client {
         return Json.deserialize((String) rsp, TransactionResult.class);
     }
 
-    public TransactionAsyncResult executeAsyncWait(
+    public TransactionAsyncResult execute(
             String database, String engine, String source, boolean readonly) throws HttpError, IOException, InterruptedException {
-        return executeAsyncWait(database, engine, source, readonly, new HashMap<>());
+        return execute(database, engine, source, readonly, new HashMap<>());
     }
 
-    public TransactionAsyncResult executeAsyncWait(
+    public TransactionAsyncResult execute(
             String database, String engine,
             String source, boolean readonly,
             Map<String, String> inputs) throws HttpError, IOException, InterruptedException {
@@ -833,9 +833,9 @@ public class Client {
         return parseProblemsResult(rsp);
     }
 
-    public TransactionAsyncDeleteResponse deleteTransaction(String id) throws HttpError, IOException, InterruptedException {
-        var rsp = (String) delete(String.format("%s/%s", PATH_TRANSACTIONS, id));
-        return Json.deserialize(rsp, TransactionAsyncDeleteResponse.class);
+    public TransactionAsyncCancelResponse cancelTransaction(String id) throws HttpError, IOException, InterruptedException {
+        var rsp = (String) post(String.format("%s/%s/cancel", PATH_TRANSACTIONS, id), null, null);
+        return Json.deserialize(rsp, TransactionAsyncCancelResponse.class);
     }
 
     // EDBs
@@ -1038,7 +1038,7 @@ public class Client {
         var source = genLoadCsv(relation, options);
         var inputs = new HashMap<String, String>();
         inputs.put("data", data);
-        return execute(database, engine, source, false, inputs);
+        return executeV1(database, engine, source, false, inputs);
     }
 
     // Generate the Rel to load JSON data into a relation.
@@ -1062,6 +1062,6 @@ public class Client {
         var inputs = new HashMap<String, String>();
         inputs.put("data", data);
         var source = genLoadJson(relation);
-        return execute(database, engine, source, false, inputs);
+        return executeV1(database, engine, source, false, inputs);
     }
 }

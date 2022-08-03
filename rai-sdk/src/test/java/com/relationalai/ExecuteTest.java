@@ -28,14 +28,14 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 // Test transaction execution.
 @TestInstance(Lifecycle.PER_CLASS)
 public class ExecuteTest extends UnitTest {
-    @Test void testExecute() throws HttpError, InterruptedException, IOException {
+    @Test void testExecuteV1() throws HttpError, InterruptedException, IOException {
         var client = createClient();
 
         ensureDatabase(client);
 
         var query = "x, x^2, x^3, x^4 from x in {1; 2; 3; 4; 5}";
 
-        var rsp = client.execute(databaseName, engineName, query, true);
+        var rsp = client.executeV1(databaseName, engineName, query, true);
         assertEquals(rsp.aborted, false);
         var output = rsp.output;
         assertEquals(output.length, 1);

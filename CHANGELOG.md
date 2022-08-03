@@ -1,4 +1,14 @@
-## v0.2.2-alpha (latest)
+# Changelog
+
+## v0.4.0-alpha
+* Renamed:
+  - `execute` to `executeV1`.
+  - `executeAsyncWait` to `execute`.
+
+## v0.3.0-alpha
+* Added `CancelTransaction` feature.
+
+## v0.2.2-alpha
 * Fixed `getTransaction` missing required properties: [finished_at].
 * Added `deleteTransaction`.
 

@@ -160,7 +160,7 @@ public class DatabaseTest extends UnitTest {
         assertEquals("CREATED", createRsp.state);
 
         // Make sure the data was cloned 
-        var rsp = client.execute(databaseCloneName, engineName, "test_data", true);
+        var rsp = client.executeV1(databaseCloneName, engineName, "test_data", true);
 
         Relation rel;
 
