@@ -54,7 +54,7 @@ public class ExecuteAsyncTest extends UnitTest {
 
         var metadata = Message.MetadataInfo.parseFrom(
                 Files.readAllBytes(
-                        Paths.get("../../../resources/metadata.pb ")
+                        Paths.get("src/test/resources/metadata.pb ")
                 )
         );
 
