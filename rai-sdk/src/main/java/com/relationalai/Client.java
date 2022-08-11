@@ -705,8 +705,12 @@ public class Client {
             String source, boolean readonly,
             Map<String, String> inputs) throws HttpError, IOException, InterruptedException {
 
-        var id = executeAsync(database, engine, source, readonly, inputs).transaction.id;
+        var rsp = executeAsync(database, engine, source, readonly, inputs);
 
+        if ("COMPLETED".equals(rsp.transaction.state))
+                return rsp;
+
+        var id = rsp.transaction.id;
         var transaction = getTransaction(id).transaction;
 
         while ( !("COMPLETED".equals(transaction.state) || "ABORTED".equals(transaction.state)) ) {
@@ -718,12 +722,7 @@ public class Client {
         var metadata = getTransactionMetadata(id);
         var problems = getTransactionProblems(id);
 
-        return new TransactionAsyncResult(
-                transaction,
-                results,
-                metadata,
-                problems
-        );
+        return new TransactionAsyncResult(transaction, results, metadata, problems);
     }
 
     public TransactionAsyncResult executeAsync(
@@ -775,12 +774,7 @@ public class Client {
         var problemsResult = parseProblemsResult(new String(problems.get(0).data, StandardCharsets.UTF_8));
 
         var results = readArrowFiles(files);
-        return new TransactionAsyncResult(
-                transactionResponse,
-                results,
-                Arrays.asList(metadataResponse),
-                problemsResult
-        );
+        return new TransactionAsyncResult(transactionResponse, results, Arrays.asList(metadataResponse), problemsResult);
     }
 
     public TransactionAsyncSingleResponse getTransaction(String id) throws HttpError, IOException, InterruptedException {
