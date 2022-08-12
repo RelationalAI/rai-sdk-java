@@ -707,7 +707,7 @@ public class Client {
 
         var rsp = executeAsync(database, engine, source, readonly, inputs);
 
-        if (rsp.gotCompletedResult)
+        if (rsp.gotCompleteResult)
                 return rsp;
 
         var transaction = getTransaction(rsp.transaction.id).transaction;

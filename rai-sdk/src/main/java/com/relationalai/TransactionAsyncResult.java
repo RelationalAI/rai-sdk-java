@@ -4,7 +4,7 @@ import java.util.List;
 
 public class TransactionAsyncResult extends Entity {
 
-    public Boolean gotCompletedResult;
+    public Boolean gotCompleteResult;
     public TransactionAsyncCompactResponse transaction;
     public List<ArrowRelation> results;
     public List<TransactionAsyncMetadataResponse> metadata;
@@ -20,15 +20,16 @@ public class TransactionAsyncResult extends Entity {
         this.results = results;
         this.metadata = metadata;
         this.problems = problems;
-        this.gotCompletedResult = false;
+        this.gotCompleteResult = false;
     }
     public TransactionAsyncResult(
             TransactionAsyncCompactResponse transaction,
             List<ArrowRelation> results,
             List<TransactionAsyncMetadataResponse> metadata,
             List<Object> problems,
-            Boolean gotCompletedResult
+            Boolean gotCompleteResult
     ) {
-        this(transaction, results, metadata, problems, gotCompletedResult);
+        this(transaction, results, metadata, problems);
+        this.gotCompleteResult = gotCompleteResult;
     }
 }
