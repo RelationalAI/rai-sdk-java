@@ -29,7 +29,6 @@ public class TransactionAsyncResult extends Entity {
             List<Object> problems,
             Boolean gotCompletedResult
     ) {
-        this(transaction, results, metadata, problems);
-        this.gotCompletedResult = false;
+        this(transaction, results, metadata, problems, gotCompletedResult);
     }
 }
