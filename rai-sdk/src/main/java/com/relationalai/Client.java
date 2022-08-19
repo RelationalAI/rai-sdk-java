@@ -800,7 +800,7 @@ public class Client {
 
         var results = readArrowFiles(files);
 
-        return new TransactionAsyncResult(transactionResponse, results, Arrays.asList(metadataResponse), problemsResult, true);
+        return new TransactionAsyncResult(transactionResponse, results, metadataInfoResult, problemsResult, true);
     }
 
     public TransactionAsyncSingleResponse getTransaction(String id) throws HttpError, IOException, InterruptedException {
