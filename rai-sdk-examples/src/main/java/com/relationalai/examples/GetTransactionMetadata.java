@@ -27,7 +27,7 @@ public class GetTransactionMetadata implements Runnable {
     String id, profile;
 
     public void parseArgs(String[] args) {
-        var c = Command.create("GetTransactionMetadata")
+        var c = Command.create("GetTransactionMetadataInfo")
                 .addArgument("id")
                 .addOption("profile", "config profile (default: default)")
                 .parseArgs(args);
@@ -41,6 +41,6 @@ public class GetTransactionMetadata implements Runnable {
         var client = new Client(cfg);
 
         var rsp = client.getTransactionMetadata(id);
-        Json.print(rsp);
+        System.out.println(rsp);
     }
 }

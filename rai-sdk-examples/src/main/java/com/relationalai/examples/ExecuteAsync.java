@@ -66,6 +66,7 @@ public class ExecuteAsync implements Runnable {
         if (source == null)
             return; // nothing to execute
         var rsp = client.executeAsync(database, engine, source, readonly);
-        Json.print(rsp);
+        //Json.print(rsp);
+        System.out.println(rsp);
     }
 }

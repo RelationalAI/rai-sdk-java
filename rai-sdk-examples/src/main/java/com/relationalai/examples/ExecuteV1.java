@@ -65,6 +65,6 @@ public class ExecuteV1 implements Runnable {
         if (source == null)
             return; // nothing to execute
         var rsp = client.executeV1(database, engine, source, readonly);
-        Json.print(rsp, 4);
+        System.out.println(rsp);
     }
 }

@@ -16,11 +16,13 @@
 
 package com.relationalai;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.jsoniter.spi.JsonException;
 import org.apache.arrow.memory.RootAllocator;
 import org.apache.arrow.vector.FieldVector;
 import org.apache.arrow.vector.VectorSchemaRoot;
 import org.apache.arrow.vector.ipc.ArrowStreamReader;
+import relationalai.protocol.Message;
 
 import java.io.*;
 import java.net.URI;
@@ -248,8 +250,12 @@ public class Client {
         builder.header("Authorization", String.format("Bearer %s", accessToken.token));
     }
 
-    Object sendRequest(HttpRequest.Builder builder)
+    Object sendRequest(HttpRequest.Builder builder, Map<String, String> extraHeaders)
             throws HttpError, InterruptedException, IOException {
+        // merge default and extra headers
+        if (extraHeaders != null)
+            defaultHeaders.putAll(extraHeaders);
+
         addHeaders(builder, defaultHeaders);
         authenticate(builder, this.credentials);
         HttpRequest request = builder.build();
@@ -264,9 +270,15 @@ public class Client {
             return new String(response.body(), StandardCharsets.UTF_8);
         else if (contentType.toLowerCase().contains("multipart/form-data")) {
             return MultipartReader.parseMultipartResponse(response);
-        } else {
-            throw new HttpError(statusCode, "invalid response type");
+        } else if (contentType.toLowerCase().contains("application/x-protobuf")) {
+            return parseMetadataInfo(response.body());
+        }else {
+            throw new HttpError(statusCode, String.format("invalid response type: %s", contentType));
         }
+    }
+
+    Object sendRequest(HttpRequest.Builder builder) throws HttpError, IOException, InterruptedException {
+        return sendRequest(builder, null);
     }
     private List<ArrowRelation> readArrowFiles(List<TransactionAsyncFile> files) throws IOException {
         var output = new ArrayList<ArrowRelation>();
@@ -287,7 +299,7 @@ public class Client {
                             for (int i = 0; i < fieldVector.getValueCount(); i ++) {
                                 values.add(fieldVector.getObject(i));
                             }
-                            output.add(new ArrowRelation(fieldVector.getField().getName(), values));
+                            output.add(new ArrowRelation(file.name, values));
                         }
                     }
                 } finally {
@@ -322,6 +334,10 @@ public class Client {
         }
         return output;
     }
+
+    private Message.MetadataInfo parseMetadataInfo(byte[] data) throws InvalidProtocolBufferException {
+        return Message.MetadataInfo.parseFrom(data);
+    }
     static void printRequest(HttpRequest request) {
         System.out.printf("%s %s\n", request.method(), request.uri());
         for (Map.Entry<String, List<String>> entry : request.headers().map().entrySet()) {
@@ -337,9 +353,9 @@ public class Client {
         return sendRequest(newRequestBuilder(method, path, params));
     }
 
-    public Object request(String method, String path, QueryParams params, String body)
+    public Object request(String method, String path, Map<String, String> headers, QueryParams params, String body)
             throws HttpError, InterruptedException, IOException {
-        return sendRequest(newRequestBuilder(method, path, params, body));
+        return sendRequest(newRequestBuilder(method, path, params, body), headers);
     }
 
     public Object delete(String path)
@@ -349,32 +365,41 @@ public class Client {
 
     public Object delete(String path, QueryParams params, String body)
             throws HttpError, InterruptedException, IOException {
-        return request("DELETE", path, params, body);
+        return request("DELETE", path, null, params, body);
     }
 
     public Object get(String path)
             throws HttpError, InterruptedException, IOException {
-        return get(path, null);
+        return get(path, null, null);
     }
 
     public Object get(String path, QueryParams params)
+            throws HttpError, IOException, InterruptedException {
+        return get(path, null, params);
+    }
+    public Object get(String path, Map<String, String> headers)
+            throws HttpError, IOException, InterruptedException {
+        return get(path, headers, null);
+    }
+
+    public Object get(String path, Map<String, String> headers, QueryParams params)
             throws HttpError, InterruptedException, IOException {
-        return request("GET", path, params);
+        return request("GET", path, headers, params, null);
     }
 
     public Object patch(String path, QueryParams params, String body)
             throws HttpError, InterruptedException, IOException {
-        return request("PATCH", path, params, body);
+        return request("PATCH", path, null, params, body);
     }
 
     public Object post(String path, QueryParams params, String body)
             throws HttpError, InterruptedException, IOException {
-        return request("POST", path, params, body);
+        return request("POST", path, null, params, body);
     }
 
     public Object put(String path, QueryParams params, String body)
             throws HttpError, InterruptedException, IOException {
-        return request("PUT", path, params, body);
+        return request("PUT", path, null, params, body);
     }
 
     //
@@ -735,9 +760,10 @@ public class Client {
         var tx = new TransactionAsync(database, engine,  source, readonly, inputs);
         var body = tx.payload();
         var rsp = post(PATH_TRANSACTIONS, tx.queryParams(), body);
+
         if (rsp instanceof String) {
             var txn = Json.deserialize((String) rsp, TransactionAsyncCompactResponse.class);
-            return new TransactionAsyncResult(txn, new ArrayList<ArrowRelation>(), new ArrayList<TransactionAsyncMetadataResponse>(), new ArrayList<Object>());
+            return new TransactionAsyncResult(txn, new ArrayList<ArrowRelation>(), null, new ArrayList<Object>());
         }
         return readTransactionAsyncResults((List<TransactionAsyncFile>) rsp);
     }
@@ -749,7 +775,7 @@ public class Client {
                 .collect(Collectors.toList());
         var metadata = files
                 .stream()
-                .filter(f -> f.name.equals("metadata"))
+                .filter(f -> f.name.equals("metadata.proto"))
                 .collect(Collectors.toList());
         var problems = files
                 .stream()
@@ -762,9 +788,10 @@ public class Client {
         var transactionResponse = Json.deserialize(new String(transaction.get(0).data, StandardCharsets.UTF_8), TransactionAsyncCompactResponse.class);
 
         if (metadata.isEmpty()) {
-            throw new HttpError(404, "metadata part is missing");
+            throw new HttpError(404, "metadata proto part is missing");
         }
-        var metadataResponse = Json.deserialize(new String(metadata.get(0).data, StandardCharsets.UTF_8), TransactionAsyncMetadataResponse[].class);
+
+        var metadataInfoResult = parseMetadataInfo(metadata.get(0).data);
 
         if (problems.isEmpty()) {
             throw new HttpError(404, "problems part is missing");
@@ -772,6 +799,7 @@ public class Client {
         var problemsResult = parseProblemsResult(new String(problems.get(0).data, StandardCharsets.UTF_8));
 
         var results = readArrowFiles(files);
+
         return new TransactionAsyncResult(transactionResponse, results, Arrays.asList(metadataResponse), problemsResult, true);
     }
 
@@ -790,10 +818,10 @@ public class Client {
         return readArrowFiles(rsp);
     }
 
-    public List<TransactionAsyncMetadataResponse> getTransactionMetadata(String id) throws HttpError, IOException, InterruptedException {
-        var rsp = get(String.format("%s/%s/metadata", PATH_TRANSACTIONS, id));
-        var results = Json.deserialize((String) rsp, TransactionAsyncMetadataResponse[].class);
-        return Arrays.asList(results);
+    public Message.MetadataInfo getTransactionMetadata(String id) throws HttpError, IOException, InterruptedException {
+        var headers = new HashMap<String, String>(){ { put("Accept", "application/x-protobuf"); } };
+        var rsp = (Message.MetadataInfo) get(String.format("%s/%s/metadata", PATH_TRANSACTIONS, id), headers);
+        return rsp;
     }
 
     public List<Object> getTransactionProblems(String id) throws HttpError, IOException, InterruptedException {

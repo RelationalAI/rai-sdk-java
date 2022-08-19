@@ -19,8 +19,13 @@ package com.relationalai;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import relationalai.protocol.Message;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -29,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ExecuteAsyncTest extends UnitTest {
     @Test
-    void testExecuteAsync() throws HttpError, InterruptedException, IOException {
+    void testExecuteAsync() throws HttpError, InterruptedException, IOException, URISyntaxException {
         var client = createClient();
 
         ensureDatabase(client);
@@ -40,28 +45,23 @@ public class ExecuteAsyncTest extends UnitTest {
 
         var results = new ArrayList<ArrowRelation> () {
             {
-                add(new ArrowRelation("v1", Arrays.asList(new Object[] {1L, 2L, 3L, 4L, 5L}) ));
-                add(new ArrowRelation("v2", Arrays.asList(new Object[] {1L, 4L, 9L, 16L, 25L}) ));
-                add(new ArrowRelation("v3", Arrays.asList(new Object[] {1L, 8L, 27L, 64L, 125L}) ));
-                add(new ArrowRelation("v4", Arrays.asList(new Object[] {1L, 16L, 81L, 256L, 625L}) ));
-            }
-        };
-
-        var metadata = new ArrayList<TransactionAsyncMetadataResponse>() {
-            {
-                add(
-                        new TransactionAsyncMetadataResponse(
-                                "/:output/Int64/Int64/Int64/Int64",
-                                Arrays.asList(new String[] {":output", "Int64", "Int64", "Int64", "Int64"})
-                        )
-                );
+                add(new ArrowRelation("/:output/Int64/Int64/Int64/Int64", Arrays.asList(new Object[] {1L, 2L, 3L, 4L, 5L}) ));
+                add(new ArrowRelation("/:output/Int64/Int64/Int64/Int64", Arrays.asList(new Object[] {1L, 4L, 9L, 16L, 25L}) ));
+                add(new ArrowRelation("/:output/Int64/Int64/Int64/Int64", Arrays.asList(new Object[] {1L, 8L, 27L, 64L, 125L}) ));
+                add(new ArrowRelation("/:output/Int64/Int64/Int64/Int64", Arrays.asList(new Object[] {1L, 16L, 81L, 256L, 625L}) ));
             }
         };
 
         var problems = new ArrayList<Object>();
 
+        var metadata = Message.MetadataInfo.parseFrom(
+                Files.readAllBytes(
+                        Path.of(Paths.get(getClass().getResource("/metadata.pb").toURI()).toString())
+                )
+        );
+
+        assertEquals(rsp.metadata.toString(), metadata.toString());
         assertEquals(rsp.results, results);
-        assertEquals(rsp.metadata, metadata);
         assertEquals(rsp.problems, problems);
     }
 
