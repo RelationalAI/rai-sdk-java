@@ -21,4 +21,6 @@ jobs:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           CLIENT_CREDENTIALS_URL: ${{ secrets.CLIENT_CREDENTIALS_URL }}
-        run: mvn clean install
+        run: |
+          export JAVA_TOOL_OPTIONS="--add-opens=java.base/java.nio=ALL-UNNAMED"
+          mvn clean install

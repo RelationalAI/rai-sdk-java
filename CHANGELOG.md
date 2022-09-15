@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.4.1-alpha
+* Adding support to new java versions.
+* Upgrading `apache arrow` version to `9.0.0`.
+
 ## v0.4.0-alpha
 * Renamed:
   - `execute` to `executeV1`.

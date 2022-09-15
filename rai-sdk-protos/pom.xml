@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.relationalai</groupId>
         <artifactId>rai-sdk-pom</artifactId>
-        <version>0.4.0-alpha</version>
+        <version>0.4.1-alpha</version>
     </parent>
 
     <name>RelationalAI SDK Protobuf for Java</name>
