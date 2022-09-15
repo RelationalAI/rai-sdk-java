@@ -3,7 +3,15 @@
 ## v0.4.1-alpha
 * Adding support to new java versions.
 * Upgrading `apache arrow` version to `9.0.0`.
-
+* Fix protobuf metadata integration test.
+* Run integration tests using jdks 11, 17 & 18.
+* Fix memory leak issue
+* If seeing errors like module java.base does not "opens java.nio" to unnamed module
+please make sure to run java with `--add-opens=java.base/java.nio=ALL-UNNAMED` argument
+or set JAVA_TOOL_OPTIONS environment variable
+```shell
+export JAVA_TOOL_OPTIONS="--add-opens=java.base/java.nio=ALL-UNNAMED"
+```
 ## v0.4.0-alpha
 * Renamed:
   - `execute` to `executeV1`.
