@@ -286,7 +286,7 @@ public class Client {
             if ("application/vnd.apache.arrow.stream".equals(file.contentType.toLowerCase())) {
                 ByteArrayInputStream in = new ByteArrayInputStream(file.data);
                 List<FieldVector> fieldVectors = null;
-                RootAllocator allocator = new RootAllocator(Long.MAX_VALUE);
+                RootAllocator allocator = ArrowUtils.getOrCreateRootAllocator();
 
                 try(ArrowStreamReader arrowStreamReader = new ArrowStreamReader(in, allocator)){
                     VectorSchemaRoot root = arrowStreamReader.getVectorSchemaRoot();
@@ -313,7 +313,6 @@ public class Client {
                             }
                         }
                     }
-                    allocator.close();
                 }
             }
         }
