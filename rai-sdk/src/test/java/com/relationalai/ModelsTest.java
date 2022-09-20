@@ -46,11 +46,11 @@ public class ModelsTest extends UnitTest {
         assertEquals("test_model", model.name);
 
         var modelNames = client.listModelNames(databaseName, engineName);
-        var modelName = find(modelNames, item -> item.equals("test_model"));
+        var modelName = modelNames.stream().filter(item -> item.equals("test_model")).findFirst().orElse(null);
         assertNotNull(modelName);
 
         var models = client.listModels(databaseName, engineName);
-        model = find(models, item -> item.name.equals("test_model"));
+        model = models.stream().filter(item -> item.name.equals("test_model")).findFirst().orElse(null);
         assertNotNull(model);
 
         var deleteRsp = client.deleteModel(databaseName, engineName, "test_model");
@@ -67,11 +67,11 @@ public class ModelsTest extends UnitTest {
         assertTrue(error != null && error.statusCode == 404);
 
         modelNames = client.listModelNames(databaseName, engineName);
-        modelName = find(modelNames, item -> item.equals("test_model"));
+        modelName = modelNames.stream().filter(item -> item.equals("test_model")).findFirst().orElse(null);
         assertNull(modelName);
 
         models = client.listModels(databaseName, engineName);
-        model = find(models, item -> item.name.equals("test_model"));
+        model = models.stream().filter(item -> item.name.equals("test_model")).findFirst().orElse(null);
         assertNull(model);
     }
 

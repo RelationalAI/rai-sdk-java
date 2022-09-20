@@ -79,11 +79,11 @@ public class DatabaseTest extends UnitTest {
         assertNotNull(edb);
 
         var modelNames = client.listModelNames(databaseName, engineName);
-        var name = find(modelNames, item -> item.equals("stdlib"));
+        var name = modelNames.stream().filter(n -> n.equals("stdlib")).findFirst().orElse(null);
         assertNotNull(name);
 
         var models = client.listModels(databaseName, engineName);
-        var model = find(models, m -> m.name.equals("stdlib"));
+        var model = models.stream().filter(m -> m.name.equals("stdlib")).findFirst().orElse(null);
         assertNotNull(model);
 
         model = client.getModel(databaseName, engineName, "stdlib");
@@ -178,11 +178,11 @@ public class DatabaseTest extends UnitTest {
 
         // Make sure the model was cloned
         var modelNames = client.listModelNames(databaseName, engineName);
-        var name = find(modelNames, item -> item.equals("test_model"));
+        var name = modelNames.stream().filter(n -> n.equals("test_model")).findFirst().orElse(null);
         assertNotNull(name);
 
         var models = client.listModels(databaseName, engineName);
-        var model = find(models, m -> m.name.equals("test_model"));
+        var model = models.stream().filter(m -> m.name.equals("test_model")).findFirst().orElse(null);
         assertNotNull(model);
 
         model = client.getModel(databaseName, engineName, "test_model");

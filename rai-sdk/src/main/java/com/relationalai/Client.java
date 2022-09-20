@@ -912,26 +912,40 @@ public class Client {
     }
 
     // Returns the list of names of models installed in the given database.
-    public String[] listModelNames(String database, String engine)
+    public List<String> listModelNames(String database, String engine)
             throws HttpError, InterruptedException, IOException {
         var models = listModels(database, engine);
-        String[] result = new String[models.length];
-        for (var i = 0; i < models.length; ++i)
-            result[i] = models[i].name;
+        List<String> result = new ArrayList<String>();
+        for (var model : models)
+            result.add(model.name);
+
         return result;
     }
 
     // Returns the list of models (including source) installed in the given
     // database.
-    public Model[] listModels(String database, String engine)
-            throws HttpError, InterruptedException, IOException {
-        var tx = new Transaction(this.region, database, engine, "OPEN", true);
-        var body = tx.payload(DbAction.makeListModelsAction());
-        var rsp = post(PATH_TRANSACTION, tx.queryParams(), body);
-        var actions = Json.deserialize((String) rsp, ListModelsResponse.class).actions;
-        if (actions.length == 0)
-            return new Model[] {};
-        return actions[0].result.models;
+
+    public List<Model> listModels(String database, String engine) throws HttpError, IOException, InterruptedException {
+        var models = new ArrayList<Model>();
+        var resp = execute(database, engine, "def output:__models__ = rel:catalog:model", true);
+        var index = resp.results.indexOf(
+                resp.results.stream().filter(
+                        r -> r.relationId.contains("/:output/:__models__")
+                ).findFirst().orElse(null));
+
+        for (int i = 0; i < resp.results.get(index).table.size(); i++) {
+            var name = (org.apache.arrow.vector.util.Text)resp.results.get(index).table.get(i);
+            var value = (org.apache.arrow.vector.util.Text)resp.results.get(index+1).table.get(i);
+
+            models.add(
+                    new Model(
+                            new String(name.getBytes(), StandardCharsets.UTF_8),
+                            new String(value.getBytes(), StandardCharsets.UTF_8)
+                    )
+            );
+        }
+
+        return models;
     }
 
     // Data loading
