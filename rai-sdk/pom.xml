@@ -30,11 +30,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.relationalai</groupId>
-            <artifactId>rai-sdk-proto</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.jsoniter</groupId>
             <artifactId>jsoniter</artifactId>
             <version>${jsoniter.version}</version>
