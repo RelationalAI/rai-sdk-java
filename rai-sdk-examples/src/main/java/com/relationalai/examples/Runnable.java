@@ -17,7 +17,7 @@
 package com.relationalai.examples;
 
 import java.io.IOException;
-import com.relationalai.HttpError;
+import com.relationalai.errors.HttpError;
 
 interface Runnable {
     void run(String[] args) throws HttpError, InterruptedException, IOException;

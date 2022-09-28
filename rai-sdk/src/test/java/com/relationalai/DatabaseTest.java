@@ -22,6 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 
+import com.relationalai.errors.HttpError;
+import com.relationalai.models.database.Database;
+import com.relationalai.models.transaction.Relation;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -83,12 +86,12 @@ public class DatabaseTest extends UnitTest {
         assertNotNull(name);
 
         var models = client.listModels(databaseName, engineName);
-        var model = find(models, m -> m.name.equals("stdlib"));
+        var model = find(models, m -> m.getName().equals("stdlib"));
         assertNotNull(model);
 
         model = client.getModel(databaseName, engineName, "stdlib");
         assertNotNull(model);
-        assertTrue(model.value.length() > 0);
+        assertTrue(model.getValue().length() > 0);
 
         var deleteRsp = client.deleteDatabase(databaseName);
         assertTrue(deleteRsp.name.equals(databaseName));
@@ -182,12 +185,12 @@ public class DatabaseTest extends UnitTest {
         assertNotNull(name);
 
         var models = client.listModels(databaseName, engineName);
-        var model = find(models, m -> m.name.equals("test_model"));
+        var model = find(models, m -> m.getName().equals("test_model"));
         assertNotNull(model);
 
         model = client.getModel(databaseName, engineName, "test_model");
         assertNotNull(model);
-        assertTrue(model.value.length() > 0);
+        assertTrue(model.getValue().length() > 0);
 
         // Cleanup
         var deleteRsp = client.deleteDatabase(databaseCloneName);

@@ -18,9 +18,9 @@ package com.relationalai.examples;
 
 import java.io.IOException;
 import com.relationalai.Client;
-import com.relationalai.Config;
-import com.relationalai.HttpError;
-import com.relationalai.Json;
+import com.relationalai.utils.Config;
+import com.relationalai.errors.HttpError;
+import com.relationalai.utils.Json;
 
 // Returns the user with the given email.
 public class FindUser implements Runnable {

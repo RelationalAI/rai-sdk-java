@@ -16,6 +16,8 @@
 
 package com.relationalai;
 
+import com.relationalai.errors.HttpError;
+import com.relationalai.models.transaction.ArrowRelation;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;

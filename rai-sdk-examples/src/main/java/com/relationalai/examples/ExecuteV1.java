@@ -20,9 +20,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import com.relationalai.Client;
-import com.relationalai.Config;
-import com.relationalai.HttpError;
-import com.relationalai.Json;
+import com.relationalai.utils.Config;
+import com.relationalai.errors.HttpError;
 
 public class ExecuteV1 implements Runnable {
     boolean readonly;

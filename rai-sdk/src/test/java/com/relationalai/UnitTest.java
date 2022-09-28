@@ -16,6 +16,10 @@
 
 package com.relationalai;
 
+import com.relationalai.errors.HttpError;
+import com.relationalai.models.transaction.Relation;
+import com.relationalai.utils.Config;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;

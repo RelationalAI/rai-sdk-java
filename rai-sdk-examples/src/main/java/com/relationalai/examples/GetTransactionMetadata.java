@@ -17,9 +17,8 @@
 package com.relationalai.examples;
 
 import com.relationalai.Client;
-import com.relationalai.Config;
-import com.relationalai.HttpError;
-import com.relationalai.Json;
+import com.relationalai.utils.Config;
+import com.relationalai.errors.HttpError;
 
 import java.io.IOException;
 

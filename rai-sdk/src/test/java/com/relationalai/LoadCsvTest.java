@@ -22,6 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.IOException;
 import java.util.HashMap;
 
+import com.relationalai.errors.HttpError;
+import com.relationalai.models.transaction.CsvOptions;
+import com.relationalai.models.transaction.Relation;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;

@@ -20,10 +20,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import com.relationalai.Client;
-import com.relationalai.Config;
-import com.relationalai.CsvOptions;
-import com.relationalai.HttpError;
-import com.relationalai.Json;
+import com.relationalai.utils.Config;
+import com.relationalai.models.transaction.CsvOptions;
+import com.relationalai.errors.HttpError;
+import com.relationalai.utils.Json;
 
 public class LoadCsv implements Runnable {
     CsvOptions options = new CsvOptions();

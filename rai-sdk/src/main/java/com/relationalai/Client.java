@@ -18,6 +18,18 @@ package com.relationalai;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.jsoniter.spi.JsonException;
+import com.relationalai.credentials.*;
+import com.relationalai.errors.HttpError;
+import com.relationalai.models.database.*;
+import com.relationalai.models.edb.Edb;
+import com.relationalai.models.edb.ListEdbsResponse;
+import com.relationalai.models.engine.*;
+import com.relationalai.models.oauthClient.*;
+import com.relationalai.models.relModel.ListModelsResponse;
+import com.relationalai.models.relModel.Model;
+import com.relationalai.models.transaction.*;
+import com.relationalai.models.user.*;
+import com.relationalai.utils.*;
 import org.apache.arrow.memory.RootAllocator;
 import org.apache.arrow.vector.FieldVector;
 import org.apache.arrow.vector.VectorSchemaRoot;
@@ -283,8 +295,8 @@ public class Client {
     private List<ArrowRelation> readArrowFiles(List<TransactionAsyncFile> files) throws IOException {
         var output = new ArrayList<ArrowRelation>();
         for (var file : files) {
-            if ("application/vnd.apache.arrow.stream".equals(file.contentType.toLowerCase())) {
-                ByteArrayInputStream in = new ByteArrayInputStream(file.data);
+            if ("application/vnd.apache.arrow.stream".equals(file.getContentType().toLowerCase())) {
+                ByteArrayInputStream in = new ByteArrayInputStream(file.getData());
                 List<FieldVector> fieldVectors = null;
                 RootAllocator allocator = ArrowUtils.getOrCreateRootAllocator();
 
@@ -299,7 +311,7 @@ public class Client {
                             for (int i = 0; i < fieldVector.getValueCount(); i ++) {
                                 values.add(fieldVector.getObject(i));
                             }
-                            output.add(new ArrowRelation(file.name, values));
+                            output.add(new ArrowRelation(file.getName(), values));
                         }
                     }
                 } finally {
@@ -472,7 +484,7 @@ public class Client {
         var params = new QueryParams();
         params.put("name", database);
         var rsp = get(PATH_DATABASE, params);
-        var databases = Json.deserialize((String) rsp, GetDatabaseResponse.class).databases;
+        var databases = Json.deserialize((String) rsp, GetDatabaseResponse.class).getDatabases();
         if (databases.length == 0)
             throw new HttpError(404);
         return databases[0];
@@ -491,7 +503,7 @@ public class Client {
             params.put("state", state);
         }
         var rsp = get(PATH_DATABASE, params);
-        return Json.deserialize((String) rsp, ListDatabasesResponse.class).databases;
+        return Json.deserialize((String) rsp, ListDatabasesResponse.class).getDatabases();
     }
 
     // Engines
@@ -507,7 +519,7 @@ public class Client {
             size = "XS";
         var req = new CreateEngineRequest(this.region, engine, size);
         var rsp = put(PATH_ENGINE, null, Json.serialize(req));
-        return Json.deserialize((String) rsp, CreateEngineResponse.class).engine;
+        return Json.deserialize((String) rsp, CreateEngineResponse.class).getEngine();
     }
 
     public Engine createEngineWait(String engine)
@@ -549,7 +561,7 @@ public class Client {
         params.put("name", engine);
         params.put("deleted_on", "");
         var rsp = get(PATH_ENGINE, params);
-        var engines = Json.deserialize((String) rsp, GetEngineResponse.class).engines;
+        var engines = Json.deserialize((String) rsp, GetEngineResponse.class).getEngines();
         if (engines.length == 0)
             throw new HttpError(404);
         return engines[0];
@@ -568,7 +580,7 @@ public class Client {
             params.put("state", state);
         }
         var rsp = get(PATH_ENGINE, params);
-        return Json.deserialize((String) rsp, ListEnginesResponse.class).engines;
+        return Json.deserialize((String) rsp, ListEnginesResponse.class).getEngines();
     }
 
     // OAuth clients
@@ -582,7 +594,7 @@ public class Client {
             throws HttpError, InterruptedException, IOException {
         var req = new CreateOAuthClientRequest(name, permissions);
         var rsp = post(PATH_OAUTH_CLIENTS, null, Json.serialize(req));
-        return Json.deserialize((String) rsp, CreateOAuthClientResponse.class).client;
+        return Json.deserialize((String) rsp, CreateOAuthClientResponse.class).getClient();
     }
 
     public DeleteOAuthClientResponse deleteOAuthClient(String id)
@@ -604,13 +616,13 @@ public class Client {
     public OAuthClientExtra getOAuthClient(String id)
             throws HttpError, InterruptedException, IOException {
         var rsp = get(makePath(PATH_OAUTH_CLIENTS, id));
-        return Json.deserialize((String) rsp, GetOAuthClientResponse.class).client;
+        return Json.deserialize((String) rsp, GetOAuthClientResponse.class).getClient();
     }
 
     public OAuthClient[] listOAuthClients()
             throws HttpError, InterruptedException, IOException {
         var rsp = get(PATH_OAUTH_CLIENTS);
-        return Json.deserialize((String) rsp, ListOAuthClientsResponse.class).clients;
+        return Json.deserialize((String) rsp, ListOAuthClientsResponse.class).getClients();
     }
 
     // Users
@@ -624,7 +636,7 @@ public class Client {
             throws HttpError, InterruptedException, IOException {
         var req = new CreateUserRequest(email, roles);
         var rsp = post(PATH_USERS, null, Json.serialize(req));
-        return Json.deserialize((String) rsp, CreateUserResponse.class).user;
+        return Json.deserialize((String) rsp, CreateUserResponse.class).getUser();
     }
 
     public DeleteUserResponse deleteUser(String id)
@@ -657,13 +669,13 @@ public class Client {
     public User getUser(String id)
             throws HttpError, InterruptedException, IOException {
         var rsp = get(makePath(PATH_USERS, id));
-        return Json.deserialize((String) rsp, GetUserResponse.class).user;
+        return Json.deserialize((String) rsp, GetUserResponse.class).getUser();
     }
 
     public User[] listUsers()
             throws HttpError, InterruptedException, IOException {
         var rsp = get(PATH_USERS);
-        return Json.deserialize((String) rsp, ListUsersResponse.class).users;
+        return Json.deserialize((String) rsp, ListUsersResponse.class).getUsers();
     }
 
     public User updateUser(String id, String status)
@@ -684,7 +696,7 @@ public class Client {
     public User updateUser(String id, UpdateUserRequest req)
             throws HttpError, InterruptedException, IOException {
         var rsp = patch(makePath(PATH_USERS, id), null, Json.serialize(req));
-        return Json.deserialize((String) rsp, UpdateUserResponse.class).user;
+        return Json.deserialize((String) rsp, UpdateUserResponse.class).getUser();
     }
 
     // Transactions
@@ -768,32 +780,32 @@ public class Client {
     private TransactionAsyncResult readTransactionAsyncResults(List<TransactionAsyncFile> files) throws HttpError, IOException {
         var transaction = files
                 .stream().
-                filter(f -> f.name.equals("transaction"))
+                filter(f -> f.getName().equals("transaction"))
                 .collect(Collectors.toList());
         var metadata = files
                 .stream()
-                .filter(f -> f.name.equals("metadata.proto"))
+                .filter(f -> f.getName().equals("metadata.proto"))
                 .collect(Collectors.toList());
         var problems = files
                 .stream()
-                .filter(f -> f.name.equals("problems"))
+                .filter(f -> f.getName().equals("problems"))
                 .collect(Collectors.toList());
 
         if (transaction.isEmpty()) {
             throw new HttpError(404, "transaction part is missing");
         }
-        var transactionResponse = Json.deserialize(new String(transaction.get(0).data, StandardCharsets.UTF_8), TransactionAsyncCompactResponse.class);
+        var transactionResponse = Json.deserialize(new String(transaction.get(0).getData(), StandardCharsets.UTF_8), TransactionAsyncCompactResponse.class);
 
         if (metadata.isEmpty()) {
             throw new HttpError(404, "metadata proto part is missing");
         }
 
-        var metadataInfoResult = parseMetadataInfo(metadata.get(0).data);
+        var metadataInfoResult = parseMetadataInfo(metadata.get(0).getData());
 
         if (problems.isEmpty()) {
             throw new HttpError(404, "problems part is missing");
         }
-        var problemsResult = parseProblemsResult(new String(problems.get(0).data, StandardCharsets.UTF_8));
+        var problemsResult = parseProblemsResult(new String(problems.get(0).getData(), StandardCharsets.UTF_8));
 
         var results = readArrowFiles(files);
         return new TransactionAsyncResult(
@@ -843,10 +855,10 @@ public class Client {
         var action = DbAction.makeListEdbAction();
         var body = tx.payload(action);
         var rsp = post(PATH_TRANSACTION, tx.queryParams(), body);
-        var actions = Json.deserialize((String) rsp, ListEdbsResponse.class).actions;
+        var actions = Json.deserialize((String) rsp, ListEdbsResponse.class).getActions();
         if (actions.length == 0)
             return new Edb[] {};
-        return actions[0].result.rels;
+        return actions[0].getResult().getRels();
     }
 
     // Models
@@ -876,7 +888,7 @@ public class Client {
             throws HttpError, InterruptedException, IOException {
         var models = listModels(database, engine);
         for (var item : models) {
-            if (item.name.equals(name))
+            if (item.getName().equals(name))
                 return item;
         }
         throw new HttpError(404);
@@ -917,7 +929,7 @@ public class Client {
         var models = listModels(database, engine);
         String[] result = new String[models.length];
         for (var i = 0; i < models.length; ++i)
-            result[i] = models[i].name;
+            result[i] = models[i].getName();
         return result;
     }
 
@@ -928,10 +940,10 @@ public class Client {
         var tx = new Transaction(this.region, database, engine, "OPEN", true);
         var body = tx.payload(DbAction.makeListModelsAction());
         var rsp = post(PATH_TRANSACTION, tx.queryParams(), body);
-        var actions = Json.deserialize((String) rsp, ListModelsResponse.class).actions;
+        var actions = Json.deserialize((String) rsp, ListModelsResponse.class).getActions();
         if (actions.length == 0)
             return new Model[] {};
-        return actions[0].result.models;
+        return actions[0].getResult().getModels();
     }
 
     // Data loading

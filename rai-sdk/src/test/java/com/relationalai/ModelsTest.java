@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 
+import com.relationalai.errors.HttpError;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -43,14 +44,14 @@ public class ModelsTest extends UnitTest {
         assertEquals(0, loadRsp.problems.length);
 
         var model = client.getModel(databaseName, engineName, "test_model");
-        assertEquals("test_model", model.name);
+        assertEquals("test_model", model.getName());
 
         var modelNames = client.listModelNames(databaseName, engineName);
         var modelName = find(modelNames, item -> item.equals("test_model"));
         assertNotNull(modelName);
 
         var models = client.listModels(databaseName, engineName);
-        model = find(models, item -> item.name.equals("test_model"));
+        model = find(models, item -> item.getName().equals("test_model"));
         assertNotNull(model);
 
         var deleteRsp = client.deleteModel(databaseName, engineName, "test_model");
@@ -71,7 +72,7 @@ public class ModelsTest extends UnitTest {
         assertNull(modelName);
 
         models = client.listModels(databaseName, engineName);
-        model = find(models, item -> item.name.equals("test_model"));
+        model = find(models, item -> item.getName().equals("test_model"));
         assertNull(model);
     }
 

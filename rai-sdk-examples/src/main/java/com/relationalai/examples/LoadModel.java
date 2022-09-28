@@ -20,9 +20,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import com.relationalai.Client;
-import com.relationalai.Config;
-import com.relationalai.HttpError;
-import com.relationalai.Json;
+import com.relationalai.utils.Config;
+import com.relationalai.errors.HttpError;
+import com.relationalai.utils.Json;
 
 public class LoadModel implements Runnable {
     String database, engine, filename, relation, profile;
