@@ -83,6 +83,8 @@ public class EngineTest extends UnitTest {
 
         engines = client.listEngines();
         engine = find(engines, engineName);
-        assertEquals(engine.state, "DELETED");
+        if (engine != null) {
+            assertEquals(engine.state, "DELETED");
+        }
     }
 }
