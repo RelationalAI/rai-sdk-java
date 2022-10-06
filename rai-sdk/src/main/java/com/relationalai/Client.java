@@ -851,101 +851,109 @@ public class Client {
 
     // Models
 
-    // Delete the named model.
-    public TransactionResult deleteModel(String database, String engine, String name)
+    // Delete the list of named models.
+    public TransactionAsyncResult deleteModels(String database, String engine, String[] names)
             throws HttpError, InterruptedException, IOException {
-        var tx = new Transaction(this.region, database, engine, "OPEN");
-        var action = DbAction.makeDeleteModelAction(name);
-        var body = tx.payload(action);
-        var rsp = post(PATH_TRANSACTION, tx.queryParams(), body);
-        return Json.deserialize((String) rsp, TransactionResult.class);
+        var queries = new ArrayList<String>();
+        for (var name : names) {
+            queries.add(
+                    String.format("def delete:rel:catalog:model[\"%s\"] = rel:catalog:model[\"%s\"]", name, name)
+            );
+        }
+
+        return execute(database, engine, String.join("\n", queries), false);
     }
 
-    // Delete the list of named models.
-    public TransactionResult deleteModel(String database, String engine, String[] names)
+    public TransactionAsyncResult deleteModelsAsync(String database, String engine, String[] names)
             throws HttpError, InterruptedException, IOException {
-        var tx = new Transaction(this.region, database, engine, "OPEN");
-        var actions = DbAction.makeDeleteModelsAction(names);
-        var body = tx.payload(actions);
-        var rsp = post(PATH_TRANSACTION, tx.queryParams(), body);
-        return Json.deserialize((String) rsp, TransactionResult.class);
+        var queries = new ArrayList<String>();
+        for (var name : names) {
+            queries.add(
+                    String.format("def delete:rel:catalog:model[\"%s\"] = rel:catalog:model[\"%s\"]", name, name)
+            );
+        }
+
+        return executeAsync(database, engine, String.join("\n", queries), false);
     }
 
     // Return the named model.
     public Model getModel(String database, String engine, String name)
             throws HttpError, InterruptedException, IOException {
-        var models = listModels(database, engine);
-        for (var item : models) {
-            if (item.name.equals(name))
-                return item;
+        var outName = String.format("model_%d", new Random().nextInt(Integer.MAX_VALUE));
+        var query = String.format("def output:%s = rel:catalog:model[\"%s\"]", outName, name);
+
+        var resp = execute(database, engine, query, true);
+        var result = resp.results.stream().filter(
+                r -> r.relationId.equals(String.format("/:output/:%s/String", outName))
+        ).findFirst().orElse(null);
+
+        if (result != null) {
+            return new Model(name, result.table.get(0).toString());
         }
+
         throw new HttpError(404);
     }
 
-    // Load a model into the given database.
-    public TransactionResult loadModel(
-            String database, String engine, String name, InputStream model)
-            throws HttpError, InterruptedException, IOException {
-        var s = new String(model.readAllBytes());
-        return loadModel(database, engine, name, s);
-    }
-
-    public TransactionResult loadModel(
-            String database, String engine, String name, String model)
-            throws HttpError, InterruptedException, IOException {
-        var tx = new Transaction(this.region, database, engine, "OPEN", false);
-        var action = DbAction.makeInstallAction(name, model);
-        var data = tx.payload(action);
-        var rsp = post(PATH_TRANSACTION, tx.queryParams(), data);
-        return Json.deserialize((String) rsp, TransactionResult.class);
-    }
-
     // Load multiple models into the given database.
-    public TransactionResult loadModels(
-            String database, String engine, Map<String, String> models)
-            throws HttpError, InterruptedException, IOException {
-        var tx = new Transaction(this.region, database, engine, "OPEN", false);
-        var actions = DbAction.makeInstallAction(models);
-        var data = tx.payload(actions);
-        var rsp = post(PATH_TRANSACTION, tx.queryParams(), data);
-        return Json.deserialize((String) rsp, TransactionResult.class);
+    public TransactionAsyncResult loadModels(String database, String engine, Map<String, String> models) throws HttpError, IOException, InterruptedException {
+        var queries = new ArrayList<String>();
+        var queriesInputs = new HashMap<String, String>();
+        var randInt = new Random().nextInt(Integer.MAX_VALUE);
+
+        var index = 0;
+        for (var model : models.entrySet()) {
+            var inputName = String.format("input_%d_%d", randInt, index);
+            queries.add(
+                    String.format("def delete:rel:catalog:model[\"%s\"] = rel:catalog:model[\"%s\"]", model.getKey(), model.getKey())
+            );
+            queries.add(
+                    String.format("def insert:rel:catalog:model[\"%s\"] = %s", model.getKey(), inputName)
+            );
+            queriesInputs.put(inputName, model.getValue());
+            index++;
+        }
+        return execute(database, engine, String.join("\n", queries), false, queriesInputs);
     }
 
-    // Returns the list of names of models installed in the given database.
-    public List<String> listModelNames(String database, String engine)
-            throws HttpError, InterruptedException, IOException {
-        var models = listModels(database, engine);
-        List<String> result = new ArrayList<String>();
-        for (var model : models)
-            result.add(model.name);
+    public TransactionAsyncResult loadModelsAsync(String database, String engine, Map<String, String> models) throws HttpError, IOException, InterruptedException {
+        var queries = new ArrayList<String>();
+        var queriesInputs = new HashMap<String, String>();
+        var randInt = new Random().nextInt(Integer.MAX_VALUE);
 
-        return result;
+        var index = 0;
+        for (var model : models.entrySet()) {
+            var inputName = String.format("input_%d_%d", randInt, index);
+            queries.add(
+                    String.format("def delete:rel:catalog:model[\"%s\"] = rel:catalog:model[\"%s\"]", model.getKey(), model.getKey())
+            );
+            queries.add(
+                    String.format("def insert:rel:catalog:model[\"%s\"] = %s", model.getKey(), inputName)
+            );
+            queriesInputs.put(inputName, model.getValue());
+            index++;
+        }
+        return executeAsync(database, engine, String.join("\n", queries), false, queriesInputs);
     }
 
-    // Returns the list of models (including source) installed in the given
+    // Returns the list of models names installed in the given
     // database.
 
-    public List<Model> listModels(String database, String engine) throws HttpError, IOException, InterruptedException {
-        var models = new ArrayList<Model>();
-        var resp = execute(database, engine, "def output:__models__ = rel:catalog:model", true);
-        var index = resp.results.indexOf(
-                resp.results.stream().filter(
-                        r -> r.relationId.contains("/:output/:__models__")
-                ).findFirst().orElse(null));
+    public List<String> listModels(String database, String engine) throws HttpError, IOException, InterruptedException {
+        var outName = String.format("models_%d", new Random().nextInt(Integer.MAX_VALUE));
+        var query = String.format("def output:%s[name] = rel:catalog:model(name, _)", outName);
 
-        for (int i = 0; i < resp.results.get(index).table.size(); i++) {
-            var name = (org.apache.arrow.vector.util.Text)resp.results.get(index).table.get(i);
-            var value = (org.apache.arrow.vector.util.Text)resp.results.get(index+1).table.get(i);
+        var resp = execute(database, engine, query, true);
+        var result = resp.results.stream().filter(
+                r -> r.relationId.equals(String.format("/:output/:%s/String", outName))
+        ).findFirst().orElse(null);
 
-            models.add(
-                    new Model(
-                            new String(name.getBytes(), StandardCharsets.UTF_8),
-                            new String(value.getBytes(), StandardCharsets.UTF_8)
-                    )
-            );
+        if (result != null) {
+            return result.table.stream()
+                    .map(elem -> elem.toString())
+                    .collect(Collectors.toList());
         }
 
-        return models;
+        return new ArrayList<String>();
     }
 
     // Data loading

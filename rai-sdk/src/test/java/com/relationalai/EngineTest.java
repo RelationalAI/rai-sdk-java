@@ -77,9 +77,5 @@ public class EngineTest extends UnitTest {
             error = e;
         }
         assertTrue(error != null && error.statusCode == 404);
-
-        engines = client.listEngines();
-        engine = find(engines, engineName);
-        assertEquals(engine.state, "DELETED");
     }
 }

@@ -21,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
@@ -78,7 +80,7 @@ public class DatabaseTest extends UnitTest {
         var edb = find(edbs, item -> item.name.equals("rel"));
         assertNotNull(edb);
 
-        var modelNames = client.listModelNames(databaseName, engineName);
+        /*var modelNames = client.listModelNames(databaseName, engineName);
         var name = modelNames.stream().filter(n -> n.equals("stdlib")).findFirst().orElse(null);
         assertNotNull(name);
 
@@ -88,7 +90,7 @@ public class DatabaseTest extends UnitTest {
 
         model = client.getModel(databaseName, engineName, "stdlib");
         assertNotNull(model);
-        assertTrue(model.value.length() > 0);
+        assertTrue(model.value.length() > 0);*/
 
         var deleteRsp = client.deleteDatabase(databaseName);
         assertTrue(deleteRsp.name.equals(databaseName));
@@ -106,8 +108,9 @@ public class DatabaseTest extends UnitTest {
         assertNull(database);
     }
 
-    static final String testModel =
-            "def R = \"hello\", \"world\"";
+    static final Map<String, String> testModel = new HashMap<String, String>(){{
+        put("test_model", "def R = \"hello\", \"world\"");
+    }};
 
     static final String testJson = "{" +
             "\"name\":\"Amira\",\n" +
@@ -137,10 +140,9 @@ public class DatabaseTest extends UnitTest {
         assertEquals(0, loadRsp.output.length);
         assertEquals(0, loadRsp.problems.length);
 
-        loadRsp = client.loadModel(databaseName, engineName, "test_model", testModel);
-        assertEquals(false, loadRsp.aborted);
-        assertEquals(0, loadRsp.output.length);
-        assertEquals(0, loadRsp.problems.length);
+        var resp = client.loadModels(databaseName, engineName, testModel);
+        assertEquals("COMPLETED", resp.transaction.state);
+        assertEquals(0, resp.problems.size());
 
         // Clone the database
         var databaseCloneName = databaseName + "-clone";
@@ -177,15 +179,11 @@ public class DatabaseTest extends UnitTest {
         assertNotNull(rel);
 
         // Make sure the model was cloned
-        var modelNames = client.listModelNames(databaseName, engineName);
+        var modelNames = client.listModels(databaseName, engineName);
         var name = modelNames.stream().filter(n -> n.equals("test_model")).findFirst().orElse(null);
         assertNotNull(name);
 
-        var models = client.listModels(databaseName, engineName);
-        var model = models.stream().filter(m -> m.name.equals("test_model")).findFirst().orElse(null);
-        assertNotNull(model);
-
-        model = client.getModel(databaseName, engineName, "test_model");
+        var model = client.getModel(databaseName, engineName, "test_model");
         assertNotNull(model);
         assertTrue(model.value.length() > 0);
 
