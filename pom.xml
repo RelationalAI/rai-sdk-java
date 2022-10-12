@@ -27,7 +27,6 @@
 
     <modules>
         <module>rai-sdk</module>
-        <module>rai-sdk-protos</module>
         <module>rai-sdk-examples</module>
     </modules>
 
