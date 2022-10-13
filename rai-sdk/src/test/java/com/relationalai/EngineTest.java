@@ -70,12 +70,5 @@ public class EngineTest extends UnitTest {
             error = e;
         }
         assertTrue(error != null && error.statusCode == 404);
-
-        try {
-            client.getEngine(engineName);
-        } catch (HttpError e) {
-            error = e;
-        }
-        assertTrue(error != null && error.statusCode == 404);
     }
 }
