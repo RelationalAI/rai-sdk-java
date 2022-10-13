@@ -80,17 +80,13 @@ public class DatabaseTest extends UnitTest {
         var edb = find(edbs, item -> item.name.equals("rel"));
         assertNotNull(edb);
 
-        /*var modelNames = client.listModelNames(databaseName, engineName);
-        var name = modelNames.stream().filter(n -> n.equals("stdlib")).findFirst().orElse(null);
+        var modelNames = client.listModels(databaseName, engineName);
+        var name = modelNames.stream().filter(n -> n.equals("rel/alglib")).findFirst().orElse(null);
         assertNotNull(name);
 
-        var models = client.listModels(databaseName, engineName);
-        var model = models.stream().filter(m -> m.name.equals("stdlib")).findFirst().orElse(null);
+        var model = client.getModel(databaseName, engineName, "rel/alglib");
         assertNotNull(model);
-
-        model = client.getModel(databaseName, engineName, "stdlib");
-        assertNotNull(model);
-        assertTrue(model.value.length() > 0);*/
+        assertTrue(model.value.length() > 0);
 
         var deleteRsp = client.deleteDatabase(databaseName);
         assertTrue(deleteRsp.name.equals(databaseName));
