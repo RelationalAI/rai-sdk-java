@@ -59,6 +59,6 @@ public class LoadJson implements Runnable {
         var input = new FileInputStream(filename);
         var rname = relation != null ? relation : sansext(filename);
         var rsp = client.loadJson(database, engine, rname, input);
-        Json.print(rsp, 4);
+        System.out.println(rsp);
     }
 }

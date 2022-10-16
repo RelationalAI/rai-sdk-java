@@ -70,6 +70,6 @@ public class LoadCsv implements Runnable {
         var input = new FileInputStream(filename);
         var rname = relation != null ? relation : sansext(filename);
         var rsp = client.loadCsv(database, engine, rname, input, options);
-        Json.print(rsp, 4);
+        System.out.println(rsp);
     }
 }
