@@ -19,6 +19,7 @@ package com.relationalai;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -35,9 +36,9 @@ public abstract class UnitTest {
 
         var cfg = String.format(
                 "[default]\nregion=us-east\nport=443\nscheme=https\nclient_id=%s\nclient_secret=%s\nclient_credentials_url=%s",
-                System.getenv("CLIENT_ID"),
-                System.getenv("CLIENT_SECRET"),
-                System.getenv("CLIENT_CREDENTIALS_URL")
+                getenv("CLIENT_ID"),
+                getenv("CLIENT_SECRET"),
+                getenv("CLIENT_CREDENTIALS_URL")
         );
         var stream = new ByteArrayInputStream(cfg.getBytes());
         return Config.loadConfig(stream);
@@ -45,7 +46,14 @@ public abstract class UnitTest {
     // Returns a new client object constructed from default config settings.
     Client createClient() throws IOException {
         var cfg = getConfig();
-        return new Client(cfg);
+        var customHeaders = (Map<String, String>) Json.deserialize(getenv("CUSTOM_HEADERS", "{}"), Map.class);
+
+        var testClient = new Client(cfg);
+        var httpHeaders = testClient.getDefaultHttpHeaders();
+        for (var header : customHeaders.entrySet()) {
+            httpHeaders.put(header.getKey(), header.getValue());
+        }
+        return testClient;
     }
 
     // Ensure that the test database exists.
@@ -91,5 +99,13 @@ public abstract class UnitTest {
                 return relation;
         }
         return null;
+    }
+
+    String getenv(String name, String defaultValue) {
+        return System.getenv(name) == null ? defaultValue : System.getenv(name);
+    }
+
+    String getenv(String name) {
+        return getenv(name, null);
     }
 }

@@ -77,15 +77,13 @@ public class Client {
             this.host = cfg.host;
         if (cfg.port != null)
             this.port = Integer.parseInt(cfg.port);
+        this.httpClient = HttpClient.newBuilder().build();
         this.credentials = cfg.credentials;
         this.setAccessTokenHandler(new DefaultAccessTokenHandler());
     }
 
     // Returns the current `HttpClient` instance, creating one if necessarry.
-    HttpClient getHttpClient() {
-        if (this.httpClient == null) {
-            this.httpClient = HttpClient.newBuilder().build();
-        }
+    public HttpClient getHttpClient() {
         return this.httpClient;
     }
 
@@ -93,6 +91,11 @@ public class Client {
     public Client setHttpClient(HttpClient httpClient) {
         this.httpClient = httpClient;
         return this;
+    }
+
+    // Returns the default http headers
+    public Map<String, String> getDefaultHttpHeaders() {
+        return defaultHeaders;
     }
 
     public void setAccessTokenHandler(AccessTokenHandler handler) {
