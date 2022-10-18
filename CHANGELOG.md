@@ -1,5 +1,17 @@
 # Changelog
 
+## main
+* Add custom headers support
+* Expose http client
+```
+var client = new Client(cfg);
+var headers = client.getDefaultHttpHeaders();
+headers.put("h1", "v1");
+        
+var httpClient = client.getHttpClient();
+```
+
+
 ## v0.4.1-alpha
 * Adding support to new java versions.
 * Upgrading `apache arrow` version to `9.0.0`.
