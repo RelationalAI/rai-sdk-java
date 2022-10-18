@@ -101,8 +101,8 @@ public abstract class UnitTest {
         return null;
     }
 
-    String getenv(String name, String defaultName) {
-        return System.getenv(name) == null ? defaultName : System.getenv(name);
+    String getenv(String name, String defaultValue) {
+        return System.getenv(name) == null ? defaultValue : System.getenv(name);
     }
 
     String getenv(String name) {
