@@ -87,27 +87,28 @@ CLIENTID=`./run FindOAuthClient sdk-test | jq -r '.id'`
 ./run DeleteOAuthClient $CLIENTID
 ./run ListOAuthClients
 
+# TODO: Keep the user tests disabled until we fix the Auth0 API rate limiting issue.
 # users
-EMAIL=sdk-test@relational.ai
-USERID=`./run FindUser $EMAIL | jq -r '.id'`
-if [[ "$USERID" != null ]]; then
-./run DeleteUser "$USERID"
-fi
-./run ListUsers
-./run CreateUser $EMAIL
-./run ListUsers
-./run FindUser $EMAIL
-USERID=`./run FindUser $EMAIL | jq -r '.id'`
-./run GetUser "$USERID"
-./run DisableUser "$USERID"
-./run EnableUser "$USERID"
-./run UpdateUser -status INACTIVE "$USERID"
-./run UpdateUser -status ACTIVE "$USERID"
-./run UpdateUser -roles admin,user "$USERID"
-./run UpdateUser -roles user -status INACTIVE "$USERID"
-./run UpdateUser "$USERID"
-./run DeleteUser "$USERID"
-./run ListUsers
+# EMAIL=sdk-test@relational.ai
+# USERID=`./run FindUser $EMAIL | jq -r '.id'`
+# if [[ "$USERID" != null ]]; then
+# ./run DeleteUser "$USERID"
+# fi
+# ./run ListUsers
+# ./run CreateUser $EMAIL
+# ./run ListUsers
+# ./run FindUser $EMAIL
+# USERID=`./run FindUser $EMAIL | jq -r '.id'`
+# ./run GetUser "$USERID"
+# ./run DisableUser "$USERID"
+# ./run EnableUser "$USERID"
+# ./run UpdateUser -status INACTIVE "$USERID"
+# ./run UpdateUser -status ACTIVE "$USERID"
+# ./run UpdateUser -roles admin,user "$USERID"
+# ./run UpdateUser -roles user -status INACTIVE "$USERID"
+# ./run UpdateUser "$USERID"
+# ./run DeleteUser "$USERID"
+# ./run ListUsers
 
 exit
 
