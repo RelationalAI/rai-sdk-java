@@ -6,6 +6,7 @@ import java.util.List;
 
 public class TransactionAsyncResult extends Entity {
 
+    public Boolean gotCompleteResult;
     public TransactionAsyncCompactResponse transaction;
     public List<ArrowRelation> results;
     public Message.MetadataInfo metadata;
@@ -20,6 +21,17 @@ public class TransactionAsyncResult extends Entity {
         this.results = results;
         this.metadata = metadata;
         this.problems = problems;
+        this.gotCompleteResult = false;
+    }
+    public TransactionAsyncResult(
+            TransactionAsyncCompactResponse transaction,
+            List<ArrowRelation> results,
+            Message.MetadataInfo metadata,
+            List<Object> problems,
+            Boolean gotCompleteResult
+    ) {
+        this(transaction, results, metadata, problems);
+        this.gotCompleteResult = gotCompleteResult;
     }
 
     @Override
