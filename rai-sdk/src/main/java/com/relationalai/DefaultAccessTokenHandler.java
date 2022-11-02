@@ -39,8 +39,9 @@ public class DefaultAccessTokenHandler implements AccessTokenHandler {
     public AccessToken getAccessToken(Client client, ClientCredentials credentials)
             throws HttpError, InterruptedException, IOException {
         var token = readAccessToken(credentials);
-        if (token != null && !token.isExpired())
+        if (token != null && !token.isExpired()) {
             return token;
+        }
 
         token = client.fetchAccessToken(credentials);
         if (token != null)
