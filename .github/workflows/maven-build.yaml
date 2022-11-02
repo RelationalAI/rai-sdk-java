@@ -28,4 +28,5 @@ jobs:
           CLIENT_CREDENTIALS_URL: ${{ secrets.CLIENT_CREDENTIALS_URL }}
         run: |
           export JAVA_TOOL_OPTIONS="--add-opens=java.base/java.nio=ALL-UNNAMED"
+          mkdir -p ~/.rai
           mvn clean install
