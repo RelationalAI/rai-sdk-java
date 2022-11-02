@@ -16,23 +16,40 @@
 
 package com.relationalai.examples;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+
 import com.relationalai.Client;
 import com.relationalai.Config;
 import com.relationalai.HttpError;
 import com.relationalai.Json;
 
-public class ListModelNames implements Runnable {
-    String database, engine, profile;
+public class LoadModels implements Runnable {
+    String database, engine, filename, relation, profile;
+
+    // Returns the name of the file, without extension.
+    static String sansext(String fname) {
+        var file = new File(fname);
+        var name = file.getName();
+        var dot = name.lastIndexOf('.');
+        if (dot > 0)
+            name = name.substring(0, dot);
+        return name;
+    }
 
     public void parseArgs(String[] args) {
-        var c = Command.create("ListModelNames")
+        var c = Command.create("LoadModel")
                 .addArgument("database")
                 .addArgument("engine")
+                .addArgument("file")
                 .addOption("profile", "config profile (default: default)")
                 .parseArgs(args);
         this.database = c.getValue("database");
         this.engine = c.getValue("engine");
+        this.filename = c.getValue("file");
         this.profile = c.getValue("profile");
     }
 
@@ -40,7 +57,12 @@ public class ListModelNames implements Runnable {
         parseArgs(args);
         var cfg = Config.loadConfig("~/.rai/config", profile);
         var client = new Client(cfg);
-        var rsp = client.listModelNames(database, engine);
-        Json.print(rsp, 4);
+        var name = sansext(filename);
+        var input = new String(new FileInputStream(filename).readAllBytes(), StandardCharsets.UTF_8);
+        var models = new HashMap<String, String>() {{
+            put(name, input);
+        }};
+        var rsp = client.loadModels(database, engine, models);
+        System.out.println(rsp);
     }
 }

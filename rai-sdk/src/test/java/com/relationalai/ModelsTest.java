@@ -21,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
@@ -30,33 +32,30 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 // Test model APIs.
 @TestInstance(Lifecycle.PER_CLASS)
 public class ModelsTest extends UnitTest {
-    static final String testModel = "def R = \"hello\", \"world\"";
+    static final Map<String, String> testModel = new HashMap<>(){{
+        put("test_model", "def R = \"hello\", \"world\"");
+    }};
 
     @Test void testModels() throws HttpError, InterruptedException, IOException {
         var client = createClient();
 
         ensureDatabase(client);
 
-        var loadRsp = client.loadModel(databaseName, engineName, "test_model", testModel);
-        assertEquals(false, loadRsp.aborted);
-        assertEquals(0, loadRsp.output.length);
-        assertEquals(0, loadRsp.problems.length);
+        var loadRsp = client.loadModels(databaseName, engineName, testModel);
+        assertEquals("COMPLETED", loadRsp.transaction.state);
+        assertEquals(0, loadRsp.problems.size());
 
         var model = client.getModel(databaseName, engineName, "test_model");
         assertEquals("test_model", model.name);
+        assertEquals(testModel.get("test_model"), model.value);
 
-        var modelNames = client.listModelNames(databaseName, engineName);
-        var modelName = find(modelNames, item -> item.equals("test_model"));
+        var modelNames = client.listModels(databaseName, engineName);
+        var modelName = modelNames.stream().filter(item -> item.equals("test_model")).findFirst().orElse(null);
         assertNotNull(modelName);
 
-        var models = client.listModels(databaseName, engineName);
-        model = find(models, item -> item.name.equals("test_model"));
-        assertNotNull(model);
-
-        var deleteRsp = client.deleteModel(databaseName, engineName, "test_model");
-        assertEquals(false, deleteRsp.aborted);
-        assertEquals(0, deleteRsp.output.length);
-        assertEquals(0, deleteRsp.problems.length);
+        var deleteRsp = client.deleteModels(databaseName, engineName, new String[]{ "test_model" });
+        assertEquals("COMPLETED", deleteRsp.transaction.state);
+        assertEquals(0, deleteRsp.problems.size());
 
         HttpError error = null;
         try {
@@ -66,13 +65,9 @@ public class ModelsTest extends UnitTest {
         }
         assertTrue(error != null && error.statusCode == 404);
 
-        modelNames = client.listModelNames(databaseName, engineName);
-        modelName = find(modelNames, item -> item.equals("test_model"));
+        modelNames = client.listModels(databaseName, engineName);
+        modelName = modelNames.stream().filter(item -> item.equals("test_model")).findFirst().orElse(null);
         assertNull(modelName);
-
-        models = client.listModels(databaseName, engineName);
-        model = find(models, item -> item.name.equals("test_model"));
-        assertNull(model);
     }
 
     @AfterAll
