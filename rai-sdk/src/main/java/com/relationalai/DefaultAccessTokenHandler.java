@@ -45,6 +45,7 @@ public class DefaultAccessTokenHandler implements AccessTokenHandler {
         }
 
         token = client.fetchAccessToken(credentials);
+        System.out.println("===> generating a new token");
         if (token != null)
             writeAccessToken(credentials, token);
 
