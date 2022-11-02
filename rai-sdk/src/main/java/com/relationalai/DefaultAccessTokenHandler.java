@@ -40,12 +40,10 @@ public class DefaultAccessTokenHandler implements AccessTokenHandler {
             throws HttpError, InterruptedException, IOException {
         var token = readAccessToken(credentials);
         if (token != null && !token.isExpired()) {
-            System.out.println("===> using cached access token");
             return token;
         }
 
         token = client.fetchAccessToken(credentials);
-        System.out.println("===> generating a new token");
         if (token != null)
             writeAccessToken(credentials, token);
 
