@@ -738,7 +738,7 @@ public class Client {
 
         Awaitility.await()
             .forever()
-            .pollInterval(new DefaultPollInterval(Instant.now().toEpochMilli(), 0.2, TimeUnit.MILLISECONDS, 120000))
+            .pollInterval(new DefaultPollInterval(Instant.now().toEpochMilli(), 0.2, 120 * 1000))
             .await()
             .until(() -> {
                 var txn = getTransaction(id).transaction;

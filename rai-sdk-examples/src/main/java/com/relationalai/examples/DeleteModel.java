@@ -40,7 +40,7 @@ public class DeleteModel implements Runnable {
 
     public void run(String[] args) throws HttpError, InterruptedException, IOException {
         parseArgs(args);
-        var cfg = Config.loadConfig("~/.rai/config", this.profile);
+        var cfg = Config.loadConfig(DEFAULT_CONFIG_PATH, this.profile);
         var client = new Client(cfg);
         var rsp = client.deleteModel(database, engine, model);
         Json.print(rsp, 4);

@@ -26,35 +26,26 @@ import java.util.concurrent.TimeUnit;
 public class DefaultPollInterval implements PollInterval {
     private final Double overheadRate;
     private final Long startTime;
-    private final TimeUnit timeUnit;
     private final int maxDelay;
 
-    public DefaultPollInterval() {
-        this.overheadRate = 0.1;
-        this.startTime = Instant.now().toEpochMilli();
-        this.timeUnit = TimeUnit.MILLISECONDS;
-        this.maxDelay = 120000; // two minutes
-    }
-    public DefaultPollInterval(Double overheadRate) {
-        this.overheadRate = overheadRate;
-        this.startTime = Instant.now().toEpochMilli();
-        this.timeUnit = TimeUnit.MILLISECONDS;
-        this.maxDelay = 120000; // two minutes
-    }
-
-    public DefaultPollInterval(Long startTime, Double overheadRate, TimeUnit timeUnit, int maxDelay) {
+    /**
+     * DefaultPollInterval constructor.
+     * @param startTime in Epoch milliseconds
+     * @param overheadRate
+     * @param maxDelay in milliseconds
+     */
+    public DefaultPollInterval(Long startTime, Double overheadRate, int maxDelay) {
         this.overheadRate = overheadRate;
         this.startTime = startTime;
-        this.timeUnit = timeUnit;
         this.maxDelay = maxDelay;
     }
 
     @Override
     public Duration next(int iteration, Duration previous) {
         if (iteration == 1) {
-            return DurationFactory.of(500, timeUnit);
+            return DurationFactory.of(500, TimeUnit.MILLISECONDS);
         }
         var duration = Math.min((Instant.now().toEpochMilli() - startTime) * overheadRate, maxDelay);
-        return DurationFactory.of(Math.round(duration), timeUnit);
+        return DurationFactory.of(Math.round(duration), TimeUnit.MILLISECONDS);
     }
 }

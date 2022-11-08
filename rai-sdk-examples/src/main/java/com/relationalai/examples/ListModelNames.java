@@ -38,7 +38,7 @@ public class ListModelNames implements Runnable {
 
     public void run(String[] args) throws HttpError, InterruptedException, IOException {
         parseArgs(args);
-        var cfg = Config.loadConfig("~/.rai/config", profile);
+        var cfg = Config.loadConfig(DEFAULT_CONFIG_PATH, profile);
         var client = new Client(cfg);
         var rsp = client.listModelNames(database, engine);
         Json.print(rsp, 4);
