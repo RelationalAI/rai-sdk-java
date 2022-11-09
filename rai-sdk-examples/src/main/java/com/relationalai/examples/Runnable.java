@@ -20,5 +20,6 @@ import java.io.IOException;
 import com.relationalai.HttpError;
 
 interface Runnable {
+    final String DEFAULT_CONFIG_PATH = "~/.rai/config";
     void run(String[] args) throws HttpError, InterruptedException, IOException;
 }

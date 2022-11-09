@@ -22,6 +22,7 @@ import org.apache.arrow.memory.RootAllocator;
 import org.apache.arrow.vector.FieldVector;
 import org.apache.arrow.vector.VectorSchemaRoot;
 import org.apache.arrow.vector.ipc.ArrowStreamReader;
+import org.awaitility.Awaitility;
 import relationalai.protocol.Message;
 
 import java.io.*;
@@ -35,6 +36,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class Client {
@@ -734,13 +736,16 @@ public class Client {
 
         var id = executeAsync(database, engine, source, readonly, inputs).transaction.id;
 
+        Awaitility.await()
+            .forever()
+            .pollInterval(new DefaultPollInterval(Instant.now().toEpochMilli(), 0.2, 120 * 1000))
+            .await()
+            .until(() -> {
+                var txn = getTransaction(id).transaction;
+                return ("COMPLETED".equals(txn.state) || "ABORTED".equals(txn.state));
+            });
+
         var transaction = getTransaction(id).transaction;
-
-        while ( !("COMPLETED".equals(transaction.state) || "ABORTED".equals(transaction.state)) ) {
-            Thread.sleep(2000);
-            transaction = getTransaction(id).transaction;
-        }
-
         var results = getTransactionResults(id);
         var metadata = getTransactionMetadata(id);
         var problems = getTransactionProblems(id);

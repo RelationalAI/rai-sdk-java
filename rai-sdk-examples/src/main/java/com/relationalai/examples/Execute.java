@@ -16,37 +16,44 @@
 
 package com.relationalai.examples;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import com.relationalai.Client;
 import com.relationalai.Config;
 import com.relationalai.HttpError;
-import com.relationalai.Json;
 
-public class LoadModel implements Runnable {
-    String database, engine, filename, relation, profile;
+public class Execute implements Runnable {
+    boolean readonly;
+    String database, engine, command, filename, profile;
 
     // Returns the name of the file, without extension.
-    static String sansext(String fname) {
-        var file = new File(fname);
-        var name = file.getName();
-        var dot = name.lastIndexOf('.');
-        if (dot > 0)
-            name = name.substring(0, dot);
-        return name;
+    static String readFile(String fname) throws IOException {
+        return Files.readAllBytes(Path.of(fname)).toString();
+    }
+
+    String getCommand() throws IOException {
+        if (command != null)
+            return command; // prefer command line
+        if (filename != null)
+            return readFile(filename);
+        return null;
     }
 
     public void parseArgs(String[] args) {
-        var c = Command.create("LoadModel")
+        var c = Command.create("Execute")
                 .addArgument("database")
                 .addArgument("engine")
-                .addArgument("file")
-                .addOption("profile", "config profile (default: default)")
+                .addOption("c", "rel source string")
+                .addOption("f", "rel source file")
+                .addFlag("readonly", "readonly query (default: false)")
                 .parseArgs(args);
         this.database = c.getValue("database");
         this.engine = c.getValue("engine");
-        this.filename = c.getValue("file");
+        this.command = c.getValue("c");
+        this.filename = c.getValue("f");
+        this.readonly = c.getValue("readonly", Boolean.class);
         this.profile = c.getValue("profile");
     }
 
@@ -54,9 +61,10 @@ public class LoadModel implements Runnable {
         parseArgs(args);
         var cfg = Config.loadConfig(DEFAULT_CONFIG_PATH, profile);
         var client = new Client(cfg);
-        var name = sansext(filename);
-        var input = new FileInputStream(filename);
-        var rsp = client.loadModel(database, engine, name, input);
-        Json.print(rsp, 4);
+        String source = getCommand();
+        if (source == null)
+            return; // nothing to execute
+        var rsp = client.execute(database, engine, source, readonly);
+        System.out.println(rsp);
     }
 }
