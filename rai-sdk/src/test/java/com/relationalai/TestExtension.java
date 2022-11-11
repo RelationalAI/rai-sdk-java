@@ -45,6 +45,7 @@ public class TestExtension implements BeforeAllCallback, ExtensionContext.Store.
         Client client = UnitTest.createClient();
         HttpError error = null;
         try {
+            System.out.println(">>>>>>>>>> Deleting the engine: " + UnitTest.engineName);
             client.deleteEngineWait(UnitTest.engineName);
         } catch (HttpError e) {
             error = e;

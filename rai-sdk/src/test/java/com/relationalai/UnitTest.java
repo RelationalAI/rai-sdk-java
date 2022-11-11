@@ -62,6 +62,7 @@ public abstract class UnitTest {
     }
 
     void ensureDatabase(Client client) throws HttpError, InterruptedException, IOException {
+        ensureEngine(client);
         client.createDatabase(databaseName, engineName, true); // overwrite
     }
 
