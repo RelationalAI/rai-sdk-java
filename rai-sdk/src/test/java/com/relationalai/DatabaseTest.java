@@ -26,9 +26,11 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 // Test the database management APIs.
 @TestInstance(Lifecycle.PER_CLASS)
+@ExtendWith({TestExtension.class})
 public class DatabaseTest extends UnitTest {
     Database find(Database[] databases, String name) {
         return find(databases, item -> item.name.equals(name));
@@ -37,8 +39,6 @@ public class DatabaseTest extends UnitTest {
     //@Test
     void testDatabase() throws HttpError, InterruptedException, IOException {
         var client = createClient();
-
-        ensureEngine(client);
 
         try {
             client.deleteDatabase(databaseName);
@@ -199,12 +199,5 @@ public class DatabaseTest extends UnitTest {
 
         var deleteRsp = client.deleteDatabase(databaseName);
         assertEquals(databaseName, deleteRsp.name);
-
-        try {
-            // deleteEngineWait terminates its polling loop with a 404
-            client.deleteEngineWait(engineName);
-        } catch (HttpError e) {
-            assertEquals(e.statusCode, 404);
-        }
     }
 }

@@ -28,7 +28,7 @@ public abstract class UnitTest {
     static String databaseName = String.format("java-sdk-test-%s", uuid);
     static String engineName = String.format("java-sdk-test-%s", uuid);
 
-    Config getConfig() throws IOException {
+    static Config getConfig() throws IOException {
         var filename = String.format("%s/.rai/config", System.getenv("HOME"));
         if ((new File(filename)).exists()) {
             return Config.loadConfig(filename);
@@ -44,7 +44,7 @@ public abstract class UnitTest {
         return Config.loadConfig(stream);
     }
     // Returns a new client object constructed from default config settings.
-    Client createClient() throws IOException {
+    static Client createClient() throws IOException {
         var cfg = getConfig();
         var customHeaders = (Map<String, String>) Json.deserialize(getenv("CUSTOM_HEADERS", "{}"), Map.class);
 
@@ -62,7 +62,6 @@ public abstract class UnitTest {
     }
 
     void ensureDatabase(Client client) throws HttpError, InterruptedException, IOException {
-        ensureEngine(client);
         client.createDatabase(databaseName, engineName, true); // overwrite
     }
 
@@ -101,11 +100,11 @@ public abstract class UnitTest {
         return null;
     }
 
-    String getenv(String name, String defaultValue) {
+    static String getenv(String name, String defaultValue) {
         return System.getenv(name) == null ? defaultValue : System.getenv(name);
     }
 
-    String getenv(String name) {
+    static String getenv(String name) {
         return getenv(name, null);
     }
 }

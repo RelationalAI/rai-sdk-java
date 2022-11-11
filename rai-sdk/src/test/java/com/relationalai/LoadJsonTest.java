@@ -25,9 +25,11 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 // Test loading JSON data.
 @TestInstance(Lifecycle.PER_CLASS)
+@ExtendWith({TestExtension.class})
 public class LoadJsonTest extends UnitTest {
     static final String sample = "{" +
             "\"name\":\"Amira\",\n" +
@@ -75,11 +77,5 @@ public class LoadJsonTest extends UnitTest {
         var client = createClient();
         var deleteRsp = client.deleteDatabase(databaseName);
         assertEquals(databaseName, deleteRsp.name);
-        try {
-            // deleteEngineWait terminates its polling loop with a 404
-            client.deleteEngineWait(engineName);
-        } catch (HttpError e) {
-            assertEquals(e.statusCode, 404);
-        }
     }
 }

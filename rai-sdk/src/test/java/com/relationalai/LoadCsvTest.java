@@ -26,9 +26,11 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 // Test loading CSV data.
 @TestInstance(Lifecycle.PER_CLASS)
+@ExtendWith({TestExtension.class})
 public class LoadCsvTest extends UnitTest {
     static final String sample = "" +
             "cocktail,quantity,price,date\n" +
