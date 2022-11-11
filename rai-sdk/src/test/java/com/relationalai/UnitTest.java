@@ -35,7 +35,8 @@ public abstract class UnitTest {
         }
 
         var cfg = String.format(
-                "[default]\nregion=us-east\nport=443\nscheme=https\nclient_id=%s\nclient_secret=%s\nclient_credentials_url=%s",
+                "[default]\nhost=%s\nregion=us-east\nport=443\nscheme=https\nclient_id=%s\nclient_secret=%s\nclient_credentials_url=%s",
+                getenv("HOST"),
                 getenv("CLIENT_ID"),
                 getenv("CLIENT_SECRET"),
                 getenv("CLIENT_CREDENTIALS_URL")
