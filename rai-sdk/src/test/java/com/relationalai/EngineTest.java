@@ -24,9 +24,11 @@ import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 // Test the engine management APIs.
 @TestInstance(Lifecycle.PER_CLASS)
+@ExtendWith({TestExtension.class})
 public class EngineTest extends UnitTest {
     Engine find(Engine[] engines, String name) {
         return find(engines, item -> item.name.equals(name));
@@ -34,16 +36,6 @@ public class EngineTest extends UnitTest {
 
     @Test void testEngine() throws HttpError, InterruptedException, IOException {
         var client = createClient();
-
-        try {
-            client.deleteEngineWait(engineName);
-        } catch (HttpError e) {
-            assertEquals(e.statusCode, 404);
-        }
-
-        var createRsp = client.createEngineWait(engineName);
-        assertEquals(createRsp.name, engineName);
-        assertEquals(createRsp.state, "PROVISIONED");
 
         var engine = client.getEngine(engineName);
         assertEquals(engine.name, engineName);
@@ -62,7 +54,6 @@ public class EngineTest extends UnitTest {
         assertNull(engine);
 
         HttpError error = null;
-
         try {
             // deleteEngineWait terminates its polling loop with a 404
             client.deleteEngineWait(engineName);
