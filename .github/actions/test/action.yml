@@ -1,0 +1,50 @@
+name: 'rai-sdk-java test'
+
+inputs:
+  client_id:
+    required: true
+    description: 'Client ID for oAuth'
+
+  client_secret:
+    required: true
+    description: 'Client secret for oAuth'
+
+  client_credentials_url:
+    required: true
+    description: 'Client credentials url for fetching the oAuth token'
+
+  rai_host:
+    required: false
+    description: 'RAI host'
+    default: 'azure.relationalai.com'
+
+  custom_headers:
+    required: false
+    description: 'Optional http headers'
+    default: '{}'
+
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/checkout@v3
+      with:
+        repository: RelationalAI/rai-sdk-java
+
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: ${{ matrix.java-version }}
+        distribution: 'adopt'
+
+    - name: Build and Test with Maven
+      env:
+        CLIENT_ID: ${{ inputs.client_id }}
+        CLIENT_SECRET: ${{ inputs.client_secret }}
+        CLIENT_CREDENTIALS_URL: ${{ inputs.client_credentials_url }}
+        HOST: ${{ inputs.rai_host }}
+        CUSTOM_HEADERS: ${{ inputs.custom_headers }}
+      run: |
+          export JAVA_TOOL_OPTIONS="--add-opens=java.base/java.nio=ALL-UNNAMED"
+          mkdir -p ~/.rai
+          mvn clean install
+      shell: bash
