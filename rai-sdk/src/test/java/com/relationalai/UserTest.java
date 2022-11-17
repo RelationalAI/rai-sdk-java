@@ -30,7 +30,6 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 // Test User APIs.
 // TODO: Keep it disabled until the Auth0 API rate limiting issue is fixed.
-@Disabled
 @TestInstance(Lifecycle.PER_CLASS)
 public class UserTest extends UnitTest {
     static UUID uuid = UUID.randomUUID();

@@ -36,7 +36,6 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class Client {
@@ -255,6 +254,15 @@ public class Client {
         builder.header("Authorization", String.format("Bearer %s", accessToken.token));
     }
 
+    void printResponse(HttpResponse<byte[]> response) {
+        var headers = Arrays.asList("x-request-id");
+        for (var header : response.headers().map().entrySet()) {
+            if (headers.contains(header.getKey())) {
+                System.out.println(String.format("%s: %s", header.getKey(), header.getValue()));
+            }
+        }
+    }
+
     Object sendRequest(HttpRequest.Builder builder, Map<String, String> extraHeaders)
             throws HttpError, InterruptedException, IOException {
         // merge default and extra headers
@@ -267,6 +275,7 @@ public class Client {
         // printRequest(request);
         HttpResponse<byte[]> response =
                 getHttpClient().send(request, HttpResponse.BodyHandlers.ofByteArray());
+        printResponse(response);
         int statusCode = response.statusCode();
         String contentType = response.headers().firstValue("Content-Type").orElse("");
         if (statusCode >= 400)
