@@ -23,14 +23,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.io.IOException;
 import java.util.UUID;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 // Test User APIs.
-// TODO: Keep it disabled until the Auth0 API rate limiting issue is fixed.
-@Disabled
 @TestInstance(Lifecycle.PER_CLASS)
 public class UserTest extends UnitTest {
     static UUID uuid = UUID.randomUUID();
