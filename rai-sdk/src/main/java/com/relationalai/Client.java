@@ -254,16 +254,6 @@ public class Client {
         builder.header("Authorization", String.format("Bearer %s", accessToken.token));
     }
 
-    void printResponse(HttpResponse<byte[]> response) {
-        System.out.println(response.statusCode());
-        var headers = Arrays.asList("x-request-id");
-        for (var header : response.headers().map().entrySet()) {
-            if (headers.contains(header.getKey())) {
-                System.out.println(String.format("%s: %s", header.getKey(), header.getValue()));
-            }
-        }
-    }
-
     Object sendRequest(HttpRequest.Builder builder, Map<String, String> extraHeaders)
             throws HttpError, InterruptedException, IOException {
         // merge default and extra headers
@@ -276,13 +266,23 @@ public class Client {
         // printRequest(request);
         HttpResponse<byte[]> response =
                 getHttpClient().send(request, HttpResponse.BodyHandlers.ofByteArray());
-        printResponse(response);
+
         int statusCode = response.statusCode();
         String contentType = response.headers().firstValue("Content-Type").orElse("");
-        if (statusCode >= 400)
-            throw new HttpError(statusCode, new String(response.body(), StandardCharsets.UTF_8));
-        if (contentType.toLowerCase().contains("application/json"))
+        if (statusCode >= 400) {
+            var requestId = response.headers().firstValue("x-request-id").orElse("");
+            throw new HttpError(
+                    statusCode,
+                    String.format(
+                            "(status code: %d, request_id: %s)\n %s",
+                            statusCode, requestId,
+                            new String(response.body(), StandardCharsets.UTF_8)
+                    )
+            );
+        }
+        if (contentType.toLowerCase().contains("application/json")) {
             return new String(response.body(), StandardCharsets.UTF_8);
+        }
         else if (contentType.toLowerCase().contains("multipart/form-data")) {
             return MultipartReader.parseMultipartResponse(response);
         } else if (contentType.toLowerCase().contains("application/x-protobuf")) {
