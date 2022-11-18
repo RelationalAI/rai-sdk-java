@@ -51,6 +51,7 @@ public class OAuthClientTest extends UnitTest {
         assertEquals(clientId, rsp.id);
         assertEquals(clientName, rsp.name);
 
+        System.out.println("==> getOAuthClient");
         rsp = client.getOAuthClient(clientId);
         assertNotNull(rsp);
         assertEquals(clientId, rsp.id);
