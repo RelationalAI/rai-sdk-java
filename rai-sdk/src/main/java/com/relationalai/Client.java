@@ -255,6 +255,7 @@ public class Client {
     }
 
     void printResponse(HttpResponse<byte[]> response) {
+        System.out.println(response.statusCode());
         var headers = Arrays.asList("x-request-id");
         for (var header : response.headers().map().entrySet()) {
             if (headers.contains(header.getKey())) {
