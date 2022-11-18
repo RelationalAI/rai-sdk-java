@@ -20,7 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import java.io.IOException;
+import java.util.UUID;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -29,14 +31,16 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 // Test OAuth Client APIs
 @TestInstance(Lifecycle.PER_CLASS)
 public class OAuthClientTest extends UnitTest {
-    static String clientName = "sdk-test-client";
+    static UUID uuid = UUID.randomUUID();
+    static String clientName = String.format("sdk-test-client-%s", uuid);
 
     @Test void testOAuthClient() throws HttpError, InterruptedException, IOException {
         var client = createClient();
 
         var rsp = client.findOAuthClient(clientName);
-        if (rsp != null)
+        if (rsp != null) {
             client.deleteOAuthClient(rsp.id);
+        }
 
         rsp = client.findOAuthClient(clientName);
         assertNull(rsp);
@@ -68,5 +72,14 @@ public class OAuthClientTest extends UnitTest {
 
         rsp = client.findOAuthClient(clientName);
         assertNull(rsp);
+    }
+
+    @AfterAll
+    void tearDown() throws IOException, HttpError, InterruptedException {
+        var client = createClient();
+        var rsp = client.findOAuthClient(clientName);
+        if (rsp != null) {
+            client.deleteOAuthClient(rsp.id);
+        }
     }
 }
