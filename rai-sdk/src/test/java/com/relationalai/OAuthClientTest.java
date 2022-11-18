@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.UUID;
 
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -55,7 +54,6 @@ public class OAuthClientTest extends UnitTest {
         assertEquals(clientId, rsp.id);
         assertEquals(clientName, rsp.name);
 
-        System.out.println("==> getOAuthClient");
         rsp = client.getOAuthClient(clientId);
         assertNotNull(rsp);
         assertEquals(clientId, rsp.id);
@@ -72,6 +70,10 @@ public class OAuthClientTest extends UnitTest {
 
         rsp = client.findOAuthClient(clientName);
         assertNull(rsp);
+
+        /*if (1 == 1) {
+            throw new HttpError(500, "client not found");
+        }*/
     }
 
     @AfterAll

@@ -273,11 +273,7 @@ public class Client {
             var requestId = response.headers().firstValue("x-request-id").orElse("");
             throw new HttpError(
                     statusCode,
-                    String.format(
-                            "(status code: %d, request_id: %s)\n %s",
-                            statusCode, requestId,
-                            new String(response.body(), StandardCharsets.UTF_8)
-                    )
+                    String.format("(request_id: %s) %s", requestId, new String(response.body(), StandardCharsets.UTF_8))
             );
         }
         if (contentType.toLowerCase().contains("application/json")) {
