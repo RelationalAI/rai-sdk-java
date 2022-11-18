@@ -46,6 +46,7 @@ public class UserTest extends UnitTest {
         rsp = client.findUser(userEmail);
         assertNull(rsp);
 
+        System.out.println("==> create user");
         rsp = client.createUser(userEmail);
         assertEquals(userEmail, rsp.email);
         assertEquals("ACTIVE", rsp.status);
