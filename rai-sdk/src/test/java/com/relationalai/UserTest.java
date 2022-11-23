@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.io.IOException;
 import java.util.UUID;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -40,8 +41,9 @@ public class UserTest extends UnitTest {
         var client = createClient();
 
         var rsp = client.findUser(userEmail);
-        if (rsp != null)
+        if (rsp != null) {
             client.deleteUser(rsp.id);
+        }
 
         rsp = client.findUser(userEmail);
         assertNull(rsp);
@@ -101,5 +103,14 @@ public class UserTest extends UnitTest {
 
         rsp = client.findUser(userEmail);
         assertNull(rsp);
+    }
+
+    @AfterAll
+    void tearDown() throws IOException, HttpError, InterruptedException {
+        var client = createClient();
+        var rsp = client.findUser(userEmail);
+        if (rsp != null) {
+            client.deleteUser(rsp.id);
+        }
     }
 }
