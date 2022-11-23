@@ -90,8 +90,11 @@ public class UserTest extends UnitTest {
         var deleteRsp = client.deleteUser(userId);
         assertEquals(userId, deleteRsp.id);
 
-        rsp = client.getUser(userId);
-        assertNull(rsp);
+        try {
+            client.getUser(userId);
+        } catch (HttpError e) {
+            assertEquals(404, e.statusCode);
+        }
     }
 
     @AfterAll
