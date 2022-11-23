@@ -41,47 +41,36 @@ public class OAuthClientTest extends UnitTest {
             client.deleteOAuthClient(rsp.id);
         }
 
-        rsp = client.findOAuthClient(clientName);
-        assertNull(rsp);
-
         rsp = client.createOAuthClient(clientName);
         assertEquals(clientName, rsp.name);
 
         var clientId = rsp.id;
-
-        rsp = client.findOAuthClient(clientName);
-        assertNotNull(rsp);
-        assertEquals(clientId, rsp.id);
-        assertEquals(clientName, rsp.name);
 
         rsp = client.getOAuthClient(clientId);
         assertNotNull(rsp);
         assertEquals(clientId, rsp.id);
         assertEquals(clientName, rsp.name);
 
-        var clients = client.listOAuthClients();
-        var found = find(clients, item -> item.id.equals(clientId));
-        assertNotNull(found);
-        assertEquals(clientId, found.id);
-        assertEquals(clientName, found.name);
-
         var deleteRsp = client.deleteOAuthClient(clientId);
         assertEquals(clientId, deleteRsp.id);
 
-        rsp = client.findOAuthClient(clientName);
-        assertNull(rsp);
-
-        /*if (1 == 1) {
-            throw new HttpError(500, "client not found");
-        }*/
+        try {
+            client.getOAuthClient(clientId);
+        } catch (HttpError e) {
+            assertEquals(404, e.statusCode);
+        }
     }
 
     @AfterAll
-    void tearDown() throws IOException, HttpError, InterruptedException {
+    void tearDown() throws IOException, InterruptedException {
         var client = createClient();
-        var rsp = client.findOAuthClient(clientName);
-        if (rsp != null) {
-            client.deleteOAuthClient(rsp.id);
+        try {
+            var rsp = client.findOAuthClient(clientName);
+            if (rsp != null) {
+                client.deleteOAuthClient(rsp.id);
+            }
+        } catch (HttpError e) {
+            System.out.println(e.toString());
         }
     }
 }
