@@ -100,6 +100,8 @@ public class UserTest extends UnitTest {
         // Cleanup
         var deleteRsp = client.deleteUser(userId);
         assertEquals(userId, deleteRsp.id);
+        System.out.println(deleteRsp);
+        System.out.println(client.listUsers());
 
         rsp = client.findUser(userEmail);
         assertNull(rsp);
