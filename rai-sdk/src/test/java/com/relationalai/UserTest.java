@@ -98,11 +98,16 @@ public class UserTest extends UnitTest {
     }
 
     @AfterAll
-    void tearDown() throws IOException, HttpError, InterruptedException {
+    void tearDown() throws IOException, InterruptedException {
         var client = createClient();
-        var rsp = client.findUser(userEmail);
-        if (rsp != null) {
-            client.deleteUser(rsp.id);
+        try {
+            var rsp = client.findUser(userEmail);
+            if (rsp != null) {
+                client.deleteUser(rsp.id);
+            }
+        } catch (HttpError e) {
+            // ignore not found user
+            // cause client.findUser is not immediately consistent
         }
     }
 }
