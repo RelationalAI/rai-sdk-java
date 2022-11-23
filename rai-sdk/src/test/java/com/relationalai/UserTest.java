@@ -53,6 +53,9 @@ public class UserTest extends UnitTest {
         assertEquals("ACTIVE", rsp.status);
         assertArrayEquals(new String[] {"user"}, rsp.roles);
 
+        System.out.println(rsp);
+        System.out.println(client.listUsers());
+
         var userId = rsp.id;
 
         rsp = client.findUser(userEmail);
