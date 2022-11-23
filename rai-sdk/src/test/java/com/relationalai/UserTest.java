@@ -106,8 +106,7 @@ public class UserTest extends UnitTest {
                 client.deleteUser(rsp.id);
             }
         } catch (HttpError e) {
-            // ignore not found user
-            // cause client.findUser is not immediately consistent
+            System.out.println(e.toString());
         }
     }
 }
