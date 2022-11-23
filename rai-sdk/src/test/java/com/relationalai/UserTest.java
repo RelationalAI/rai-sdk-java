@@ -52,9 +52,12 @@ public class UserTest extends UnitTest {
         assertEquals(userEmail, rsp.email);
         assertEquals("ACTIVE", rsp.status);
         assertArrayEquals(new String[] {"user"}, rsp.roles);
-
-        System.out.println(rsp);
-        System.out.println(client.listUsers());
+        System.out.println("==> create user");
+        System.out.println(rsp.toString());
+        System.out.println("==> list users");
+        for (var user : client.listUsers()) {
+            System.out.println(user.toString());
+        }
 
         var userId = rsp.id;
 
@@ -103,8 +106,12 @@ public class UserTest extends UnitTest {
         // Cleanup
         var deleteRsp = client.deleteUser(userId);
         assertEquals(userId, deleteRsp.id);
-        System.out.println(deleteRsp);
-        System.out.println(client.listUsers());
+        System.out.println("==> delete user");
+        System.out.println(deleteRsp.toString());
+        System.out.println("==> list users");
+        for (var u : client.listUsers()) {
+            System.out.println(u.toString());
+        }
 
         rsp = client.findUser(userEmail);
         assertNull(rsp);
