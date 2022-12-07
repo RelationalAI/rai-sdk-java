@@ -33,7 +33,7 @@ runs:
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
-        java-version: 18
+        java-version: ${{ matrix.java-version }}
         distribution: 'adopt'
 
     - name: Build and Test with Maven
