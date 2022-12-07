@@ -22,11 +22,6 @@ inputs:
     required: false
     description: 'Optional http headers'
     default: '{}'
-  
-  java_version:
-    required: false
-    description: 'Java version to test with'
-    default: '18'
 
 runs:
   using: 'composite'
@@ -37,8 +32,10 @@ runs:
 
     - name: Set up JDK
       uses: actions/setup-java@v3
+      env:
+        JAVA_VERSION: '1.8'
       with:
-        java-version: ${{ matrix.java-version || inputs.java_version }}
+        java-version: ${{ matrix.java-version || env.JAVA_VERSION }}
         distribution: 'adopt'
 
     - name: Build and Test with Maven
