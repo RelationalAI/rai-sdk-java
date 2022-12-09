@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.io.IOException;
 import java.util.UUID;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -30,7 +31,6 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 // Test User APIs.
 // TODO: Keep it disabled until the Auth0 API rate limiting issue is fixed.
-@Disabled
 @TestInstance(Lifecycle.PER_CLASS)
 public class UserTest extends UnitTest {
     static UUID uuid = UUID.randomUUID();
@@ -41,8 +41,9 @@ public class UserTest extends UnitTest {
         var client = createClient();
 
         var rsp = client.findUser(userEmail);
-        if (rsp != null)
+        if (rsp != null) {
             client.deleteUser(rsp.id);
+        }
 
         rsp = client.findUser(userEmail);
         assertNull(rsp);
@@ -54,18 +55,7 @@ public class UserTest extends UnitTest {
 
         var userId = rsp.id;
 
-        rsp = client.findUser(userEmail);
-        assertNotNull(rsp);
-        assertEquals(userId, rsp.id);
-        assertEquals(userEmail, rsp.email);
-
-        rsp = client.getUser(userId);
-        assertNotNull(rsp);
-        assertEquals(userId, rsp.id);
-        assertEquals(userEmail, rsp.email);
-
-        var users = client.listUsers();
-        var user = find(users, item -> item.id.equals(userId));
+        var user = client.getUser(userId);
         assertNotNull(user);
         assertEquals(userId, user.id);
         assertEquals(userEmail, user.email);
@@ -100,7 +90,23 @@ public class UserTest extends UnitTest {
         var deleteRsp = client.deleteUser(userId);
         assertEquals(userId, deleteRsp.id);
 
-        rsp = client.findUser(userEmail);
-        assertNull(rsp);
+        try {
+            client.getUser(userId);
+        } catch (HttpError e) {
+            assertEquals(404, e.statusCode);
+        }
+    }
+
+    @AfterAll
+    void tearDown() throws IOException, InterruptedException {
+        var client = createClient();
+        try {
+            var rsp = client.findUser(userEmail);
+            if (rsp != null) {
+                client.deleteUser(rsp.id);
+            }
+        } catch (HttpError e) {
+            System.out.println(e.toString());
+        }
     }
 }
