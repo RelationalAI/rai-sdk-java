@@ -19,10 +19,10 @@ package com.relationalai;
 import com.jsoniter.annotation.JsonProperty;
 
 public class OAuthClientExtra extends OAuthClient {
-    @JsonProperty(value = "permissions", required = true)
+    @JsonProperty(value = "permissions")
     public String[] permissions;
 
-    @JsonProperty(value = "secret", required = true)
+    @JsonProperty(value = "secret")
     public String secret;
 
     public OAuthClientExtra() {}
