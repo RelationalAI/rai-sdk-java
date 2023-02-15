@@ -58,8 +58,8 @@
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.25</version>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.36</version>
         </dependency>
         <dependency>
             <groupId>com.google.protobuf</groupId>
@@ -112,6 +112,7 @@
                 <version>2.22.0</version>
                 <configuration>
                     <argLine>--add-opens java.base/java.nio=ALL-UNNAMED</argLine>
+                    <trimStackTrace>false</trimStackTrace>
                 </configuration>
             </plugin>
             <plugin>

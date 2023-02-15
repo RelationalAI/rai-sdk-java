@@ -36,7 +36,6 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class Client {
@@ -267,12 +266,19 @@ public class Client {
         // printRequest(request);
         HttpResponse<byte[]> response =
                 getHttpClient().send(request, HttpResponse.BodyHandlers.ofByteArray());
+
         int statusCode = response.statusCode();
         String contentType = response.headers().firstValue("Content-Type").orElse("");
-        if (statusCode >= 400)
-            throw new HttpError(statusCode, new String(response.body(), StandardCharsets.UTF_8));
-        if (contentType.toLowerCase().contains("application/json"))
+        if (statusCode >= 400) {
+            var requestId = response.headers().firstValue("x-request-id").orElse("");
+            throw new HttpError(
+                    statusCode,
+                    String.format("(request_id: %s) %s", requestId, new String(response.body(), StandardCharsets.UTF_8))
+            );
+        }
+        if (contentType.toLowerCase().contains("application/json")) {
             return new String(response.body(), StandardCharsets.UTF_8);
+        }
         else if (contentType.toLowerCase().contains("multipart/form-data")) {
             return MultipartReader.parseMultipartResponse(response);
         } else if (contentType.toLowerCase().contains("application/x-protobuf")) {

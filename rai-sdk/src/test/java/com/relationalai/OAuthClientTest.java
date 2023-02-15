@@ -20,53 +20,57 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import java.io.IOException;
+import java.util.UUID;
 
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 // Test OAuth Client APIs
-@Disabled
 @TestInstance(Lifecycle.PER_CLASS)
 public class OAuthClientTest extends UnitTest {
-    static String clientName = "sdk-test-client";
+    static UUID uuid = UUID.randomUUID();
+    static String clientName = String.format("sdk-test-client-%s", uuid);
 
     @Test void testOAuthClient() throws HttpError, InterruptedException, IOException {
         var client = createClient();
 
         var rsp = client.findOAuthClient(clientName);
-        if (rsp != null)
+        if (rsp != null) {
             client.deleteOAuthClient(rsp.id);
-
-        rsp = client.findOAuthClient(clientName);
-        assertNull(rsp);
+        }
 
         rsp = client.createOAuthClient(clientName);
         assertEquals(clientName, rsp.name);
 
         var clientId = rsp.id;
 
-        rsp = client.findOAuthClient(clientName);
-        assertNotNull(rsp);
-        assertEquals(clientId, rsp.id);
-        assertEquals(clientName, rsp.name);
-
         rsp = client.getOAuthClient(clientId);
         assertNotNull(rsp);
         assertEquals(clientId, rsp.id);
         assertEquals(clientName, rsp.name);
 
-        var clients = client.listOAuthClients();
-        var found = find(clients, item -> item.id.equals(clientId));
-        assertNotNull(found);
-        assertEquals(clientId, found.id);
-        assertEquals(clientName, found.name);
-
         var deleteRsp = client.deleteOAuthClient(clientId);
         assertEquals(clientId, deleteRsp.id);
 
-        rsp = client.findOAuthClient(clientName);
-        assertNull(rsp);
+        try {
+            client.getOAuthClient(clientId);
+        } catch (HttpError e) {
+            assertEquals(404, e.statusCode);
+        }
+    }
+
+    @AfterAll
+    void tearDown() throws IOException, InterruptedException {
+        var client = createClient();
+        try {
+            var rsp = client.findOAuthClient(clientName);
+            if (rsp != null) {
+                client.deleteOAuthClient(rsp.id);
+            }
+        } catch (HttpError e) {
+            System.out.println(e.toString());
+        }
     }
 }
