@@ -23,6 +23,8 @@ import org.apache.arrow.vector.FieldVector;
 import org.apache.arrow.vector.VectorSchemaRoot;
 import org.apache.arrow.vector.ipc.ArrowStreamReader;
 import org.awaitility.Awaitility;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import relationalai.protocol.Message;
 
 import java.io.*;
@@ -62,6 +64,8 @@ public class Client {
         defaultHeaders.put("User-Agent", userAgent());
     }
 
+    private Logger logger;
+
     public Client() {}
 
     // Note, creating a client from config will also enable the default access
@@ -70,6 +74,10 @@ public class Client {
     // alternate implementation of AccessTokenHandler handler, or it can be
     // disabled by caling setAccessTokenHandler(null).
     public Client(Config cfg) {
+        this(cfg, null);
+    }
+
+    public Client(Config cfg, Logger logger) {
         if (cfg.region != null)
             this.region = cfg.region;
         if (cfg.scheme != null)
@@ -81,9 +89,10 @@ public class Client {
         this.httpClient = HttpClient.newBuilder().build();
         this.credentials = cfg.credentials;
         this.setAccessTokenHandler(new DefaultAccessTokenHandler());
+        this.logger = logger == null ? LoggerFactory.getLogger("rai") : logger;
     }
 
-    // Returns the current `HttpClient` instance, creating one if necessarry.
+    // Returns the current `HttpClient` instance, creating one if necessary.
     public HttpClient getHttpClient() {
         return this.httpClient;
     }
@@ -586,6 +595,7 @@ public class Client {
 
     public OAuthClientExtra createOAuthClient(String name)
             throws HttpError, InterruptedException, IOException {
+        logger.info("createOAuthClient {}", name);
         return createOAuthClient(name, null);
     }
 
@@ -739,7 +749,7 @@ public class Client {
             String database, String engine,
             String source, boolean readonly,
             Map<String, String> inputs) throws HttpError, IOException, InterruptedException {
-
+        logger.info("execute: database {}, engine {}, readonly {}", database, engine, readonly);
         var id = executeAsync(database, engine, source, readonly, inputs).transaction.id;
 
         Awaitility.await()
