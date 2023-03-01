@@ -37,7 +37,7 @@ public class Runner {
             cmd.run(cmdArgs);
         } catch (Exception e) {
             // error trying to run example
-            System.err.println(e.toString());
+            e.printStackTrace();
         }
         System.exit(0);
     }

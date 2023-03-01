@@ -276,10 +276,16 @@ public class Client {
         HttpResponse<byte[]> response =
                 getHttpClient().send(request, HttpResponse.BodyHandlers.ofByteArray());
 
-        int statusCode = response.statusCode();
-        String contentType = response.headers().firstValue("Content-Type").orElse("");
+        var statusCode = response.statusCode();
+        var contentType = response.headers().firstValue("Content-Type").orElse("");
+        var requestId = response.headers().firstValue("X-Request-ID").orElse("");
+        var userAgent = response.request().headers().firstValue("User-Agent").orElse("");
+        logger.debug("{} {} {} {} {} {} {}",
+                response.request().method(),
+                response.version(), response.request().headers().firstValue("Content-Type").orElse(""),
+                response.request().uri(), statusCode, userAgent, requestId);
+
         if (statusCode >= 400) {
-            var requestId = response.headers().firstValue("x-request-id").orElse("");
             throw new HttpError(
                     statusCode,
                     String.format("(request_id: %s) %s", requestId, new String(response.body(), StandardCharsets.UTF_8))
