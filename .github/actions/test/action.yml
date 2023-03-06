@@ -50,6 +50,7 @@ runs:
         CLIENT_CREDENTIALS_URL: ${{ inputs.client_credentials_url }}
         HOST: ${{ inputs.rai_host }}
         CUSTOM_HEADERS: ${{ inputs.custom_headers }}
+        MAVEN_OPTS: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.http.retryHandler.class=standard -Dmaven.wagon.http.retryHandler.count=3 -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
       run: |
           export JAVA_TOOL_OPTIONS="--add-opens=java.base/java.nio=ALL-UNNAMED"
           mkdir -p ~/.rai
