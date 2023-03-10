@@ -41,7 +41,31 @@ runs:
         JAVA_VERSION: '1.8'
       with:
         java-version: ${{ matrix.java-version || inputs.java_version }}
+        cache: 'maven'
         distribution: 'adopt'
+
+    - name: maven-settings-xml-action
+      uses: whelk-io/maven-settings-xml-action@v20
+      with:
+        servers: >
+          [
+            {
+              "id": "github",
+              "username": "${env.GITHUB_ACTOR}",
+              "password": "${env.GITHUB_TOKEN}"
+            },
+            {
+              "id": "central",
+              "configuration": {
+                "httpConfiguration": {
+                  "all": {
+                    "connectionTimeout": "3000",
+                    "readTimeout": "60000"
+                  }
+                }
+              }
+            }
+          ]
 
     - name: Build and Test with Maven
       env:
@@ -50,9 +74,8 @@ runs:
         CLIENT_CREDENTIALS_URL: ${{ inputs.client_credentials_url }}
         HOST: ${{ inputs.rai_host }}
         CUSTOM_HEADERS: ${{ inputs.custom_headers }}
-        MAVEN_OPTS: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.http.retryHandler.class=standard -Dmaven.wagon.http.retryHandler.count=3 -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
+        JAVA_TOOL_OPTIONS: --add-opens=java.base/java.nio=ALL-UNNAMED
       run: |
-          export JAVA_TOOL_OPTIONS="--add-opens=java.base/java.nio=ALL-UNNAMED"
           mkdir -p ~/.rai
           mvn clean install
       shell: bash
