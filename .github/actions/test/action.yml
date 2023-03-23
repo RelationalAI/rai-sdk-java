@@ -80,6 +80,7 @@ runs:
               sleep 2s
             fi
           done
+      shell: bash
 
     - name: Test with Maven
       env:
