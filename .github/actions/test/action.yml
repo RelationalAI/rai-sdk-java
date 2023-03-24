@@ -67,7 +67,22 @@ runs:
             }
           ]
 
-    - name: Build and Test with Maven
+    - name: Download dependencies and build with Maven
+      run: |
+          for i in {1..3}
+          do
+            echo "[INFO] Attempt $i to download dependencies"
+            if mvn clean package -DskipTests
+            then
+              break
+            else
+              echo "[ERROR] Failed to download dependencies, will retry after 2s"
+              sleep 2s
+            fi
+          done
+      shell: bash
+
+    - name: Test with Maven
       env:
         CLIENT_ID: ${{ inputs.client_id }}
         CLIENT_SECRET: ${{ inputs.client_secret }}
@@ -77,5 +92,5 @@ runs:
         JAVA_TOOL_OPTIONS: --add-opens=java.base/java.nio=ALL-UNNAMED
       run: |
           mkdir -p ~/.rai
-          mvn clean install
+          mvn test
       shell: bash
