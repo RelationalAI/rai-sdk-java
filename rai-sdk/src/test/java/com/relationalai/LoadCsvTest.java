@@ -266,11 +266,5 @@ public class LoadCsvTest extends UnitTest {
         var client = createClient();
         var deleteRsp = client.deleteDatabase(databaseName);
         assertEquals(databaseName, deleteRsp.name);
-        try {
-            // deleteEngineWait terminates its polling loop with a 404
-            client.deleteEngineWait(engineName);
-        } catch (HttpError e) {
-            assertEquals(e.statusCode, 404);
-        }
     }
 }
