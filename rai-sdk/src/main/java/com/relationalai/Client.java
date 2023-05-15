@@ -74,7 +74,7 @@ public class Client {
     // alternate implementation of AccessTokenHandler handler, or it can be
     // disabled by caling setAccessTokenHandler(null).
     public Client(Config cfg) {
-        this(cfg, null);
+        this(cfg, LoggerFactory.getLogger("rai"));
     }
 
     public Client(Config cfg, Logger logger) {
@@ -89,7 +89,7 @@ public class Client {
         this.httpClient = HttpClient.newBuilder().build();
         this.credentials = cfg.credentials;
         this.setAccessTokenHandler(new DefaultAccessTokenHandler());
-        this.logger = logger == null ? LoggerFactory.getLogger("rai") : logger;
+        this.logger = logger;
     }
 
     // Returns the current `HttpClient` instance, creating one if necessary.
