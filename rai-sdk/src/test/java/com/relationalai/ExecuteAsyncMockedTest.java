@@ -48,7 +48,7 @@ public class ExecuteAsyncMockedTest extends UnitTest {
     @Test
     void testExecuteAsync() throws HttpError, InterruptedException, IOException, URISyntaxException {
         var client = createClient();
-        client.setHttpClient(mockedHttpClient());
+        client.setHttpClient(getMockedHttpClient());
 
         var query = "x, x^2, x^3, x^4 from x in {1; 2; 3; 4; 5}";
 
@@ -76,55 +76,19 @@ public class ExecuteAsyncMockedTest extends UnitTest {
         assertEquals(rsp.problems, problems);
     }
 
-    HttpClient mockedHttpClient() throws IOException, InterruptedException, URISyntaxException {
+    HttpClient getMockedHttpClient() throws IOException, InterruptedException, URISyntaxException {
         var httpRequest = HttpRequest.newBuilder()
                 .headers("User-Agent", "rai-sdk-java")
                 .uri(new URI("https://mocked/path/to/transactions")).build();
-        var httpResponse = new HttpResponse<>() {
-            @Override
-            public int statusCode() {
-                return 200;
-            }
-            @Override
-            public HttpRequest request() {
-                return httpRequest;
-            }
-            @Override
-            public Optional<HttpResponse<Object>> previousResponse() {
-                return Optional.empty();
-            }
-            @Override
-            public HttpHeaders headers() {
-                Map<String, List<String>> headers = new HashMap<>() {{
-                    put("Content-Type", new ArrayList<>() {{ add ("multipart/form-data; boundary=b11385ead6144ee0a9550db3672a7ccf"); }});
-                }};
-                return HttpHeaders.of(headers, (k, v) -> true);
-            }
-            @Override
-            public Object body() {
-                try {
-                    return Files.readAllBytes(
-                            Path.of(Paths.get(getClass().getResource("/multipart.data").toURI()).toString())
-                    );
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            @Override
-            public Optional<SSLSession> sslSession() {
-                return Optional.empty();
-            }
-            @Override
-            public URI uri() {
-                return null;
-            }
-            @Override
-            public HttpClient.Version version() {
-                return HttpClient.Version.HTTP_1_1;
-            }
-        };
-
         var httpClient = Mockito.mock(HttpClient.class);
+        var httpResponse = Mockito.mock(HttpResponse.class);
+
+        Mockito.when(httpResponse.statusCode()).thenReturn(200);
+        Mockito.when(httpResponse.request()).thenReturn(httpRequest);
+        Mockito.when(httpResponse.headers()).thenReturn(
+                HttpHeaders.of(new HashMap<>() {{put("Content-Type", new ArrayList<>() {{ add ("multipart/form-data; boundary=b11385ead6144ee0a9550db3672a7ccf"); }});
+            }}, (k, v) -> true));
+        Mockito.when(httpResponse.body()).thenReturn(Files.readAllBytes(Path.of(Paths.get(getClass().getResource("/multipart.data").toURI()).toString())));
         Mockito.when(httpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(httpResponse);
         return httpClient;
     }
