@@ -16,15 +16,12 @@
 
 package com.relationalai;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import relationalai.protocol.Message;
 
-import javax.net.ssl.SSLSession;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -38,15 +35,14 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith({TestExtension.class})
 public class ExecuteAsyncMockedTest extends UnitTest {
 
     @Test
-    void testExecuteAsync() throws HttpError, InterruptedException, IOException, URISyntaxException {
+    void testExecuteAsyncMocked() throws HttpError, InterruptedException, IOException, URISyntaxException {
         var client = createClient();
         client.setHttpClient(getMockedHttpClient());
 
@@ -81,15 +77,25 @@ public class ExecuteAsyncMockedTest extends UnitTest {
                 .headers("User-Agent", "rai-sdk-java")
                 .uri(new URI("https://mocked/path/to/transactions")).build();
         var httpClient = Mockito.mock(HttpClient.class);
-        var httpResponse = Mockito.mock(HttpResponse.class);
+        var txnhttpResponse = Mockito.mock(HttpResponse.class);
+        var oauthHttpResponse = Mockito.mock(HttpResponse.class);
 
-        Mockito.when(httpResponse.statusCode()).thenReturn(200);
-        Mockito.when(httpResponse.request()).thenReturn(httpRequest);
-        Mockito.when(httpResponse.headers()).thenReturn(
+
+        Mockito.when(oauthHttpResponse.statusCode()).thenReturn(200);
+        Mockito.when(oauthHttpResponse.request()).thenReturn(httpRequest);
+        Mockito.when(oauthHttpResponse.body()).thenReturn(
+                "{\"access_token\": \"mocked_token\", \"scope\": \"mocked_scope\", \"expires_in\": 3600}"
+        );
+
+        Mockito.when(txnhttpResponse.statusCode()).thenReturn(200);
+        Mockito.when(txnhttpResponse.request()).thenReturn(httpRequest);
+        Mockito.when(txnhttpResponse.headers()).thenReturn(
                 HttpHeaders.of(new HashMap<>() {{put("Content-Type", new ArrayList<>() {{ add ("multipart/form-data; boundary=b11385ead6144ee0a9550db3672a7ccf"); }});
             }}, (k, v) -> true));
-        Mockito.when(httpResponse.body()).thenReturn(Files.readAllBytes(Path.of(Paths.get(getClass().getResource("/multipart.data").toURI()).toString())));
-        Mockito.when(httpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(httpResponse);
+        Mockito.when(txnhttpResponse.body()).thenReturn(Files.readAllBytes(Path.of(Paths.get(getClass().getResource("/multipart.data").toURI()).toString())));
+
+        Mockito.when(httpClient.send(any(), any())).thenReturn(oauthHttpResponse, txnhttpResponse);
+
         return httpClient;
     }
 }
