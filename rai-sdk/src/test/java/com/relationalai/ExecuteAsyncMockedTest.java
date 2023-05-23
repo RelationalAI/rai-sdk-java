@@ -78,14 +78,6 @@ public class ExecuteAsyncMockedTest extends UnitTest {
                 .uri(new URI("https://mocked/path/to/transactions")).build();
         var httpClient = Mockito.mock(HttpClient.class);
         var txnhttpResponse = Mockito.mock(HttpResponse.class);
-        var oauthHttpResponse = Mockito.mock(HttpResponse.class);
-
-
-        Mockito.when(oauthHttpResponse.statusCode()).thenReturn(200);
-        Mockito.when(oauthHttpResponse.request()).thenReturn(httpRequest);
-        Mockito.when(oauthHttpResponse.body()).thenReturn(
-                "{\"access_token\": \"mocked_token\", \"scope\": \"mocked_scope\", \"expires_in\": 3600}"
-        );
 
         Mockito.when(txnhttpResponse.statusCode()).thenReturn(200);
         Mockito.when(txnhttpResponse.request()).thenReturn(httpRequest);
@@ -94,7 +86,7 @@ public class ExecuteAsyncMockedTest extends UnitTest {
             }}, (k, v) -> true));
         Mockito.when(txnhttpResponse.body()).thenReturn(Files.readAllBytes(Path.of(Paths.get(getClass().getResource("/multipart.data").toURI()).toString())));
 
-        Mockito.when(httpClient.send(any(), any())).thenReturn(oauthHttpResponse, txnhttpResponse);
+        Mockito.when(httpClient.send(any(), any())).thenReturn(txnhttpResponse);
 
         return httpClient;
     }
