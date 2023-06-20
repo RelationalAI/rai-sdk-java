@@ -91,7 +91,7 @@ runs:
         CUSTOM_HEADERS: ${{ inputs.custom_headers }}
         JAVA_TOOL_OPTIONS: --add-opens=java.base/java.nio=ALL-UNNAMED
         RunId: ${{ github.run_id	}}
-        JAVA_VERSION: ${{ inputs.java_version }}
+        JAVA_VERSION: ${{ matrix.java-version }}
       run: |
           mkdir -p ~/.rai
           mvn test
