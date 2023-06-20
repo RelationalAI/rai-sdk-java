@@ -25,8 +25,8 @@ import java.util.function.Predicate;
 
 public abstract class UnitTest {
     static UUID uuid = UUID.randomUUID();
-    static String databaseName = String.format("java-sdk-test-%s", System.getenv("RunId"));
-    static String engineName = String.format("java-sdk-test-%s", System.getenv("RunId"));
+    static String databaseName = String.format("java-sdk-test-%s-%s", System.getenv("RunId"), System.getenv("JAVA_VERSION"));
+    static String engineName = String.format("java-sdk-test-%s-%s", System.getenv("RunId"), System.getenv("JAVA_VERSION"));
 
     static Config getConfig() throws IOException {
         var filename = String.format("%s/.rai/config", System.getenv("HOME"));
