@@ -90,6 +90,7 @@ runs:
         HOST: ${{ inputs.rai_host }}
         CUSTOM_HEADERS: ${{ inputs.custom_headers }}
         JAVA_TOOL_OPTIONS: --add-opens=java.base/java.nio=ALL-UNNAMED
+        RunId: ${{ github.run_id	}}
       run: |
           mkdir -p ~/.rai
           mvn test
