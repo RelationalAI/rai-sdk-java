@@ -11,6 +11,9 @@ headers.put("h1", "v1");
 var httpClient = client.getHttpClient();
 ```
 
+## v0.4.2-alpha
+* Increased the auth token expiration buffer from 5s to 60s.
+
 
 ## v0.4.1-alpha
 * Adding support to new java versions.

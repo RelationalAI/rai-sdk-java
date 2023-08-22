@@ -93,7 +93,7 @@ In order to use the `rai-sdk-java`, you need add this dependency to your project
     <dependency>
         <groupId>com.relationalai</groupId>
         <artifactId>rai-sdk</artifactId>
-        <version>0.4.1-alpha</version>
+        <version>0.4.2-alpha</version>
     </dependency>
 
 You need also to point maven to the SDK GitHub packages repository in the project's POM:
