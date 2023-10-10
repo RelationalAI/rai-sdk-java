@@ -16,11 +16,12 @@
 
 package com.relationalai;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
+import org.apache.arrow.vector.util.Text;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -43,33 +44,15 @@ public class LoadJsonTest extends UnitTest {
         ensureDatabase(client);
 
         var loadRsp = client.loadJson(databaseName, engineName, "sample", sample);
-        assertEquals(false, loadRsp.aborted);
-        assertEquals(0, loadRsp.output.length);
-        assertEquals(0, loadRsp.problems.length);
+        assertEquals("COMPLETED", loadRsp.transaction.state);
+        assertEquals(0, loadRsp.problems.size());
 
-        var rsp = client.executeV1(databaseName, engineName, "def output = sample");
-
-        Relation rel;
-
-        rel = findRelation(rsp.output, ":name");
-        assertNotNull(rel);
-        assertEquals(1, rel.columns.length);
-        assertArrayEquals(new Object[][] {{"Amira"}}, rel.columns);
-
-        rel = findRelation(rsp.output, ":age");
-        assertNotNull(rel);
-        assertEquals(1, rel.columns.length);
-        assertArrayEquals(new Object[][] {{32.}}, rel.columns);
-
-        rel = findRelation(rsp.output, ":height");
-        assertNotNull(rel);
-        assertEquals(1, rel.columns.length);
-        assertArrayEquals(new Object[][] {{null}}, rel.columns);
-
-        rel = findRelation(rsp.output, ":pets");
-        assertNotNull(rel);
-        assertEquals(2, rel.columns.length);
-        assertArrayEquals(new Object[][] {{1., 2.}, {"dog", "rabbit"}}, rel.columns);
+        var rsp = client.execute(databaseName, engineName, "def output = sample");
+        assertEquals(new ArrayList<Object>() {{ add(32L); }}, rsp.results.get(0).table);
+        assertEquals(new ArrayList<Object>() {{ add(new HashMap<String, Object>()); }}, rsp.results.get(1).table);
+        assertEquals(new ArrayList<Object> (){{ add(new Text("Amira")); }}, rsp.results.get(2).table);
+        assertEquals(new ArrayList<Object>(){{ add(1L); add(2L);}}, rsp.results.get(3).table);
+        assertEquals(new ArrayList<Object>(){{ add(new Text("dog")); add(new Text("rabbit"));}}, rsp.results.get(4).table);
     }
 
     @AfterAll

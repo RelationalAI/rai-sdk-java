@@ -20,8 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.apache.arrow.vector.util.Text;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -45,45 +47,42 @@ public class LoadCsvTest extends UnitTest {
         ensureDatabase(client);
 
         var loadRsp = client.loadCsv(databaseName, engineName, "sample", sample);
-        assertEquals(false, loadRsp.aborted);
-        assertEquals(0, loadRsp.output.length);
-        assertEquals(0, loadRsp.problems.length);
+        assertEquals("COMPLETED", loadRsp.transaction.state);
+        assertEquals(0, loadRsp.problems.size());
 
-        var rsp = client.executeV1(databaseName, engineName, "def output = sample");
-
-        Relation rel;
-
-        rel = findRelation(rsp.output, ":date");
-        assertNotNull(rel);
-        assertEquals(2, rel.columns.length);
-        assertArrayEquals(new Object[][] {
-                {2., 3., 4., 5.},
-                {"2020-01-01", "2020-02-02", "2020-03-03", "2020-04-04"}
-        }, rel.columns);
-
-        rel = findRelation(rsp.output, ":price");
-        assertNotNull(rel);
-        assertEquals(2, rel.columns.length);
-        assertArrayEquals(new Object[][] {
-                {2., 3., 4., 5.},
-                {"12.50", "14.25", "11.00", "12.25"}
-        }, rel.columns);
-
-        rel = findRelation(rsp.output, ":quantity");
-        assertNotNull(rel);
-        assertEquals(2, rel.columns.length);
-        assertArrayEquals(new Object[][] {
-                {2., 3., 4., 5.},
-                {"2", "4", "4", "3"}
-        }, rel.columns);
-
-        rel = findRelation(rsp.output, ":cocktail");
-        assertNotNull(rel);
-        assertEquals(2, rel.columns.length);
-        assertArrayEquals(new Object[][] {
-                {2., 3., 4., 5.},
-                {"martini", "sazerac", "cosmopolitan", "bellini"}
-        }, rel.columns);
+        var rsp = client.execute(databaseName, engineName, "def output = sample");
+        assertEquals(new ArrayList<Object>() {{ add(2L); add(3L); add(4L); add(5L);}}, rsp.results.get(0).table);
+        assertEquals(new ArrayList<Object>() {{
+                         add(new Text("martini"));
+                         add(new Text("sazerac"));
+                         add(new Text("cosmopolitan"));
+                         add(new Text("bellini")); }},
+                rsp.results.get(1).table
+        );
+        assertEquals(new ArrayList<Object>() {{ add(2L); add(3L); add(4L); add(5L);}}, rsp.results.get(2).table);
+        assertEquals(new ArrayList<Object>() {{
+                         add(new Text("2020-01-01"));
+                         add(new Text("2020-02-02"));
+                         add(new Text("2020-03-03"));
+                         add(new Text("2020-04-04")); }},
+                rsp.results.get(3).table
+        );
+        assertEquals(new ArrayList<Object>() {{ add(2L); add(3L); add(4L); add(5L);}}, rsp.results.get(4).table);
+        assertEquals(new ArrayList<Object>() {{
+                         add(new Text("12.50"));
+                         add(new Text("14.25"));
+                         add(new Text("11.00"));
+                         add(new Text("12.25")); }},
+                rsp.results.get(5).table
+        );
+        assertEquals(new ArrayList<Object>() {{ add(2L); add(3L); add(4L); add(5L);}}, rsp.results.get(6).table);
+        assertEquals(new ArrayList<Object>() {{
+                         add(new Text("2"));
+                         add(new Text("4"));
+                         add(new Text("4"));
+                         add(new Text("3")); }},
+                rsp.results.get(7).table
+        );
     }
 
     static final String sampleNoHeader = "" +
@@ -101,46 +100,43 @@ public class LoadCsvTest extends UnitTest {
         var opts = new CsvOptions().withHeaderRow(0);
         var loadRsp = client.loadCsv(
                 databaseName, engineName, "sample_no_header", sampleNoHeader, opts);
-        assertEquals(false, loadRsp.aborted);
-        assertEquals(0, loadRsp.output.length);
-        assertEquals(0, loadRsp.problems.length);
+        assertEquals("COMPLETED", loadRsp.transaction.state);
+        assertEquals(0, loadRsp.problems.size());
 
-        var rsp = client.executeV1(databaseName, engineName, "def output = sample_no_header");
+        var rsp = client.execute(databaseName, engineName, "def output = sample_no_header");
 
-        Relation rel;
-
-        rel = findRelation(rsp.output, ":COL1");
-        assertNotNull(rel);
-        assertEquals(2, rel.columns.length);
-        assertArrayEquals(new Object[][] {
-                {1., 2., 3., 4.},
-                {"martini", "sazerac", "cosmopolitan", "bellini"}
-        }, rel.columns);
-
-
-        rel = findRelation(rsp.output, ":COL2");
-        assertNotNull(rel);
-        assertEquals(2, rel.columns.length);
-        assertArrayEquals(new Object[][] {
-                {1., 2., 3., 4.},
-                {"2", "4", "4", "3"}
-        }, rel.columns);
-
-        rel = findRelation(rsp.output, ":COL3");
-        assertNotNull(rel);
-        assertEquals(2, rel.columns.length);
-        assertArrayEquals(new Object[][] {
-                {1., 2., 3., 4.},
-                {"12.50", "14.25", "11.00", "12.25"}
-        }, rel.columns);
-
-        rel = findRelation(rsp.output, ":COL4");
-        assertNotNull(rel);
-        assertEquals(2, rel.columns.length);
-        assertArrayEquals(new Object[][] {
-                {1., 2., 3., 4.},
-                {"2020-01-01", "2020-02-02", "2020-03-03", "2020-04-04"}
-        }, rel.columns);
+        assertEquals(new ArrayList<Object>() {{ add(1L); add(2L); add(3L); add(4L);}}, rsp.results.get(0).table);
+        assertEquals(new ArrayList<Object>() {{
+                         add(new Text("martini"));
+                         add(new Text("sazerac"));
+                         add(new Text("cosmopolitan"));
+                         add(new Text("bellini")); }},
+                rsp.results.get(1).table
+        );
+        assertEquals(new ArrayList<Object>() {{ add(1L); add(2L); add(3L); add(4L);}}, rsp.results.get(2).table);
+        assertEquals(new ArrayList<Object>() {{
+                         add(new Text("2"));
+                         add(new Text("4"));
+                         add(new Text("4"));
+                         add(new Text("3")); }},
+                rsp.results.get(3).table
+        );
+        assertEquals(new ArrayList<Object>() {{ add(1L); add(2L); add(3L); add(4L);}}, rsp.results.get(4).table);
+        assertEquals(new ArrayList<Object>() {{
+                         add(new Text("12.50"));
+                         add(new Text("14.25"));
+                         add(new Text("11.00"));
+                         add(new Text("12.25")); }},
+                rsp.results.get(5).table
+        );
+        assertEquals(new ArrayList<Object>() {{ add(1L); add(2L); add(3L); add(4L);}}, rsp.results.get(6).table);
+        assertEquals(new ArrayList<Object>() {{
+                         add(new Text("2020-01-01"));
+                         add(new Text("2020-02-02"));
+                         add(new Text("2020-03-03"));
+                         add(new Text("2020-04-04")); }},
+                rsp.results.get(7).table
+        );
     }
 
     static final String sampleAltSyntax = "" +
@@ -158,45 +154,44 @@ public class LoadCsvTest extends UnitTest {
         var opts = new CsvOptions().withDelim('|').withQuoteChar('\'');
         var loadRsp = client.loadCsv(
                 databaseName, engineName, "sample_alt_syntax", sampleAltSyntax, opts);
-        assertEquals(false, loadRsp.aborted);
-        assertEquals(0, loadRsp.output.length);
-        assertEquals(0, loadRsp.problems.length);
+        assertEquals("COMPLETED", loadRsp.transaction.state);
+        assertEquals(0, loadRsp.problems.size());
 
-        var rsp = client.executeV1(databaseName, engineName, "def output = sample_alt_syntax");
+        var rsp = client.execute(databaseName, engineName, "def output = sample_alt_syntax");
 
-        Relation rel;
+        assertEquals(new ArrayList<Object>() {{ add(2L); add(3L); add(4L); add(5L);}}, rsp.results.get(0).table);
+        assertEquals(new ArrayList<Object>() {{
+                         add(new Text("martini"));
+                         add(new Text("sazerac"));
+                         add(new Text("cosmopolitan"));
+                         add(new Text("bellini")); }},
+                rsp.results.get(1).table
+        );
+        assertEquals(new ArrayList<Object>() {{ add(2L); add(3L); add(4L); add(5L);}}, rsp.results.get(2).table);
 
-        rel = findRelation(rsp.output, ":date");
-        assertNotNull(rel);
-        assertEquals(2, rel.columns.length);
-        assertArrayEquals(new Object[][] {
-                {2., 3., 4., 5.},
-                {"2020-01-01", "2020-02-02", "2020-03-03", "2020-04-04"}
-        }, rel.columns);
-
-        rel = findRelation(rsp.output, ":price");
-        assertNotNull(rel);
-        assertEquals(2, rel.columns.length);
-        assertArrayEquals(new Object[][] {
-                {2., 3., 4., 5.},
-                {"12.50", "14.25", "11.00", "12.25"}
-        }, rel.columns);
-
-        rel = findRelation(rsp.output, ":quantity");
-        assertNotNull(rel);
-        assertEquals(2, rel.columns.length);
-        assertArrayEquals(new Object[][] {
-                {2., 3., 4., 5.},
-                {"2", "4", "4", "3"}
-        }, rel.columns);
-
-        rel = findRelation(rsp.output, ":cocktail");
-        assertNotNull(rel);
-        assertEquals(2, rel.columns.length);
-        assertArrayEquals(new Object[][] {
-                {2., 3., 4., 5.},
-                {"martini", "sazerac", "cosmopolitan", "bellini"}
-        }, rel.columns);
+        assertEquals(new ArrayList<Object>() {{
+                         add(new Text("2020-01-01"));
+                         add(new Text("2020-02-02"));
+                         add(new Text("2020-03-03"));
+                         add(new Text("2020-04-04")); }},
+                rsp.results.get(3).table
+        );
+        assertEquals(new ArrayList<Object>() {{ add(2L); add(3L); add(4L); add(5L);}}, rsp.results.get(4).table);
+        assertEquals(new ArrayList<Object>() {{
+                         add(new Text("12.50"));
+                         add(new Text("14.25"));
+                         add(new Text("11.00"));
+                         add(new Text("12.25")); }},
+                rsp.results.get(5).table
+        );
+        assertEquals(new ArrayList<Object>() {{ add(2L); add(3L); add(4L); add(5L);}}, rsp.results.get(6).table);
+        assertEquals(new ArrayList<Object>() {{
+                         add(new Text("2"));
+                         add(new Text("4"));
+                         add(new Text("4"));
+                         add(new Text("3")); }},
+                rsp.results.get(7).table
+        );
     }
 
     @Test void testLoadCsvWithSchema() throws HttpError, InterruptedException, IOException {
@@ -212,53 +207,25 @@ public class LoadCsvTest extends UnitTest {
 
         var opts = new CsvOptions().withSchema(schema);
         var loadRsp = client.loadCsv(databaseName, engineName, "sample", sample, opts);
-        assertEquals(false, loadRsp.aborted);
-        assertEquals(0, loadRsp.output.length);
-        assertEquals(0, loadRsp.problems.length);
+        assertEquals("COMPLETED", loadRsp.transaction.state);
+        assertEquals(0, loadRsp.problems.size());
 
-        var rsp = client.executeV1(databaseName, engineName, "def output = sample");
+        var rsp = client.execute(databaseName, engineName, "def output = sample");
 
-        Relation rel;
-
-        rel = findRelation(rsp.output, ":date");
-        assertNotNull(rel);
-        assertEquals(2, rel.columns.length);
-        assertArrayEquals(new Object[][] {
-                {2., 3., 4., 5.},
-                {"2020-01-01", "2020-02-02", "2020-03-03", "2020-04-04"}
-        }, rel.columns);
-        assertEquals(1, rel.relKey.values.length);
-        assertEquals("Dates.Date", rel.relKey.values[0]);
-
-        rel = findRelation(rsp.output, ":price");
-        assertNotNull(rel);
-        assertEquals(2, rel.columns.length);
-        assertArrayEquals(new Object[][] {
-                {2., 3., 4., 5.},
-                {12.5, 14.25, 11.00, 12.25}
-        }, rel.columns);
-        assertEquals(1, rel.relKey.values.length);
-        assertEquals("FixedPointDecimals.FixedDecimal{Int64, 2}", rel.relKey.values[0]);
-
-        rel = findRelation(rsp.output, ":quantity");
-        assertNotNull(rel);
-        assertEquals(2, rel.columns.length);
-        assertArrayEquals(new Object[][] {
-                {2., 3., 4., 5.},
-                {2., 4., 4., 3.}
-        }, rel.columns);
-        assertEquals(1, rel.relKey.values.length);
-        assertEquals("Int64", rel.relKey.values[0]);
-
-        rel = findRelation(rsp.output, ":cocktail");
-        assertNotNull(rel);
-        assertEquals(2, rel.columns.length);
-        assertArrayEquals(new Object[][] {
-                {2., 3., 4., 5.},
-                {"martini", "sazerac", "cosmopolitan", "bellini"}
-        }, rel.columns);
-        assertEquals(1, rel.relKey.values.length);
-        assertEquals("String", rel.relKey.values[0]);
+        assertEquals(new ArrayList<Object>() {{ add(2L); add(3L); add(4L); add(5L);}}, rsp.results.get(0).table);
+        assertEquals(new ArrayList<Object>() {{
+                         add(new Text("martini"));
+                         add(new Text("sazerac"));
+                         add(new Text("cosmopolitan"));
+                         add(new Text("bellini")); }},
+                rsp.results.get(1).table
+        );
+        assertEquals(new ArrayList<Object>() {{ add(2L); add(3L); add(4L); add(5L);}}, rsp.results.get(2).table);
+        assertEquals(new ArrayList<Object>() {{ add(737425L); add(737457L); add(737487L); add(737519L); }}, rsp.results.get(3).table);
+        assertEquals(new ArrayList<Object>() {{ add(2L); add(3L); add(4L); add(5L);}}, rsp.results.get(4).table);
+        assertEquals(new ArrayList<Object>() {{ add(1250L); add(1425L); add(1100L); add(1225L); }}, rsp.results.get(5).table);
+        assertEquals(new ArrayList<Object>() {{ add(2L); add(3L); add(4L); add(5L);}}, rsp.results.get(6).table);
+        assertEquals(new ArrayList<Object>() {{ add(2L); add(4L); add(4L); add(3L); }}, rsp.results.get(7).table);
     }
 
     @AfterAll

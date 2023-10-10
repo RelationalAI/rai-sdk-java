@@ -752,6 +752,11 @@ public class Client {
     }
 
     public TransactionAsyncResult execute(
+            String database, String engine, String source) throws HttpError, IOException, InterruptedException {
+        return execute(database, engine, source, true);
+    }
+
+    public TransactionAsyncResult execute(
             String database, String engine,
             String source, boolean readonly,
             Map<String, String> inputs) throws HttpError, IOException, InterruptedException {
@@ -1037,20 +1042,20 @@ public class Client {
         return builder.toString();
     }
 
-    public TransactionResult loadCsv(
+    public TransactionAsyncResult loadCsv(
             String database, String engine, String relation, InputStream data)
             throws HttpError, InterruptedException, IOException {
         var s = new String(data.readAllBytes());
         return loadCsv(database, engine, relation, s, null);
     }
 
-    public TransactionResult loadCsv(
+    public TransactionAsyncResult loadCsv(
             String database, String engine, String relation, String data)
             throws HttpError, InterruptedException, IOException {
         return loadCsv(database, engine, relation, data, null);
     }
 
-    public TransactionResult loadCsv(
+    public TransactionAsyncResult loadCsv(
             String database, String engine, String relation,
             InputStream data, CsvOptions options)
             throws HttpError, InterruptedException, IOException {
@@ -1058,14 +1063,14 @@ public class Client {
         return loadCsv(database, engine, relation, s, options);
     }
 
-    public TransactionResult loadCsv(
+    public TransactionAsyncResult loadCsv(
             String database, String engine, String relation,
             String data, CsvOptions options)
             throws HttpError, InterruptedException, IOException {
         var source = genLoadCsv(relation, options);
         var inputs = new HashMap<String, String>();
         inputs.put("data", data);
-        return executeV1(database, engine, source, false, inputs);
+        return execute(database, engine, source, false, inputs);
     }
 
     // Generate the Rel to load JSON data into a relation.
@@ -1076,19 +1081,19 @@ public class Client {
         return builder.toString();
     }
 
-    public TransactionResult loadJson(
+    public TransactionAsyncResult loadJson(
             String database, String engine, String relation, InputStream data)
             throws HttpError, InterruptedException, IOException {
         var s = new String(data.readAllBytes());
         return loadJson(database, engine, relation, s);
     }
 
-    public TransactionResult loadJson(
+    public TransactionAsyncResult loadJson(
             String database, String engine, String relation, String data)
             throws HttpError, InterruptedException, IOException {
         var inputs = new HashMap<String, String>();
         inputs.put("data", data);
         var source = genLoadJson(relation);
-        return executeV1(database, engine, source, false, inputs);
+        return execute(database, engine, source, false, inputs);
     }
 }

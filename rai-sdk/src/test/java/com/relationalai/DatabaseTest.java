@@ -133,14 +133,13 @@ public class DatabaseTest extends UnitTest {
 
         // Load some data and a model
         var loadRsp = client.loadJson(databaseName, engineName, "test_data", testJson);
-        assertEquals(false, loadRsp.aborted);
-        assertEquals(0, loadRsp.output.length);
-        assertEquals(0, loadRsp.problems.length);
+        assertEquals("COMPLETED", loadRsp.transaction.state);
+        assertEquals(0, loadRsp.problems.size());
 
-        loadRsp = client.loadModel(databaseName, engineName, "test_model", testModel);
-        assertEquals(false, loadRsp.aborted);
-        assertEquals(0, loadRsp.output.length);
-        assertEquals(0, loadRsp.problems.length);
+        var loadModelRsp = client.loadModel(databaseName, engineName, "test_model", testModel);
+        assertEquals(false, loadModelRsp.aborted);
+        assertEquals(0, loadModelRsp.output.length);
+        assertEquals(0, loadModelRsp.problems.length);
 
         // Clone the database
         var databaseCloneName = databaseName + "-clone";
