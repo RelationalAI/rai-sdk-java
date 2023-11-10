@@ -22,11 +22,14 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 
 public abstract class UnitTest {
     static UUID uuid = UUID.randomUUID();
     static String databaseName = String.format("java-sdk-test-%s", uuid);
     static String engineName = String.format("java-sdk-test-%s", uuid);
+
+    static final Logger log = Logger.getLogger(UnitTest.class.getName());
 
     static Config getConfig() throws IOException {
         var filename = String.format("%s/.rai/config", System.getenv("HOME"));
@@ -49,6 +52,7 @@ public abstract class UnitTest {
         var cfg = getConfig();
         var customHeaders = (Map<String, String>) Json.deserialize(getenv("CUSTOM_HEADERS", "{}"), Map.class);
 
+        log.info("custom headers: " + Json.serialize(customHeaders));
         var testClient = new Client(cfg);
         var httpHeaders = testClient.getDefaultHttpHeaders();
         for (var header : customHeaders.entrySet()) {
@@ -59,6 +63,7 @@ public abstract class UnitTest {
 
     // Ensure that the test database exists.
     void ensureDatabase() throws HttpError, InterruptedException, IOException {
+        log.info(String.format("engine: %s, database: %s", engineName, databaseName));
         ensureDatabase(createClient());
     }
 

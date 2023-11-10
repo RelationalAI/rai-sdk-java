@@ -40,6 +40,8 @@ public class UserTest extends UnitTest {
     void testUser() throws HttpError, InterruptedException, IOException {
         var client = createClient();
 
+        log.info("user email: " + userEmail);
+
         var rsp = client.findUser(userEmail);
         if (rsp != null) {
             client.deleteUser(rsp.id);
