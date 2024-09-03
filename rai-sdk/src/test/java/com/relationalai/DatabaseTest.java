@@ -107,7 +107,7 @@ public class DatabaseTest extends UnitTest {
     }
 
     static final String testModel =
-            "def R = \"hello\", \"world\"";
+            "def R {(\"hello\", \"world\")}";
 
     static final String testJson = "{" +
             "\"name\":\"Amira\",\n" +
@@ -159,7 +159,7 @@ public class DatabaseTest extends UnitTest {
         assertEquals(databaseCloneName, createRsp.name);
         assertEquals("CREATED", createRsp.state);
 
-        // Make sure the data was cloned 
+        // Make sure the data was cloned
         var rsp = client.executeV1(databaseCloneName, engineName, "test_data", true);
 
         Relation rel;
