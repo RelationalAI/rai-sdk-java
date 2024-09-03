@@ -973,16 +973,16 @@ public class Client {
         if (schema == null || schema.isEmpty())
             return;
         var count = 0;
-        builder.append("def config:schema =");
+        builder.append("def config[:schema]: {");
         for (var entry : schema.entrySet()) {
             if (count > 0)
                 builder.append(';');
             var k = entry.getKey();
             var v = entry.getValue();
-            builder.append(String.format("\n    :%s, \"%s\"", k, v));
+            builder.append(String.format("\n    (:%s, \"%s\")", k, v));
             count++;
         }
-        builder.append('\n');
+        builder.append("}\n");
     }
 
     // Returns a Rel literal for the given value.
@@ -1013,7 +1013,7 @@ public class Client {
         if (value == null)
             return;
         var lit = genLiteral(value);
-        var def = String.format("def config:syntax:%s = %s\n", name, lit);
+        var def = String.format("def config[:syntax, :%s]: %s\n", name, lit);
         builder.append(def);
     }
 
@@ -1032,8 +1032,8 @@ public class Client {
         var builder = new StringBuilder();
         genSchemaConfig(builder, options);
         genSyntaxConfig(builder, options);
-        builder.append("def config:data = data\n");
-        builder.append(String.format("def insert:%s = load_csv[config]", relation));
+        builder.append("def config[:data]: data\n");
+        builder.append(String.format("def insert[:%s]: load_csv[config]", relation));
         return builder.toString();
     }
 
@@ -1071,8 +1071,8 @@ public class Client {
     // Generate the Rel to load JSON data into a relation.
     static String genLoadJson(String relation) {
         var builder = new StringBuilder();
-        builder.append("def config:data = data\n");
-        builder.append(String.format("def insert:%s = load_json[config]", relation));
+        builder.append("def config[:data]: data\n");
+        builder.append(String.format("def insert[:%s]: load_json[config]", relation));
         return builder.toString();
     }
 

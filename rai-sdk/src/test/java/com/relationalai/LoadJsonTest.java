@@ -47,7 +47,7 @@ public class LoadJsonTest extends UnitTest {
         assertEquals(0, loadRsp.output.length);
         assertEquals(0, loadRsp.problems.length);
 
-        var rsp = client.executeV1(databaseName, engineName, "def output = sample");
+        var rsp = client.executeV1(databaseName, engineName, "def output {sample}");
 
         Relation rel;
 

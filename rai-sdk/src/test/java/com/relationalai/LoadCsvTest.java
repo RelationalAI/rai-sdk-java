@@ -49,7 +49,7 @@ public class LoadCsvTest extends UnitTest {
         assertEquals(0, loadRsp.output.length);
         assertEquals(0, loadRsp.problems.length);
 
-        var rsp = client.executeV1(databaseName, engineName, "def output = sample");
+        var rsp = client.executeV1(databaseName, engineName, "def output {sample}");
 
         Relation rel;
 
@@ -105,7 +105,7 @@ public class LoadCsvTest extends UnitTest {
         assertEquals(0, loadRsp.output.length);
         assertEquals(0, loadRsp.problems.length);
 
-        var rsp = client.executeV1(databaseName, engineName, "def output = sample_no_header");
+        var rsp = client.executeV1(databaseName, engineName, "def output {sample_no_header}");
 
         Relation rel;
 
@@ -162,7 +162,7 @@ public class LoadCsvTest extends UnitTest {
         assertEquals(0, loadRsp.output.length);
         assertEquals(0, loadRsp.problems.length);
 
-        var rsp = client.executeV1(databaseName, engineName, "def output = sample_alt_syntax");
+        var rsp = client.executeV1(databaseName, engineName, "def output {sample_alt_syntax}");
 
         Relation rel;
 
@@ -216,7 +216,7 @@ public class LoadCsvTest extends UnitTest {
         assertEquals(0, loadRsp.output.length);
         assertEquals(0, loadRsp.problems.length);
 
-        var rsp = client.executeV1(databaseName, engineName, "def output = sample");
+        var rsp = client.executeV1(databaseName, engineName, "def output {sample}");
 
         Relation rel;
 

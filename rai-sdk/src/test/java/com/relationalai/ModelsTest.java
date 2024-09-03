@@ -32,7 +32,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @TestInstance(Lifecycle.PER_CLASS)
 @ExtendWith({TestExtension.class})
 public class ModelsTest extends UnitTest {
-    static final String testModel = "def R = \"hello\", \"world\"";
+    static final String testModel = "def R {(\"hello\", \"world\")}";
 
     @Test void testModels() throws HttpError, InterruptedException, IOException {
         var client = createClient();
