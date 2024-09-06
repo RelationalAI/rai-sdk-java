@@ -37,6 +37,8 @@ public class EngineTest extends UnitTest {
     @Test void testEngine() throws HttpError, InterruptedException, IOException {
         var client = createClient();
 
+        log.info("engine: " + engineName);
+
         var engine = client.getEngine(engineName);
         assertEquals(engine.name, engineName);
         assertEquals(engine.state, "PROVISIONED");
