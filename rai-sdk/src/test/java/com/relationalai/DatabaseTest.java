@@ -40,6 +40,8 @@ public class DatabaseTest extends UnitTest {
     void testDatabase() throws HttpError, InterruptedException, IOException {
         var client = createClient();
 
+        log.info("database: " + databaseName);
+
         try {
             client.deleteDatabase(databaseName);
         } catch (HttpError e) {
