@@ -136,9 +136,11 @@ public class MultipartReader {
 
             // parameter parser can handle null input
             Map<String,String> params = parser.parse(contentDisposition, ';');
-            fieldName = (String) params.get("name");
+            fieldName = params.get("name");
             if (fieldName != null) {
                 fieldName = fieldName.trim();
+            } else {
+                fieldName = "";
             }
         }
 
