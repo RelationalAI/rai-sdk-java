@@ -35,7 +35,7 @@ public class ExecuteTest extends UnitTest {
 
         ensureDatabase(client);
 
-        var query = "def output(x, x2, x3, x4): {1; 2; 3; 4; 5}(x) and x2 = x^2 and x3 = x^3 and x4 = x^4";
+        var query = "@function def output(x, x2, x3, x4): {1; 2; 3; 4; 5}(x) and x2 = x^2 and x3 = x^3 and x4 = x^4";
 
         var rsp = client.executeV1(databaseName, engineName, query, true);
         assertEquals(rsp.aborted, false);
