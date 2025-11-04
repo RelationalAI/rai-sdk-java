@@ -16,6 +16,8 @@ jobs:
         with:
           java-version: 11
           java-package: jdk+fx
+      - name: Clear Maven cache
+        run: rm -rf ~/.m2/repository/commons-fileupload
       - name: Generate Javadoc
         run: |
           mvn clean install -DskipTests
