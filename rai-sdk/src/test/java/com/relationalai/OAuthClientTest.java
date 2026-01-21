@@ -36,6 +36,8 @@ public class OAuthClientTest extends UnitTest {
     @Test void testOAuthClient() throws HttpError, InterruptedException, IOException {
         var client = createClient();
 
+        log.info("client name: " + clientName);
+
         var rsp = client.findOAuthClient(clientName);
         if (rsp != null) {
             client.deleteOAuthClient(rsp.id);

@@ -45,6 +45,8 @@ public class ExecuteAsyncTest extends UnitTest {
 
         var rsp = client.execute(databaseName, engineName, query, true);
 
+        log.info("transaction id: " + rsp.transaction.id);
+
         var results = new ArrayList<ArrowRelation> () {
             {
                 add(new ArrowRelation("/:output/Int64/Int64/Int64/Int64", Arrays.asList(new Object[] {1L, 2L, 3L, 4L, 5L}) ));
